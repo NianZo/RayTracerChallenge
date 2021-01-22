@@ -20,23 +20,25 @@ public:
 
 	Tuple(float xIn, float yIn, float zIn, float wIn);// : x(xIn), y(yIn), z(zIn), w(wIn) {};
 
+	// Operator overloads
+	bool operator==(const Tuple&) const;
+	bool operator!=(const Tuple&) const;
+	Tuple operator+(const Tuple&) const;
+	Tuple operator-(const Tuple&) const;
+	Tuple operator-() const;
+	Tuple operator*(const float) const;
+	Tuple operator/(const float) const;
+
 	bool IsPoint() const;
 	bool IsVector() const;
+	float magnitude() const;
+	Tuple normalize() const;
+	float dot(const Tuple&) const;
+	Tuple cross(const Tuple&) const;
 };
 
-// TODO implementation does not guarantee that w = 1.0f for a point. Can it?
-class Point : public Tuple
-{
-public:
-	Point(float xIn, float yIn, float zIn) : Tuple(xIn, yIn, zIn, 1.0f) {};
-};
-
-// TODO implementation does not guarantee that w = 0.0f for a vector. Can it?
-class Vector : public Tuple
-{
-public:
-	Vector(float xIn, float yIn, float zIn) : Tuple(xIn, yIn, zIn, 0.0f) {};
-};
+Tuple Point(float xIn, float yIn, float zIn);
+Tuple Vector(float xIn, float yIn, float zIn);
 
 
 #endif /* SOURCE_TUPLE_HPP_ */
