@@ -1,4 +1,4 @@
-add_executable(UnitTests TupleTest.cpp main.cpp)
+add_executable(UnitTests main.cpp TupleTest.cpp ColorTest.cpp CanvasTest.cpp)
 
 add_test(NAME UnitTests COMMAND UnitTests)
 
