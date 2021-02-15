@@ -1,5 +1,7 @@
 #include "Tuple.hpp"
+#include "Canvas.hpp"
 #include <iostream>
+#include <fstream>
 
 
 struct Environment
@@ -40,14 +42,26 @@ void RunSimulation(const float gravity, const float wind, const float startingHe
 	PrintVectorHelper(e.wind);
 	std::cout << "\n";
 
+	Canvas c = Canvas(900, 550);
 	while (p.position.y > 0.0)
 	{
-		std::cout << "Projectile position: ";
-		PrintVectorHelper(p.position);
-		std::cout << "Projectile velocity: ";
-		PrintVectorHelper(p.velocity);
-		std::cout << "\n";
+		//std::cout << "Projectile position: ";
+		//PrintVectorHelper(p.position);
+		//std::cout << "Projectile velocity: ";
+		//PrintVectorHelper(p.velocity);
+		//std::cout << "\n";
+
+		int xCoord = static_cast<int>(p.position.x);
+		int yCoord = 550 - static_cast<int>(p.position.y);
+		if (xCoord >= 0  && xCoord < 900 && yCoord >= 0 && yCoord < 550)
+		{
+			c.pixels[yCoord][xCoord] = Color(1, .5, 0);
+		}
 
 		p.tick(e, deltaTime);
 	}
+	std::ofstream imageFile;
+	imageFile.open("simulation.ppm", std::ios::out);
+	imageFile << c.GetPPMString();
+	imageFile.close();
 }

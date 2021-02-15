@@ -50,5 +50,58 @@ TEST(CanvasTest, PPMHeader)
 	Canvas c = Canvas(5, 3);
 	std::string ppmString = c.GetPPMString();
 	//std::string_view sv("p3");
-	EXPECT_TRUE(ppmString.starts_with("Yolo"));
+	EXPECT_TRUE(ppmString.starts_with("P3\n5 3\n255\n"));
 }
+
+TEST(CanvasTest, PixelData)
+{
+	Canvas c = Canvas(5, 3);
+	Color c1 = Color(1.5, 0, 0);
+	Color c2 = Color(0, 0.5, 0);
+	Color c3 = Color(-0.5, 0, 1);
+
+	c.pixels[0][0] = c1;
+	c.pixels[1][2] = c2;
+	c.pixels[2][4] = c3;
+
+	std::string ppmString = c.GetPPMString();
+	EXPECT_TRUE(ppmString.starts_with("P3\n5 3\n255\n255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n"));
+}
+
+TEST(CanvasTest, MaximumLineLength)
+{
+	Canvas c = Canvas(10, 2);
+
+	for (auto& row : c.pixels)
+	{
+		for (auto& pixel : row)
+		{
+			pixel = Color(1, 0.8, 0.6);
+		}
+	}
+
+	std::string ppmString = c.GetPPMString();
+	std::string compString =
+			"P3\n"
+			"10 2\n"
+			"255\n"
+			"255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
+			"153 255 204 153 255 204 153 255 204 153 255 204 153\n"
+			"255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
+			"153 255 204 153 255 204 153 255 204 153 255 204 153\n";
+	EXPECT_TRUE(ppmString.starts_with(compString));
+}
+
+TEST(CanvasTest, EndsWithNewline)
+{
+	Canvas c = Canvas(5, 3);
+	std::string ppmString = c.GetPPMString();
+	EXPECT_TRUE(ppmString.ends_with("\n"));
+}
+
+
+
+
+
+
+
