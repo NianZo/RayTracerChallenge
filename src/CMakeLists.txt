@@ -1,6 +1,6 @@
 set(BINARY ${CMAKE_PROJECT_NAME})
 
-set(SOURCES Tuple.cpp Color.cpp Canvas.cpp main.cpp)
+set(SOURCES Matrix.cpp Tuple.cpp Color.cpp Canvas.cpp main.cpp)
 
 add_executable(${BINARY}_run ${SOURCES})
 
