@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/UnitTests.dir/main.o CMakeFiles/UnitTests.dir/TupleTest.o CMakeFiles/UnitTests.dir/ColorTest.o CMakeFiles/UnitTests.dir/CanvasTest.o CMakeFiles/UnitTests.dir/MatrixTest.o CMakeFiles/UnitTests.dir/TransformationTest.o -o UnitTests  -lProject_lib -lgtest 
