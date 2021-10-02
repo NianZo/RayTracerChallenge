@@ -3,6 +3,7 @@
 #include "BallisticsSimulator.cpp"
 #include "ClockFace.cpp"
 #include "SphereImage.cpp"
+#include "RenderChapter7Scene.cpp"
 
 
 int main(int argc, char **argv) {
@@ -14,7 +15,8 @@ int main(int argc, char **argv) {
 		RenderClockFace(argv[1]);
 	} else if (argc == 1)
 	{
-		RenderSphere("SphereImage.ppm");
+		//RenderSphere("SphereImage.ppm");
+		RenderChapter7Scene("Chapter7Scene.ppm");
 	} else
 	{
 		return 1;

@@ -26,13 +26,13 @@ Canvas Camera::Render(World w) const
 {
 	Canvas image = Canvas(hSize, vSize);
 
-	for (int i = 0; i < hSize; i++)
+	for (int i = 0; i < vSize; i++)
 	{
-		for (int j = 0; j < vSize; j++)
+		for (int j = 0; j < hSize; j++)
 		{
 			const Ray r = rayForPixel(j, i);
 			const Color c = w.colorAt(r);
-			image.pixels[j][i] = c;
+			image.pixels[i][j] = c;
 		}
 	}
 	return image;
