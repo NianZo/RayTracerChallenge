@@ -7,6 +7,7 @@
 
 #include "gtest/gtest.h"
 #include "../src/Tuple.hpp"
+#include "../src/Transformation.hpp"
 #include "../src/Ray.hpp"
 
 
@@ -24,4 +25,54 @@ TEST(RayTest, RayCast)
 	EXPECT_EQ(r.cast(1), Point(3, 3, 4));
 	EXPECT_EQ(r.cast(-1), Point(1, 3, 4));
 	EXPECT_EQ(r.cast(2.5), Point(4.5, 3, 4));
+}
+
+TEST(RayTest, RayTranslation)
+{
+	Ray r(Point(1, 2, 3), Vector(0, 1, 0));
+	Matrix<4> m = translation(3, 4, 5);
+	Ray r2 = r.transform(m);
+
+	EXPECT_EQ(r2.origin, Point(4, 6, 8));
+	EXPECT_EQ(r2.direction, Vector(0, 1, 0));
+}
+
+TEST(RayTest, RayScaling)
+{
+	Ray r(Point(1, 2, 3), Vector(0, 1, 0));
+	Matrix<4> m = scaling(2, 3, 4);
+	Ray r2 = r.transform(m);
+
+	EXPECT_EQ(r2.origin, Point(2, 6, 12));
+	EXPECT_EQ(r2.direction, Vector(0, 3, 0));
+}
+
+TEST(RayTest, PrecomputeIntersectionParametersOutside)
+{
+	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
+	Sphere s;
+	auto intersection = r.intersect(s);
+	IntersectionDetails id = r.precomputeDetails(intersection[0]);
+
+	EXPECT_FLOAT_EQ(id.t, intersection[0].t);
+	EXPECT_EQ(id.object, s);
+	EXPECT_EQ(id.point, Point(0, 0, -1));
+	EXPECT_EQ(id.eyeVector, Vector(0, 0, -1));
+	EXPECT_EQ(id.normalVector, Vector(0, 0, -1));
+	EXPECT_FALSE(id.inside);
+}
+
+TEST(RayTest, PrecomputeIntersectionParametersInside)
+{
+	Ray r(Point(0, 0, 0), Vector(0, 0, 1));
+	Sphere s;
+	auto intersections = r.intersect(s);
+	IntersectionDetails id = r.precomputeDetails(intersections[1]);
+
+	EXPECT_FLOAT_EQ(id.t, intersections[1].t);
+	EXPECT_EQ(id.object, s);
+	EXPECT_EQ(id.point, Point(0, 0, 1));
+	EXPECT_EQ(id.eyeVector, Vector(0, 0, -1));
+	EXPECT_EQ(id.normalVector, Vector(0, 0, -1));
+	EXPECT_TRUE(id.inside);
 }

@@ -41,3 +41,8 @@ Color Color::operator*(const Color& other) const
 {
 	return Color(this->r * other.r, this->g * other.g, this->b * other.b);
 }
+
+Color Color::Black()
+{
+	return Color(0.0, 0.0, 0.0);
+}

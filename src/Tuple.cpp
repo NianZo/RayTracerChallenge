@@ -92,6 +92,11 @@ Tuple Tuple::cross(const Tuple& other) const
 	return Vector(this->y * other.z - this->z * other.y, this->z * other.x - this->x * other.z, this->x * other.y - this->y * other.x);
 }
 
+Tuple Tuple::reflect(const Tuple& normal) const
+{
+	return *this - normal * 2 * this->dot(normal);
+}
+
 
 
 Tuple Point(float xIn, float yIn, float zIn)

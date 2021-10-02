@@ -35,6 +35,7 @@ public:
 	Tuple normalize() const;
 	float dot(const Tuple&) const;
 	Tuple cross(const Tuple&) const;
+	Tuple reflect(const Tuple&) const;
 };
 
 Tuple Point(float xIn, float yIn, float zIn);

@@ -69,3 +69,21 @@ const Matrix<4> shearing(const float xSuby, const float xSubz, const float ySubx
 		{0    , 0    , 0    , 1}
 	}});
 }
+
+const Matrix<4> ViewTransform()
+{
+	return IdentityMatrix();
+}
+
+const Matrix<4> ViewTransform(const Tuple& from, const Tuple& to, const Tuple& up)
+{
+	const Tuple forward = (to - from).normalize();
+	const Tuple left = forward.cross(up.normalize());
+	const Tuple trueUp = left.cross(forward);
+	const Matrix<4> orientation({{
+		{left.x, left.y, left.z, 0},
+		{trueUp.x, trueUp.y, trueUp.z, 0},
+		{-forward.x, -forward.y, -forward.z, 0},
+		{0, 0, 0, 1}}});
+	return orientation * translation(-from.x, -from.y, -from.z);
+}

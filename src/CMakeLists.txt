@@ -1,6 +1,6 @@
 set(BINARY ${CMAKE_PROJECT_NAME})
 
-set(SOURCES Ray.cpp Transformation.cpp Matrix.cpp Tuple.cpp Color.cpp Canvas.cpp main.cpp)
+set(SOURCES Camera.cpp World.cpp Material.cpp Sphere.cpp Ray.cpp Transformation.cpp Matrix.cpp Tuple.cpp Color.cpp Canvas.cpp main.cpp)
 
 add_executable(${BINARY}_run ${SOURCES})
 

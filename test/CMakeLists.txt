@@ -1,4 +1,4 @@
-add_executable(UnitTests main.cpp TupleTest.cpp ColorTest.cpp CanvasTest.cpp MatrixTest.cpp TransformationTest.cpp RayTest.cpp)
+add_executable(UnitTests main.cpp TupleTest.cpp ColorTest.cpp CanvasTest.cpp MatrixTest.cpp TransformationTest.cpp RayTest.cpp SphereTest.cpp LightTest.cpp MaterialTest.cpp WorldTest.cpp CameraTest.cpp)
 
 # target_link_libraries(UnitTests PUBLIC "${CMAKE_PROJECT_NAME}_lib" gtest)
 target_link_libraries(UnitTests PUBLIC ${CMAKE_PROJECT_NAME}_lib gtest)

@@ -4,6 +4,7 @@ project (CMakeTest)
 
 # set_property(TARGET tgt PROPERTY CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_BUILD_TYPE Debug)
 # add_executable(CMakeTest CMakeTest.cpp)
 # target_compile_features(project_options INTERFACE cxx_std_20)
 

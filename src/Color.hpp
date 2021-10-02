@@ -8,7 +8,7 @@
 #ifndef SRC_COLOR_HPP_
 #define SRC_COLOR_HPP_
 
-#define COLOR_EPSILON 0.00001f
+#define COLOR_EPSILON 0.0001f
 
 class Color
 {
@@ -27,6 +27,8 @@ public:
 	Color operator-(const Color&) const;
 	Color operator*(const float) const;
 	Color operator*(const Color&) const;
+
+	static Color Black();
 };
 
 

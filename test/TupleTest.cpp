@@ -182,5 +182,26 @@ TEST(TupleTest, CrossProduct)
 	EXPECT_EQ(b.cross(a), Vector(1.0, -2.0, 1.0));
 }
 
+TEST(TupleTest, ReflectAt45Degrees)
+{
+	Tuple v = Vector(1, -1, 0);
+	Tuple n = Vector(0, 1, 0);
+	Tuple r = v.reflect(n);
+
+	EXPECT_EQ(r, Vector(1, 1, 0));
+}
+
+TEST(TupleTest, ReflectOffSlantedSurface)
+{
+	Tuple v = Vector(0, -1, 0);
+	Tuple n = Vector(sqrt(2) / 2, sqrt(2) / 2, 0);
+	Tuple r = v.reflect(n);
+
+	EXPECT_EQ(r, Vector(1, 0, 0));
+}
+
+
+
+
 
 
