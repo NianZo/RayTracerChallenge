@@ -39,6 +39,7 @@ struct IntersectionDetails
 {
 	const Sphere& object;
 	const Tuple point;
+	const Tuple overPoint;
 	const Tuple eyeVector;
 	const Tuple normalVector;
 	const float t;

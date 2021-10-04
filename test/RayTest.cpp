@@ -76,3 +76,27 @@ TEST(RayTest, PrecomputeIntersectionParametersInside)
 	EXPECT_EQ(id.normalVector, Vector(0, 0, -1));
 	EXPECT_TRUE(id.inside);
 }
+
+TEST(RayTest, PrecomputeIntersectionCalculatesOverPoint)
+{
+	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
+	Sphere s;
+	s.transform = translation(0, 0, 1);
+	auto i = r.intersect(s);
+	auto id = r.precomputeDetails(*r.hit(i));
+
+	EXPECT_LT(id.overPoint.z, -TUPLE_EPSILON / 2);
+	EXPECT_LT(id.overPoint.z, id.point.z);
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -44,7 +44,8 @@ const std::vector<Intersection> World::intersect(Ray r) const
 
 const Color World::shadeHit(IntersectionDetails id) const
 {
-	return id.object.material.light(light, id.point, id.eyeVector, id.normalVector);
+	const bool shadowed = isShadowed(id.overPoint);
+	return id.object.material.light(light, id.point, id.eyeVector, id.normalVector, shadowed);
 }
 
 const Color World::colorAt(Ray r) const
@@ -66,4 +67,16 @@ const Color World::colorAt(Ray r) const
 	{
 		return Color(0, 0, 0);
 	}
+}
+
+const bool World::isShadowed(const Tuple& point) const
+{
+	const Tuple shadowVector = (light.position - point).normalize();
+	const float distanceToLight = (light.position - point).magnitude();
+	const Ray shadowRay = Ray(point, shadowVector);
+	const auto intersections = intersect(shadowRay);
+	const auto hit = shadowRay.hit(intersections);
+
+	const bool shadowed = hit && hit->t < distanceToLight;
+	return shadowed;
 }

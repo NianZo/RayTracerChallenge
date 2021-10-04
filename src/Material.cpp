@@ -13,7 +13,7 @@ bool Material::operator==(const Material& other) const
 	return color == other.color && ambient == other.ambient && diffuse == other.diffuse && shininess == other.shininess;
 }
 
-Color Material::light(Light light, Tuple point, Tuple eyeVector, Tuple normalVector) const
+Color Material::light(const Light& light, const Tuple& point, const Tuple& eyeVector, const Tuple& normalVector, const bool inShadow) const
 {
 	const Color effectiveColor = color * light.intensity;
 	const Tuple lightVector = (light.position - point).normalize();
@@ -23,7 +23,7 @@ Color Material::light(Light light, Tuple point, Tuple eyeVector, Tuple normalVec
 	Color diffuseLight = Color::Black();
 	Color specularLight = Color::Black();
 
-	if (lightDotNormal > 0)
+	if (lightDotNormal > 0 && !inShadow)
 	{
 		diffuseLight = effectiveColor * diffuse * lightDotNormal;
 		const Tuple reflectionVector = (-lightVector).reflect(normalVector);

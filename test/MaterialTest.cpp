@@ -42,7 +42,7 @@ TEST(MaterialTest, LightingWithEyeBetweenLightAndSurface)
 	Tuple eyeV = Vector(0, 0, -1);
 	Tuple normalV = Vector(0, 0, -1);
 	Light light(Point(0, 0, -10), Color(1, 1, 1));
-	Color result = m.light(light, position, eyeV, normalV);
+	Color result = m.light(light, position, eyeV, normalV, false);
 
 	EXPECT_EQ(result, Color(1.9, 1.9, 1.9));
 }
@@ -54,7 +54,7 @@ TEST(MaterialTest, LightingWithEyeAtAngle)
 	Tuple eyeV = Vector(0, sqrt(2) / 2, sqrt(2) / 2);
 	Tuple normalV = Vector(0, 0, -1);
 	Light light(Point(0, 0, -10), Color(1, 1, 1));
-	Color result = m.light(light, position, eyeV, normalV);
+	Color result = m.light(light, position, eyeV, normalV, false);
 
 	EXPECT_EQ(result, Color(1.0, 1.0, 1.0));
 }
@@ -66,7 +66,7 @@ TEST(MaterialTest, LightingWithLightAtAngle)
 	Tuple eyeV = Vector(0, 0, -1);
 	Tuple normalV = Vector(0, 0, -1);
 	Light light(Point(0, 10, -10), Color(1, 1, 1));
-	Color result = m.light(light, position, eyeV, normalV);
+	Color result = m.light(light, position, eyeV, normalV, false);
 
 	EXPECT_EQ(result, Color(0.7364, 0.7364, 0.7364));
 }
@@ -78,7 +78,7 @@ TEST(MaterialTest, LightingWithLightAndEyeAtOpposingAngle)
 	Tuple eyeV = Vector(0, -sqrt(2) / 2, -sqrt(2) / 2);
 	Tuple normalV = Vector(0, 0, -1);
 	Light light(Point(0, 10, -10), Color(1, 1, 1));
-	Color result = m.light(light, position, eyeV, normalV);
+	Color result = m.light(light, position, eyeV, normalV, false);
 
 	EXPECT_EQ(result, Color(1.6364, 1.6364, 1.6364));
 }
@@ -90,12 +90,23 @@ TEST(MaterialTest, LightingWithLightBehindSurface)
 	Tuple eyeV = Vector(0, 0, -1);
 	Tuple normalV = Vector(0, 0, -1);
 	Light light(Point(0, 0, 10), Color(1, 1, 1));
-	Color result = m.light(light, position, eyeV, normalV);
+	Color result = m.light(light, position, eyeV, normalV, false);
 
 	EXPECT_EQ(result, Color(0.1, 0.1, 0.1));
 }
 
+TEST(MaterialTest, LightingWithSurfaceInShadow)
+{
+	Material m;
+	Tuple position = Point(0, 0, 0);
+	Tuple eyeV = Vector(0, 0, -1);
+	Tuple normalV = Vector(0, 0, -1);
+	Light light(Point(0, 0, -10), Color(1, 1, 1));
+	bool inShadow = true;
+	Color result = m.light(light, position, eyeV, normalV, inShadow);
 
+	EXPECT_EQ(result, Color(0.1, 0.1, 0.1));
+}
 
 
 

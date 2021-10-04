@@ -23,11 +23,11 @@ public:
 	float shininess;
 
 	Material() : color(Color(1, 1, 1)), ambient(0.1), diffuse(0.9), specular(0.9), shininess(200.0) {};
-	Material(Color color, float ambient, float diffuse, float specular, float shininess) : color(color), ambient(ambient), diffuse(diffuse), specular(specular), shininess(shininess) {};
+	Material(const Color& color, const float ambient, const float diffuse, const float specular, const float shininess) : color(color), ambient(ambient), diffuse(diffuse), specular(specular), shininess(shininess) {};
 
 	bool operator==(const Material& other) const;
 
-	Color light(Light light, Tuple position, Tuple eyeVector, Tuple normalVector) const;
+	Color light(const Light& light, const Tuple& position, const Tuple& eyeVector, const Tuple& normalVector, const bool inShadow) const;
 };
 
 

@@ -32,7 +32,7 @@ void RenderSphere(const std::string& fileName)
 			if (hitPoint)
 			{
 				Tuple point = r.cast(hitPoint->t);
-				c.pixels[j][i] = s.material.light(light, point, -r.direction, hitPoint->object->normal(point));
+				c.pixels[j][i] = s.material.light(light, point, -r.direction, hitPoint->object->normal(point), false);
 			}
 		}
 

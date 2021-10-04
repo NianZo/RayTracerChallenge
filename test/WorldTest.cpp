@@ -111,6 +111,62 @@ TEST(WorldTest, ShadeRayIntersectionBetweenSpheres)
 	EXPECT_EQ(c, innerSphere.material.color);
 }
 
+TEST(WorldTest, ShadowWithNoColinearObjects)
+{
+	World w = World::BaseWorld();
+	Tuple p = Point(0, 10, 0);
+
+	EXPECT_FALSE(w.isShadowed(p));
+}
+
+TEST(WorldTest, ShadowWithObjectBetweenPointAndLight)
+{
+	World w = World::BaseWorld();
+	Tuple p = Point(10, -10, 10);
+
+	EXPECT_TRUE(w.isShadowed(p));
+}
+
+TEST(WorldTest, ShadowWithObjectBehindLight)
+{
+	World w = World::BaseWorld();
+	Tuple p = Point(-20, 20, -20);
+
+	EXPECT_FALSE(w.isShadowed(p));
+}
+
+TEST(WorldTest, ShadowWithObjectBehindPoint)
+{
+	World w = World::BaseWorld();
+	Tuple p = Point(-2, 2, -2);
+
+	EXPECT_FALSE(w.isShadowed(p));
+}
+
+TEST(WorldTest, ShadeHitGetsIntersectionInShadow)
+{
+	World w;
+	Sphere s1;
+	Sphere s2;
+	s2.transform = translation(0, 0, 10);
+
+	w.objects.push_back(s1);
+	w.objects.push_back(s2);
+	w.light = Light(Point(0, 0, -10), Color(1, 1, 1));
+
+	Ray r = Ray(Point(0, 0, 5), Vector(0, 0, 1));
+	auto intersection = r.intersect(s2);
+	auto comps = r.precomputeDetails(*r.hit(intersection));
+	Color c = w.shadeHit(comps);
+
+	EXPECT_EQ(c, Color(0.1, 0.1, 0.1));
+}
+
+
+
+
+
+
 
 
 
