@@ -12,9 +12,9 @@
 World World::BaseWorld()
 {
 	Sphere s1;
-	s1.material.color = Color(0.8, 1.0, 0.6);
-	s1.material.diffuse = 0.7;
-	s1.material.specular = 0.2;
+	s1.material.color = Color(0.8f, 1.0f, 0.6f);
+	s1.material.diffuse = 0.7f;
+	s1.material.specular = 0.2f;
 
 	Sphere s2;
 	s2.transform = scaling(0.5, 0.5, 0.5);
@@ -27,7 +27,7 @@ World World::BaseWorld()
 	return w;
 }
 
-const std::vector<Intersection> World::intersect(Ray r) const
+std::vector<Intersection> World::intersect(Ray r) const
 {
 	std::vector<Intersection> intersections;
 	for (const auto& object : objects)
@@ -42,13 +42,13 @@ const std::vector<Intersection> World::intersect(Ray r) const
 	return intersections;
 }
 
-const Color World::shadeHit(IntersectionDetails id) const
+Color World::shadeHit(IntersectionDetails id) const
 {
 	const bool shadowed = isShadowed(id.overPoint);
 	return id.object.material.light(light, id.point, id.eyeVector, id.normalVector, shadowed);
 }
 
-const Color World::colorAt(Ray r) const
+Color World::colorAt(Ray r) const
 {
 	std::vector<Intersection> intersections;
 	for (const Sphere& object : objects)
@@ -69,7 +69,7 @@ const Color World::colorAt(Ray r) const
 	}
 }
 
-const bool World::isShadowed(const Tuple& point) const
+bool World::isShadowed(const Tuple& point) const
 {
 	const Tuple shadowVector = (light.position - point).normalize();
 	const float distanceToLight = (light.position - point).magnitude();

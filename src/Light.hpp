@@ -19,7 +19,7 @@ public:
 	Color intensity;
 
 	Light() : position(Point(0, 0, 0)), intensity(Color(1, 1, 1)) {};
-	Light(const Tuple& position, const Color& intensity) : position(position), intensity(intensity) {};
+	Light(const Tuple& positionIn, const Color& intensityIn) : position(positionIn), intensity(intensityIn) {};
 
 	bool operator==(const Light& other) const {return position == other.position && intensity == other.intensity;};
 };

@@ -213,25 +213,25 @@ float Matrix<2>::determinant() const
 }
 
 template<>
-float Matrix<3>::minor(int row, int col) const
+float Matrix<3>::minor(uint32_t row, uint32_t col) const
 {
 	return this->submatrix(row, col).determinant();
 }
 
 template<>
-float Matrix<4>::minor(int row, int col) const
+float Matrix<4>::minor(uint32_t row, uint32_t col) const
 {
 	return this->submatrix(row, col).determinant();
 }
 
 template<>
-float Matrix<3>::cofactor(int row, int col) const
+float Matrix<3>::cofactor(uint32_t row, uint32_t col) const
 {
 	return (row + col) % 2 > 0 ? -1 * this->minor(row, col) : this->minor(row, col);
 }
 
 template<>
-float Matrix<4>::cofactor(int row, int col) const
+float Matrix<4>::cofactor(uint32_t row, uint32_t col) const
 {
 	return (row + col) % 2 > 0 ? -1 * this->minor(row, col) : this->minor(row, col);
 }

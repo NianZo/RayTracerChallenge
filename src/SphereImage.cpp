@@ -18,16 +18,16 @@ void RenderSphere(const std::string& fileName)
 {
 	Canvas c(1000, 1000);
 	Sphere s;
-	s.transform = translation(500, 500, -18.99) * scaling(1, 0.5, 1);
-	s.material.color = Color(1, 0.2, 1);
+	s.transform = translation(500.0f, 500.0f, -18.99f) * scaling(1.0f, 0.5f, 1.0f);
+	s.material.color = Color(1.0f, 0.2f, 1.0f);
 
 	Light light(Point(480, 480, -30), Color(1, 1, 1));
 
-	for (int i = 0; i < 1000; i++)
+	for (uint32_t i = 0; i < 1000; i++)
 	{
-		for(int j = 0; j < 1000; j++)
+		for(uint32_t j = 0; j < 1000; j++)
 		{
-			Ray r(Point(500, 500, -20), (Point(i, j, 0) - Point(500, 500, -20)).normalize());
+			Ray r(Point(500, 500, -20), (Point(static_cast<float>(i), static_cast<float>(j), 0) - Point(500, 500, -20)).normalize());
 			auto hitPoint = Ray::hit(r.intersect(s));
 			if (hitPoint)
 			{

@@ -22,10 +22,10 @@ public:
 
 	World() {};
 
-	const std::vector<Intersection> intersect(Ray r) const;
-	const Color shadeHit(IntersectionDetails id) const;
-	const Color colorAt(Ray r) const;
-	const bool isShadowed(const Tuple& point) const;
+	std::vector<Intersection> intersect(Ray r) const;
+	Color shadeHit(IntersectionDetails id) const;
+	Color colorAt(Ray r) const;
+	bool isShadowed(const Tuple& point) const;
 
 	static World BaseWorld();
 };

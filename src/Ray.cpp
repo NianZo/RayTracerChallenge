@@ -31,8 +31,8 @@ const std::vector<Intersection> Ray::intersect(const Sphere& s) const
 	std::vector<Intersection> intersections;
 	if (discriminant >= 0)
 	{
-		intersections.push_back(Intersection((-b - sqrt(discriminant)) / (2 * a), s));
-		intersections.push_back(Intersection((-b + sqrt(discriminant)) / (2 * a), s));
+		intersections.push_back(Intersection((-b - sqrtf(discriminant)) / (2 * a), s));
+		intersections.push_back(Intersection((-b + sqrtf(discriminant)) / (2 * a), s));
 	}
 
 	return intersections;

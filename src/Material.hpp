@@ -22,8 +22,8 @@ public:
 	float specular;
 	float shininess;
 
-	Material() : color(Color(1, 1, 1)), ambient(0.1), diffuse(0.9), specular(0.9), shininess(200.0) {};
-	Material(const Color& color, const float ambient, const float diffuse, const float specular, const float shininess) : color(color), ambient(ambient), diffuse(diffuse), specular(specular), shininess(shininess) {};
+	Material() : color(Color(1, 1, 1)), ambient(0.1f), diffuse(0.9f), specular(0.9f), shininess(200.0f) {};
+	Material(const Color& colorIn, const float ambientIn, const float diffuseIn, const float specularIn, const float shininessIn) : color(colorIn), ambient(ambientIn), diffuse(diffuseIn), specular(specularIn), shininess(shininessIn) {};
 
 	bool operator==(const Material& other) const;
 

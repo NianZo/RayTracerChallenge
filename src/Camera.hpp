@@ -18,25 +18,25 @@
 class Camera
 {
 public:
-	const int hSize;
-	const int vSize;
+	const uint32_t hSize;
+	const uint32_t vSize;
 	const float fov;
 	Matrix<4> transform;
 	float pixelSize;
 	float halfWidth;
 	float halfHeight;
 
-	Camera(const int hSize, const int vSize, const float fov) : hSize(hSize), vSize(vSize), fov(fov), transform(IdentityMatrix())
+	Camera(const uint32_t horizontalSize, const uint32_t verticalSize, const float fieldOfView) : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(IdentityMatrix())
 	{
 		const float halfView = std::tan(fov / 2);
-		const float aspectRatio = static_cast<float>(hSize) / vSize;
+		const float aspectRatio = static_cast<float>(hSize) / static_cast<float>(vSize);
 		halfWidth = hSize >= vSize ? halfView : halfView * aspectRatio;
 		halfHeight = hSize < vSize ? halfView : halfView / aspectRatio;
 
-		pixelSize = halfWidth * 2 / hSize;
+		pixelSize = halfWidth * 2.0f / static_cast<float>(hSize);
 	};
 
-	Ray rayForPixel(const int x, const int y) const;
+	Ray rayForPixel(const uint32_t x, const uint32_t y) const;
 	Canvas Render(World w) const;
 };
 

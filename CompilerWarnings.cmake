@@ -5,7 +5,7 @@ function(set_project_warnings project_name)
 		-Wall
 		-Wextra
 		-Wshadow
-		-Wnon-virtualdtor
+		-Wnon-virtual-dtor
 		-Wold-style-cast
 		-Wcast-align
 		-Wunused

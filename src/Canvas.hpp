@@ -15,11 +15,11 @@
 class Canvas
 {
 public:
-	const int width;
-	const int height;
+	const uint32_t width;
+	const uint32_t height;
 	std::vector<std::vector<Color>> pixels;
 
-	Canvas(const int width, const int height);
+	Canvas(const uint32_t widthIn, const uint32_t heightIn);
 	std::string GetPPMString() const;
 };
 
