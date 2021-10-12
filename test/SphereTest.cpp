@@ -19,7 +19,7 @@ TEST(SphereTest, RaySphereIntersectionNormal)
 {
 	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
 	Sphere s;
-	auto xs = r.intersect(s);
+	auto xs = s.intersect(r);
 
 	EXPECT_EQ(xs.size(), 2);
 	EXPECT_FLOAT_EQ(xs[0].t, 4.0f);
@@ -32,7 +32,7 @@ TEST(SphereTest, RaySphereIntersectionTangent)
 {
 	Ray r(Point(0, 1, -5), Vector(0, 0, 1));
 	Sphere s;
-	auto xs = r.intersect(s);
+	auto xs = s.intersect(r);
 
 	EXPECT_EQ(xs.size(), 2);
 	EXPECT_FLOAT_EQ(xs[0].t, 5.0f);
@@ -43,7 +43,7 @@ TEST(SphereTest, RaySphereIntersectionMiss)
 {
 	Ray r(Point(0, 2, -5), Vector(0, 0, 1));
 	Sphere s;
-	auto xs = r.intersect(s);
+	auto xs = s.intersect(r);
 	EXPECT_EQ(xs.size(), 0);
 }
 
@@ -51,7 +51,7 @@ TEST(SphereTest, RaySphereIntersectionInsideSphere)
 {
 	Ray r(Point(0, 0, 0), Vector(0, 0, 1));
 	Sphere s;
-	auto xs = r.intersect(s);
+	auto xs = s.intersect(r);
 
 	EXPECT_EQ(xs.size(), 2);
 	EXPECT_FLOAT_EQ(xs[0].t, -1.0f);
@@ -62,7 +62,7 @@ TEST(SphereTest, RaySphereIntersectionSphereBehindRay)
 {
 	Ray r(Point(0, 0, 5), Vector(0, 0, 1));
 	Sphere s;
-	auto xs = r.intersect(s);
+	auto xs = s.intersect(r);
 
 	EXPECT_EQ(xs.size(), 2);
 	EXPECT_FLOAT_EQ(xs[0].t, -6.0f);
@@ -72,28 +72,28 @@ TEST(SphereTest, RaySphereIntersectionSphereBehindRay)
 TEST(SphereTest, SphereHitCalculation)
 {
 	Sphere s;
-	const std::vector<Intersection> xs = {Intersection(1, s), Intersection(2, s)};
+	const std::vector<Intersection> xs = {Intersection(1, &s), Intersection(2, &s)};
 	auto i  = Ray::hit(xs);
 	EXPECT_EQ(*i, xs[0]);
 
-	const std::vector<Intersection> xs2 = {Intersection(-1, s), Intersection(1, s)};
+	const std::vector<Intersection> xs2 = {Intersection(-1, &s), Intersection(1, &s)};
 	auto i2 = Ray::hit(xs2);
 	EXPECT_EQ(*i2, xs2[1]);
 
-	const std::vector<Intersection> xs3 = {Intersection(-2, s), Intersection(-1, s)};
+	const std::vector<Intersection> xs3 = {Intersection(-2, &s), Intersection(-1, &s)};
 	auto i3 = Ray::hit(xs3);
 	EXPECT_FALSE(i3);
 
 	const std::vector<Intersection> xs4 = {
-			Intersection(5, s),
-			Intersection(7, s),
-			Intersection(-3, s),
-			Intersection(2, s)
+			Intersection(5, &s),
+			Intersection(7, &s),
+			Intersection(-3, &s),
+			Intersection(2, &s)
 	};
 	auto i4 = Ray::hit(xs4);
 	EXPECT_EQ(*i4, xs4[3]);
 }
-
+/*
 TEST(SphereTest, DefaultTransform)
 {
 	Sphere s;
@@ -109,13 +109,13 @@ TEST(SphereTest, ChangeTransform)
 
 	EXPECT_EQ(s.transform, t);
 }
-
+*/
 TEST(SphereTest, ScaledSphereRayIntersection)
 {
 	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
 	Sphere s;
 	s.transform = scaling(2, 2, 2);
-	auto xs = r.intersect(s);
+	auto xs = s.intersect(r);
 
 	EXPECT_EQ(xs.size(), 2);
 	EXPECT_FLOAT_EQ(xs[0].t, 3);
@@ -127,7 +127,7 @@ TEST(SphereTest, TranslatedSphereRayIntersection)
 	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
 	Sphere s;
 	s.transform = translation(5, 0, 0);
-	auto xs = r.intersect(s);
+	auto xs = s.intersect(r);
 
 	EXPECT_EQ(xs.size(), 0);
 }
@@ -180,7 +180,7 @@ TEST(SphereTest, NormalOfTransformedSphere)
 
 	EXPECT_EQ(n, Vector(0, 0.97014, -0.24254));
 }
-
+/*
 TEST(SphereTest, DefaultMaterial)
 {
 	Sphere s;
@@ -197,9 +197,87 @@ TEST(SphereTest, AssignMaterial)
 
 	EXPECT_EQ(s.material, m);
 }
+*/
+TEST(ShapeTest, DefaultTransformation)
+{
+	Shape o;
 
+	EXPECT_EQ(o.transform, IdentityMatrix());
+}
 
+TEST(ShapeTest, AssignTransformation)
+{
+	Shape o;
+	o.transform = (translation(2, 3, 4));
 
+	EXPECT_EQ(o.transform, translation(2, 3, 4));
+}
+
+TEST(ShapeTest, DefaultMaterial)
+{
+	Shape o;
+
+	EXPECT_EQ(o.material, Material());
+}
+
+TEST(ShapeTest, AssignMaterial)
+{
+	Shape o;
+	Material m;
+	m.ambient = 1.0f;
+	o.material = m;
+
+	EXPECT_EQ(o.material, m);
+}
+
+TEST(PlaneTest, NormalConstantEverywhere)
+{
+	Plane p;
+
+	EXPECT_EQ(p.normal(Point(0, 0, 0)), Vector(0, 1, 0));
+	EXPECT_EQ(p.normal(Point(10, 0, -10)), Vector(0, 1, 0));
+	EXPECT_EQ(p.normal(Point(-5, 0, 150)), Vector(0, 1, 0));
+}
+
+TEST(PlaneTest, IntersectWithParallelRay)
+{
+	Plane p;
+	Ray r = Ray(Point(0, 10, 0), Vector(0, 0, 1));
+	auto xs = p.intersect(r);
+
+	EXPECT_EQ(xs.size(), 0);
+}
+
+TEST(PlaneTest, IntersectWithCoplanarRay)
+{
+	Plane p;
+	Ray r = Ray(Point(0, 0, 0), Vector(0, 0, 1));
+	auto xs = p.intersect(r);
+
+	EXPECT_EQ(xs.size(), 0);
+}
+
+TEST(PlaneTest, IntersectWithRayFromAbove)
+{
+	Plane p;
+	Ray r = Ray(Point(0, 1, 0), Vector(0, -1, 0));
+	auto xs = p.intersect(r);
+
+	EXPECT_EQ(xs.size(), 1);
+	EXPECT_EQ(xs[0].t, 1);
+	EXPECT_EQ(*xs[0].object, p);
+}
+
+TEST(PlaneTest, IntersectWithRayFromBelow)
+{
+	Plane p;
+	Ray r = Ray(Point(0, -1, 0), Vector(0, 1, 0));
+	auto xs = p.intersect(r);
+
+	EXPECT_EQ(xs.size(), 1);
+	EXPECT_EQ(xs[0].t, 1);
+	EXPECT_EQ(*xs[0].object, p);
+}
 
 
 

@@ -9,6 +9,7 @@
 #define SRC_WORLD_HPP_
 
 #include <vector>
+#include <functional>
 #include "Sphere.hpp"
 #include "Light.hpp"
 #include "Ray.hpp"
@@ -16,12 +17,15 @@
 class World
 {
 public:
-	std::vector<Sphere> objects;
+	std::vector<Sphere> spheres;
+	std::vector<Plane> planes;
+	//std::vector<std::reference_wrapper<Shape>> objects;
 	//std::vector<Light> lights;
 	Light light;
 
 	World() {};
 
+	std::vector<std::reference_wrapper<const Shape>> objects() const;
 	std::vector<Intersection> intersect(Ray r) const;
 	Color shadeHit(IntersectionDetails id) const;
 	Color colorAt(Ray r) const;

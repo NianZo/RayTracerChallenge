@@ -51,7 +51,7 @@ TEST(RayTest, PrecomputeIntersectionParametersOutside)
 {
 	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
 	Sphere s;
-	auto intersection = r.intersect(s);
+	auto intersection = s.intersect(r);
 	IntersectionDetails id = r.precomputeDetails(intersection[0]);
 
 	EXPECT_FLOAT_EQ(id.t, intersection[0].t);
@@ -66,7 +66,7 @@ TEST(RayTest, PrecomputeIntersectionParametersInside)
 {
 	Ray r(Point(0, 0, 0), Vector(0, 0, 1));
 	Sphere s;
-	auto intersections = r.intersect(s);
+	auto intersections = s.intersect(r);
 	IntersectionDetails id = r.precomputeDetails(intersections[1]);
 
 	EXPECT_FLOAT_EQ(id.t, intersections[1].t);
@@ -82,7 +82,7 @@ TEST(RayTest, PrecomputeIntersectionCalculatesOverPoint)
 	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
 	Sphere s;
 	s.transform = translation(0, 0, 1);
-	auto i = r.intersect(s);
+	auto i = s.intersect(r);
 	auto id = r.precomputeDetails(*r.hit(i));
 
 	EXPECT_LT(id.overPoint.z, -TUPLE_EPSILON / 2);

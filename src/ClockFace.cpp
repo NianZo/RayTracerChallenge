@@ -24,10 +24,10 @@ void RenderClockFace(const std::string& fileName)
 		uint32_t yCoord = static_cast<uint32_t>(location.y) + 50;
 		c.pixels[xCoord][yCoord] = Color(1.0f, 1.0f, 1.0f);
 	}
-	std::ofstream imageFile;
-	imageFile.open(fileName, std::ios::out);
+	std::ofstream imageFile(fileName, std::ios::out);
+	//imageFile.open(fileName, std::ios::out);
 	imageFile << c.GetPPMString();
-	imageFile.close();
+	//imageFile.close();
 }
 
 

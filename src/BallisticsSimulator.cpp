@@ -60,8 +60,8 @@ void RunSimulation(const float gravity, const float wind, const float startingHe
 
 		p.tick(e, deltaTime);
 	}
-	std::ofstream imageFile;
-	imageFile.open("simulation.ppm", std::ios::out);
+	std::ofstream imageFile("simulation.ppm", std::ios::out);
+	//imageFile.open("simulation.ppm", std::ios::out);
 	imageFile << c.GetPPMString();
-	imageFile.close();
+	//imageFile.close();
 }

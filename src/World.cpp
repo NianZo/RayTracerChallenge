@@ -9,6 +9,7 @@
 #include "Transformation.hpp"
 #include <algorithm>
 
+// TODO this is the cause of the failed test, essentially returning references to local objects
 World World::BaseWorld()
 {
 	Sphere s1;
@@ -20,19 +21,35 @@ World World::BaseWorld()
 	s2.transform = scaling(0.5, 0.5, 0.5);
 
 	World w;
-	w.objects.push_back(s1);
-	w.objects.push_back(s2);
+	w.spheres.push_back(s1);
+	w.spheres.push_back(s2);
 	w.light = Light(Point(-10, 10, -10), Color(1, 1, 1));
 
 	return w;
 }
 
+std::vector<std::reference_wrapper<const Shape>> World::objects() const
+{
+	std::vector<std::reference_wrapper<const Shape>> objects;
+
+	for (const Shape& sphere : spheres)
+	{
+		objects.emplace_back(std::ref(sphere));
+	}
+	for (const Shape& plane : planes)
+	{
+		objects.emplace_back(std::ref(plane));
+	}
+
+	return objects;
+}
+
 std::vector<Intersection> World::intersect(Ray r) const
 {
 	std::vector<Intersection> intersections;
-	for (const auto& object : objects)
+	for (const auto object : objects())
 	{
-		auto objectIntersections = r.intersect(object);
+		auto objectIntersections = object.get().intersect(r);
 		for (const auto& intersection : objectIntersections)
 		{
 			intersections.push_back(intersection);
@@ -51,9 +68,9 @@ Color World::shadeHit(IntersectionDetails id) const
 Color World::colorAt(Ray r) const
 {
 	std::vector<Intersection> intersections;
-	for (const Sphere& object : objects)
+	for (const auto& object : objects())
 	{
-		const std::vector<Intersection> i = r.intersect(object);
+		const std::vector<Intersection> i = object.get().intersect(r);
 		for (const Intersection& event : i)
 		{
 			intersections.push_back(event);

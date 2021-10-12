@@ -17,7 +17,8 @@ TEST(WorldTest, DefaultWorld)
 {
 	World w;
 
-	EXPECT_TRUE(w.objects.empty());
+	EXPECT_TRUE(w.spheres.empty());
+	EXPECT_TRUE(w.planes.empty());
 	// EXPECT_TRUE(w.light);
 }
 
@@ -36,9 +37,9 @@ TEST(WorldTest, BaseWorld)
 	// TODO sphere order shouldn't matter
 	//EXPECT_EQ(w.lights.size(), 1);
 	EXPECT_EQ(w.light, l);
-	EXPECT_EQ(w.objects.size(), 2);
-	EXPECT_EQ(w.objects[0], s1);
-	EXPECT_EQ(w.objects[1], s2);
+	EXPECT_EQ(w.spheres.size(), 2);
+	EXPECT_EQ(w.spheres[0], s1);
+	EXPECT_EQ(w.spheres[1], s2);
 }
 
 TEST(WorldTest, RayIntersectWorld)
@@ -59,8 +60,8 @@ TEST(WorldTest, ShadingIntersection)
 {
 	World w = World::BaseWorld();
 	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
-	Sphere s = w.objects[0];
-	Intersection i = r.intersect(s)[0];
+	const Shape& s = w.objects()[0];
+	Intersection i = s.intersect(r)[0];
 	IntersectionDetails id = r.precomputeDetails(i);
 	Color c = w.shadeHit(id);
 
@@ -72,8 +73,8 @@ TEST(WorldTest, ShadingIntersectionFromInside)
 	World w = World::BaseWorld();
 	w.light = Light(Point(0, 0.25, 0), Color(1, 1, 1));
 	Ray r(Point(0, 0, 0), Vector(0, 0, 1));
-	Sphere s = w.objects[1];
-	Intersection i = r.intersect(s)[1];
+	const Shape& s = w.objects()[1];
+	Intersection i = s.intersect(r)[1];
 	IntersectionDetails id = r.precomputeDetails(i);
 	Color c = w.shadeHit(id);
 
@@ -102,9 +103,9 @@ TEST(WorldTest, ShadeRayIntersectionBetweenSpheres)
 {
 	World w = World::BaseWorld();
 	Ray r(Point(0, 0, 0.75), Vector(0, 0, -1));
-	Sphere& outerSphere = w.objects[0];
+	Shape& outerSphere = w.spheres[0];
 	outerSphere.material.ambient = 1;
-	Sphere& innerSphere = w.objects[1];
+	Shape& innerSphere = w.spheres[1];
 	innerSphere.material.ambient = 1;
 	Color c = w.colorAt(r);
 
@@ -150,18 +151,19 @@ TEST(WorldTest, ShadeHitGetsIntersectionInShadow)
 	Sphere s2;
 	s2.transform = translation(0, 0, 10);
 
-	w.objects.push_back(s1);
-	w.objects.push_back(s2);
+	w.spheres.push_back(s1);
+	w.spheres.push_back(s2);
 	w.light = Light(Point(0, 0, -10), Color(1, 1, 1));
 
 	Ray r = Ray(Point(0, 0, 5), Vector(0, 0, 1));
-	auto intersection = r.intersect(s2);
+	auto intersection = s2.intersect(r);
 	auto comps = r.precomputeDetails(*r.hit(intersection));
 	Color c = w.shadeHit(comps);
 
 	EXPECT_EQ(c, Color(0.1, 0.1, 0.1));
 }
 
+//TODO add tests for scenes with multiple types of objects, functional bugs found in 'putting it all together'
 
 
 

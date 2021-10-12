@@ -49,26 +49,29 @@ void RenderChapter7Scene(const std::string& fileName)
 	left.material.diffuse = 0.7f;
 	left.material.specular = 0.3f;
 
+	Plane p;
+
 	Light light(Point(-10, 10, -10), Color(1, 1, 1));
 
 	World w;
 	w.light = light;
-	w.objects.push_back(floor);
-	w.objects.push_back(leftWall);
-	w.objects.push_back(rightWall);
-	w.objects.push_back(middle);
-	w.objects.push_back(right);
-	w.objects.push_back(left);
+	//w.objects.push_back(floor);
+	//w.objects.push_back(leftWall);
+	//w.objects.push_back(rightWall);
+	w.planes.push_back(p);
+	w.spheres.push_back(middle);
+	w.spheres.push_back(right);
+	w.spheres.push_back(left);
 
 	Camera c = Camera(100, 50, std::numbers::pi_v<float> / 3);
 	c.transform = ViewTransform(Point(0, 1.5, -5), Point(0, 1, 0), Vector(0, 1, 0));
 
 	Canvas canvas = c.Render(w);
 
-	std::ofstream imageFile;
-	imageFile.open(fileName, std::ios::out);
+	std::ofstream imageFile(fileName, std::ios::out);
+	//imageFile.open(fileName, std::ios::out);
 	imageFile << canvas.GetPPMString();
-	imageFile.close();
+	//imageFile.close();
 }
 
 

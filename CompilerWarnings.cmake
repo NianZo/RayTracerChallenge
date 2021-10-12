@@ -35,5 +35,5 @@ function(set_project_warnings project_name)
 	endif()	
 	
 	target_compile_options(${project_name} INTERFACE ${PROJECT_WARNINGS})
-	message(AUTHOR_WARNING "Tried to set warnings")
+	#message(AUTHOR_WARNING "Tried to set warnings")
 endfunction()

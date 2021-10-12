@@ -28,7 +28,7 @@ void RenderSphere(const std::string& fileName)
 		for(uint32_t j = 0; j < 1000; j++)
 		{
 			Ray r(Point(500, 500, -20), (Point(static_cast<float>(i), static_cast<float>(j), 0) - Point(500, 500, -20)).normalize());
-			auto hitPoint = Ray::hit(r.intersect(s));
+			auto hitPoint = Ray::hit(s.intersect(r));
 			if (hitPoint)
 			{
 				Tuple point = r.cast(hitPoint->t);
@@ -37,10 +37,10 @@ void RenderSphere(const std::string& fileName)
 		}
 
 	}
-	std::ofstream imageFile;
-	imageFile.open(fileName, std::ios::out);
+	std::ofstream imageFile(fileName, std::ios::out);
+	//imageFile.open(fileName, std::ios::out);
 	imageFile << c.GetPPMString();
-	imageFile.close();
+	//imageFile.close();
 }
 
 
