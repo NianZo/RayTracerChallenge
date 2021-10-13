@@ -8,37 +8,34 @@
 #ifndef SRC_CAMERA_HPP_
 #define SRC_CAMERA_HPP_
 
+#include "Canvas.hpp"
 #include "Matrix.hpp"
 #include "Ray.hpp"
 #include "World.hpp"
-#include "Canvas.hpp"
 
 #include <cmath>
 
-class Camera
-{
-public:
-	const uint32_t hSize;
-	const uint32_t vSize;
-	const float fov;
-	Matrix<4> transform;
-	float pixelSize;
-	float halfWidth;
-	float halfHeight;
+class Camera {
+  public:
+    const uint32_t hSize;
+    const uint32_t vSize;
+    const float fov;
+    Matrix<4> transform;
+    float pixelSize;
+    float halfWidth;
+    float halfHeight;
 
-	Camera(const uint32_t horizontalSize, const uint32_t verticalSize, const float fieldOfView) : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(IdentityMatrix())
-	{
-		const float halfView = std::tan(fov / 2);
-		const float aspectRatio = static_cast<float>(hSize) / static_cast<float>(vSize);
-		halfWidth = hSize >= vSize ? halfView : halfView * aspectRatio;
-		halfHeight = hSize < vSize ? halfView : halfView / aspectRatio;
+    Camera(const uint32_t horizontalSize, const uint32_t verticalSize, const float fieldOfView) : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(IdentityMatrix()) {
+        const float halfView = std::tan(fov / 2);
+        const float aspectRatio = static_cast<float>(hSize) / static_cast<float>(vSize);
+        halfWidth = hSize >= vSize ? halfView : halfView * aspectRatio;
+        halfHeight = hSize < vSize ? halfView : halfView / aspectRatio;
 
-		pixelSize = halfWidth * 2.0f / static_cast<float>(hSize);
-	};
+        pixelSize = halfWidth * 2.0f / static_cast<float>(hSize);
+    };
 
-	Ray rayForPixel(const uint32_t x, const uint32_t y) const;
-	Canvas Render(World w) const;
+    Ray rayForPixel(const uint32_t x, const uint32_t y) const;
+    Canvas Render(const World& w) const;
 };
-
 
 #endif /* SRC_CAMERA_HPP_ */

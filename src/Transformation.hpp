@@ -20,5 +20,4 @@ const Matrix<4> shearing(const float xSuby, const float xSubz, const float ySubx
 const Matrix<4> ViewTransform();
 const Matrix<4> ViewTransform(const Tuple& from, const Tuple& to, const Tuple& up);
 
-
 #endif /* SRC_TRANSFORMATION_HPP_ */

@@ -10,27 +10,24 @@
 
 #define COLOR_EPSILON 0.0001f
 
-class Color
-{
-public:
-	float r;
-	float g;
-	float b;
+class Color {
+  public:
+    float r;
+    float g;
+    float b;
 
-	Color() : r(0.0f), g(0.0f), b(0.0f) {};
-	Color(float red, float green, float blue) : r(red), g(green), b(blue) {};
+    Color() : r(0.0f), g(0.0f), b(0.0f){};
+    Color(float red, float green, float blue) : r(red), g(green), b(blue){};
 
-	// Operator overloads
-	bool operator==(const Color&) const;
-	bool operator!=(const Color&) const;
-	Color operator+(const Color&) const;
-	Color operator-(const Color&) const;
-	Color operator*(const float) const;
-	Color operator*(const Color&) const;
+    // Operator overloads
+    bool operator==(const Color&) const;
+    bool operator!=(const Color&) const;
+    Color operator+(const Color&) const;
+    Color operator-(const Color&) const;
+    Color operator*(const float) const;
+    Color operator*(const Color&) const;
 
-	static Color Black();
+    static Color Black();
 };
-
-
 
 #endif /* SRC_COLOR_HPP_ */

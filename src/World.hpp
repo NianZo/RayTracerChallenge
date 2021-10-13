@@ -8,31 +8,29 @@
 #ifndef SRC_WORLD_HPP_
 #define SRC_WORLD_HPP_
 
-#include <vector>
-#include <functional>
-#include "Sphere.hpp"
 #include "Light.hpp"
 #include "Ray.hpp"
+#include "Sphere.hpp"
+#include <functional>
+#include <vector>
 
-class World
-{
-public:
-	std::vector<Sphere> spheres;
-	std::vector<Plane> planes;
-	//std::vector<std::reference_wrapper<Shape>> objects;
-	//std::vector<Light> lights;
-	Light light;
+class World {
+  public:
+    std::vector<Sphere> spheres;
+    std::vector<Plane> planes;
+    //std::vector<std::reference_wrapper<Shape>> objects;
+    //std::vector<Light> lights;
+    Light light;
 
-	World() {};
+    World(){};
 
-	std::vector<std::reference_wrapper<const Shape>> objects() const;
-	std::vector<Intersection> intersect(Ray r) const;
-	Color shadeHit(IntersectionDetails id) const;
-	Color colorAt(Ray r) const;
-	bool isShadowed(const Tuple& point) const;
+    std::vector<std::reference_wrapper<const Shape>> objects() const;
+    std::vector<Intersection> intersect(Ray r) const;
+    Color shadeHit(IntersectionDetails id) const;
+    Color colorAt(Ray r) const;
+    bool isShadowed(const Tuple& point) const;
 
-	static World BaseWorld();
+    static World BaseWorld();
 };
-
 
 #endif /* SRC_WORLD_HPP_ */
