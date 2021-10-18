@@ -206,31 +206,37 @@ Tuple Matrix<4>::operator*(const Tuple& other) const // This is only valid for M
 }
 
 template <>
-float Matrix<2>::determinant() const {
+float Matrix<2>::determinant() const
+{
     return data[0][0] * data[1][1] - data[0][1] * data[1][0];
 }
 
 template <>
-float Matrix<3>::minor(uint32_t row, uint32_t col) const {
+float Matrix<3>::minor(uint32_t row, uint32_t col) const
+{
     return this->submatrix(row, col).determinant();
 }
 
 template <>
-float Matrix<4>::minor(uint32_t row, uint32_t col) const {
+float Matrix<4>::minor(uint32_t row, uint32_t col) const
+{
     return this->submatrix(row, col).determinant();
 }
 
 template <>
-float Matrix<3>::cofactor(uint32_t row, uint32_t col) const {
+float Matrix<3>::cofactor(uint32_t row, uint32_t col) const
+{
     return (row + col) % 2 > 0 ? -1 * this->minor(row, col) : this->minor(row, col);
 }
 
 template <>
-float Matrix<4>::cofactor(uint32_t row, uint32_t col) const {
+float Matrix<4>::cofactor(uint32_t row, uint32_t col) const
+{
     return (row + col) % 2 > 0 ? -1 * this->minor(row, col) : this->minor(row, col);
 }
 
-Matrix<4> IdentityMatrix() {
+Matrix<4> IdentityMatrix()
+{
     return Matrix<4>({{{1, 0, 0, 0},
                        {0, 1, 0, 0},
                        {0, 0, 1, 0},

@@ -10,7 +10,8 @@
 
 #define COLOR_EPSILON 0.0001f
 
-class Color {
+class Color
+{
   public:
     float r;
     float g;

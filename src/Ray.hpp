@@ -14,7 +14,8 @@
 #include <optional>
 #include <vector>
 
-class Ray {
+class Ray
+{
   public:
     Tuple origin;
     Tuple direction;

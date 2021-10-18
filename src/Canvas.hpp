@@ -12,7 +12,8 @@
 #include <string>
 #include <vector>
 
-class Canvas {
+class Canvas
+{
   public:
     const uint32_t width;
     const uint32_t height;

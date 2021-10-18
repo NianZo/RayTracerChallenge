@@ -13,10 +13,12 @@
 #include <numbers>
 #include <string>
 
-void RenderClockFace(const std::string& fileName) {
+void RenderClockFace(const std::string& fileName)
+{
     Canvas c(100, 100);
 
-    for (uint32_t i = 0; i < 12; i++) {
+    for (uint32_t i = 0; i < 12; i++)
+    {
         Tuple location = rotationZ(-std::numbers::pi_v<float> * static_cast<float>(i) / 6.0f) * translation(0, 10, 0) * Point(0, 0, 0);
         uint32_t xCoord = static_cast<uint32_t>(location.x) + 50;
         uint32_t yCoord = static_cast<uint32_t>(location.y) + 50;

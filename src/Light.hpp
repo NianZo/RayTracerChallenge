@@ -12,7 +12,8 @@
 #include "Tuple.hpp"
 
 // Just a point light
-class Light {
+class Light
+{
   public:
     Tuple position;
     Color intensity;

@@ -14,7 +14,8 @@
 #include <functional>
 #include <vector>
 
-class World {
+class World
+{
   public:
     std::vector<Sphere> spheres;
     std::vector<Plane> planes;

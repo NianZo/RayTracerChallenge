@@ -13,7 +13,8 @@
 #include "Tuple.hpp"
 
 // All values should be positive, but I'm not sure how to enforce that without something like c++ contracts
-class Material {
+class Material
+{
   public:
     Color color;
     float ambient;
@@ -28,5 +29,7 @@ class Material {
 
     Color light(const Light& light, const Tuple& position, const Tuple& eyeVector, const Tuple& normalVector, const bool inShadow) const;
 };
+
+class Pattern
 
 #endif /* SRC_MATERIAL_HPP_ */

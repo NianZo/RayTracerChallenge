@@ -15,7 +15,8 @@
 
 #include <cmath>
 
-class Camera {
+class Camera
+{
   public:
     const uint32_t hSize;
     const uint32_t vSize;
@@ -25,7 +26,8 @@ class Camera {
     float halfWidth;
     float halfHeight;
 
-    Camera(const uint32_t horizontalSize, const uint32_t verticalSize, const float fieldOfView) : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(IdentityMatrix()) {
+    Camera(const uint32_t horizontalSize, const uint32_t verticalSize, const float fieldOfView) : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(IdentityMatrix())
+    {
         const float halfView = std::tan(fov / 2);
         const float aspectRatio = static_cast<float>(hSize) / static_cast<float>(vSize);
         halfWidth = hSize >= vSize ? halfView : halfView * aspectRatio;

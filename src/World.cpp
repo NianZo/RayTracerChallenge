@@ -10,7 +10,8 @@
 #include <algorithm>
 
 // TODO this is the cause of the failed test, essentially returning references to local objects
-World World::BaseWorld() {
+World World::BaseWorld()
+{
     Sphere s1;
     s1.material.color = Color(0.8f, 1.0f, 0.6f);
     s1.material.diffuse = 0.7f;
@@ -27,24 +28,30 @@ World World::BaseWorld() {
     return w;
 }
 
-std::vector<std::reference_wrapper<const Shape>> World::objects() const {
+std::vector<std::reference_wrapper<const Shape>> World::objects() const
+{
     std::vector<std::reference_wrapper<const Shape>> objects;
 
-    for (const Shape& sphere : spheres) {
+    for (const Shape& sphere : spheres)
+    {
         objects.emplace_back(std::ref(sphere));
     }
-    for (const Shape& plane : planes) {
+    for (const Shape& plane : planes)
+    {
         objects.emplace_back(std::ref(plane));
     }
 
     return objects;
 }
 
-std::vector<Intersection> World::intersect(Ray r) const {
+std::vector<Intersection> World::intersect(Ray r) const
+{
     std::vector<Intersection> intersections;
-    for (const auto object : objects()) {
+    for (const auto object : objects())
+    {
         auto objectIntersections = object.get().intersect(r);
-        for (const auto& intersection : objectIntersections) {
+        for (const auto& intersection : objectIntersections)
+        {
             intersections.push_back(intersection);
         }
     }
@@ -52,28 +59,35 @@ std::vector<Intersection> World::intersect(Ray r) const {
     return intersections;
 }
 
-Color World::shadeHit(IntersectionDetails id) const {
+Color World::shadeHit(IntersectionDetails id) const
+{
     const bool shadowed = isShadowed(id.overPoint);
     return id.object.material.light(light, id.point, id.eyeVector, id.normalVector, shadowed);
 }
 
-Color World::colorAt(Ray r) const {
+Color World::colorAt(Ray r) const
+{
     std::vector<Intersection> intersections;
-    for (const auto& object : objects()) {
+    for (const auto& object : objects())
+    {
         const std::vector<Intersection> i = object.get().intersect(r);
-        for (const Intersection& event : i) {
+        for (const Intersection& event : i)
+        {
             intersections.push_back(event);
         }
     }
     auto hit = Ray::hit(intersections);
-    if (hit) {
+    if (hit)
+    {
         return shadeHit(r.precomputeDetails(*hit));
-    } else {
+    } else
+    {
         return Color(0, 0, 0);
     }
 }
 
-bool World::isShadowed(const Tuple& point) const {
+bool World::isShadowed(const Tuple& point) const
+{
     const Tuple shadowVector = (light.position - point).normalize();
     const float distanceToLight = (light.position - point).magnitude();
     const Ray shadowRay = Ray(point, shadowVector);

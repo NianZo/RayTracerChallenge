@@ -10,7 +10,8 @@
 
 #define TUPLE_EPSILON 0.002f // Changed to be much much higher since it is now being used for acne removal offset; needed to be this high to work
 
-class Tuple {
+class Tuple
+{
   public:
     float x;
     float y;

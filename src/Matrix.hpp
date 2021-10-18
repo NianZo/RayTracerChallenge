@@ -15,10 +15,13 @@
 #define MATRIX_EPSILON 0.00001f
 
 template <uint32_t N>
-class Matrix {
+class Matrix
+{
   public:
-    Matrix() {
-        for (auto& row : data) {
+    Matrix()
+    {
+        for (auto& row : data)
+        {
             row = {};
         }
     }
@@ -49,20 +52,26 @@ Matrix<4> IdentityMatrix();
 // be defined in the same header as the template declaration
 // Template specializations seem to still need to be in a
 template <uint32_t N>
-std::array<float, N>& Matrix<N>::operator[](const uint32_t index) {
+std::array<float, N>& Matrix<N>::operator[](const uint32_t index)
+{
     return data[index];
 }
 
 template <uint32_t N>
-const std::array<float, N>& Matrix<N>::operator[](const uint32_t index) const {
+const std::array<float, N>& Matrix<N>::operator[](const uint32_t index) const
+{
     return data[index];
 }
 
 template <uint32_t N>
-bool Matrix<N>::operator==(const Matrix<N>& other) const {
-    for (uint32_t i = 0; i < N; i++) {
-        for (uint32_t j = 0; j < N; j++) {
-            if (std::abs(data[i][j] - other.data[i][j]) > MATRIX_EPSILON) {
+bool Matrix<N>::operator==(const Matrix<N>& other) const
+{
+    for (uint32_t i = 0; i < N; i++)
+    {
+        for (uint32_t j = 0; j < N; j++)
+        {
+            if (std::abs(data[i][j] - other.data[i][j]) > MATRIX_EPSILON)
+            {
                 return false;
             }
         }
@@ -73,9 +82,12 @@ bool Matrix<N>::operator==(const Matrix<N>& other) const {
 template <uint32_t N>
 bool Matrix<N>::operator!=(const Matrix<N>& other) const // The inequality operator tests passed without this... what?!
 {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            if (std::abs(data[i][j] - other.data[i][j]) > MATRIX_EPSILON) {
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            if (std::abs(data[i][j] - other.data[i][j]) > MATRIX_EPSILON)
+            {
                 return true;
             }
         }
@@ -84,12 +96,16 @@ bool Matrix<N>::operator!=(const Matrix<N>& other) const // The inequality opera
 }
 
 template <uint32_t N>
-Matrix<N> Matrix<N>::operator*(const Matrix<N>& other) const {
+Matrix<N> Matrix<N>::operator*(const Matrix<N>& other) const
+{
     Matrix<N> product;
-    for (uint32_t i = 0; i < N; i++) {
-        for (uint32_t j = 0; j < N; j++) {
+    for (uint32_t i = 0; i < N; i++)
+    {
+        for (uint32_t j = 0; j < N; j++)
+        {
             float partialProduct = 0;
-            for (uint32_t k = 0; k < N; k++) {
+            for (uint32_t k = 0; k < N; k++)
+            {
                 partialProduct += data[i][k] * other.data[k][j];
             }
             product[i][j] = partialProduct;
@@ -99,11 +115,14 @@ Matrix<N> Matrix<N>::operator*(const Matrix<N>& other) const {
 }
 
 template <uint32_t N>
-Matrix<N> Matrix<N>::transpose() const {
+Matrix<N> Matrix<N>::transpose() const
+{
     Matrix<N> t;
 
-    for (uint32_t i = 0; i < N; i++) {
-        for (uint32_t j = 0; j < N; j++) {
+    for (uint32_t i = 0; i < N; i++)
+    {
+        for (uint32_t j = 0; j < N; j++)
+        {
             t.data[i][j] = data[j][i];
         }
     }
@@ -115,27 +134,36 @@ template <>
 float Matrix<2>::determinant() const;
 
 template <uint32_t N>
-float Matrix<N>::determinant() const {
+float Matrix<N>::determinant() const
+{
     float d = 0;
-    for (uint32_t i = 0; i < N; i++) {
+    for (uint32_t i = 0; i < N; i++)
+    {
         d += data[0][i] * this->cofactor(0, i);
     }
     return d;
 }
 
 template <uint32_t N>
-Matrix<N - 1> Matrix<N>::submatrix(uint32_t row, uint32_t col) const {
+Matrix<N - 1> Matrix<N>::submatrix(uint32_t row, uint32_t col) const
+{
     Matrix<N - 1> s;
     uint32_t rowOffset = 0;
-    for (uint32_t i = 0; i < N; i++) {
+    for (uint32_t i = 0; i < N; i++)
+    {
         uint32_t colOffset = 0;
-        if (i == row) {
+        if (i == row)
+        {
             rowOffset++;
-        } else {
-            for (uint32_t j = 0; j < N; j++) {
-                if (j == col) {
+        } else
+        {
+            for (uint32_t j = 0; j < N; j++)
+            {
+                if (j == col)
+                {
                     colOffset++;
-                } else {
+                } else
+                {
                     s[i - rowOffset][j - colOffset] = data[i][j];
                 }
             }
@@ -145,17 +173,21 @@ Matrix<N - 1> Matrix<N>::submatrix(uint32_t row, uint32_t col) const {
 }
 
 template <uint32_t N>
-bool Matrix<N>::invertible() const {
+bool Matrix<N>::invertible() const
+{
     return this->determinant() != 0;
 }
 
 template <uint32_t N>
-Matrix<N> Matrix<N>::inverse() const {
+Matrix<N> Matrix<N>::inverse() const
+{
     Matrix<N> I;
 
     float d = determinant();
-    for (uint32_t i = 0; i < N; i++) {
-        for (uint32_t j = 0; j < N; j++) {
+    for (uint32_t i = 0; i < N; i++)
+    {
+        for (uint32_t j = 0; j < N; j++)
+        {
             I[j][i] = cofactor(i, j) / d;
         }
     }

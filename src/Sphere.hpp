@@ -16,7 +16,8 @@
 class Ray;
 class Intersection;
 
-class Shape {
+class Shape
+{
   public:
     Matrix<4> transform;
     Material material;
@@ -31,16 +32,19 @@ class Shape {
 
   private:
     // I'd prefer to not define these and have a compile time error if these are used, but *shrug*
-    virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const {
+    virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const
+    {
         return Tuple(0.0f, 0.0f, 0.0f, 0.0f);
     }
-    virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const {
+    virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const
+    {
         std::vector<Intersection> i;
         return i;
     }
 };
 
-class Sphere : public Shape {
+class Sphere : public Shape
+{
   public:
     //Sphere() {transform = IdentityMatrix();}
     //~Sphere() = default;
@@ -52,14 +56,16 @@ class Sphere : public Shape {
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
-class Plane : public Shape {
+class Plane : public Shape
+{
   public:
   private:
     Tuple objectNormal(const Tuple& p) const override;
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
-class Intersection {
+class Intersection
+{
   public:
     // The actual fields must not be const or we can't sort a vector of hits based on intersection parameter 't'
     // However, object is fine because the pointer isn't const, the object it points to is const.
@@ -71,7 +77,8 @@ class Intersection {
     bool operator<(const Intersection& other) const { return t < other.t; }
 };
 
-struct IntersectionDetails {
+struct IntersectionDetails
+{
     const Shape& object;
     const Tuple point;
     const Tuple overPoint;

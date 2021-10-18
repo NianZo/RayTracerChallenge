@@ -16,7 +16,8 @@
 #include <numbers>
 #include <string>
 
-void RenderChapter7Scene(const std::string& fileName) {
+void RenderChapter7Scene(const std::string& fileName)
+{
     Sphere floor;
     floor.transform = scaling(10.0f, 0.01f, 10.0f);
     floor.material.color = Color(1.0f, 0.9f, 0.9f);
