@@ -15,13 +15,13 @@ bool Material::operator==(const Material& other) const
 
 Color Material::light(const Light& light, const Tuple& point, const Tuple& eyeVector, const Tuple& normalVector, const bool inShadow) const
 {
-    const Color effectiveColor = color * light.intensity;
+    const Color effectiveColor = light.intensity * (pattern ? pattern->colorAt(point) : color);
     const Tuple lightVector = (light.position - point).normalize();
     const Color ambientLight = effectiveColor * ambient;
     const float lightDotNormal = lightVector.dot(normalVector);
 
-    Color diffuseLight = Color::Black();
-    Color specularLight = Color::Black();
+    Color diffuseLight = Color::Black;
+    Color specularLight = Color::Black;
 
     if (lightDotNormal > 0 && !inShadow)
     {
@@ -31,7 +31,7 @@ Color Material::light(const Light& light, const Tuple& point, const Tuple& eyeVe
 
         if (reflectionDotEye <= 0)
         {
-            specularLight = Color::Black();
+            specularLight = Color::Black;
         } else
         {
             const float factor = std::pow(reflectionDotEye, shininess);
@@ -40,4 +40,16 @@ Color Material::light(const Light& light, const Tuple& point, const Tuple& eyeVe
     }
 
     return ambientLight + diffuseLight + specularLight;
+}
+
+Color Pattern::colorAt(const Tuple& p) const
+{
+	return f(p.x) ? b : a;
+}
+
+Pattern StripePattern(const Color& aIn, const Color& bIn)
+{
+	std::function<bool(const float)> f = [](const float x) { return std::fmod(x, 2.0f) >= 1.0f;};
+
+	return Pattern(aIn, bIn, f);
 }

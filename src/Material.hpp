@@ -11,12 +11,28 @@
 #include "Color.hpp"
 #include "Light.hpp"
 #include "Tuple.hpp"
+#include <functional>
+#include <optional>
+
+class Pattern
+{
+public:
+	Color a;
+	Color b;
+
+	Pattern() : a(Color::White), b(Color::Black), f([](float) { return false;}) {};
+	Pattern(const Color& aIn, const Color& bIn, const std::function<bool(const float)>& fIn) : a(aIn), b(bIn), f(fIn){};
+	Color colorAt(const Tuple& p) const;
+private:
+	std::function<bool(const float)> f;
+};
 
 // All values should be positive, but I'm not sure how to enforce that without something like c++ contracts
 class Material
 {
   public:
     Color color;
+    std::optional<Pattern> pattern;
     float ambient;
     float diffuse;
     float specular;
@@ -30,6 +46,6 @@ class Material
     Color light(const Light& light, const Tuple& position, const Tuple& eyeVector, const Tuple& normalVector, const bool inShadow) const;
 };
 
-class Pattern
+Pattern StripePattern(const Color& aIn, const Color& bIn);
 
 #endif /* SRC_MATERIAL_HPP_ */

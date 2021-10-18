@@ -28,7 +28,8 @@ class Color
     Color operator*(const float) const;
     Color operator*(const Color&) const;
 
-    static Color Black();
+    const static Color Black;
+    const static Color White;
 };
 
 #endif /* SRC_COLOR_HPP_ */
