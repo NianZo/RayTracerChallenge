@@ -82,7 +82,7 @@ Color World::colorAt(Ray r) const
         return shadeHit(r.precomputeDetails(*hit));
     } else
     {
-        return Color(0, 0, 0);
+        return {0, 0, 0};
     }
 }
 

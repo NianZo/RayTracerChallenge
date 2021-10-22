@@ -32,7 +32,9 @@ void RenderChapter7Scene(const std::string& fileName)
     rightWall.material = floor.material;
 
     Sphere middle;
-    middle.transform = translation(-0.5, 1, 0.5);
+    middle.transform = translation(-0.5, 1, 4.5) * scaling(4, 4, 4);
+    middle.material.pattern = Pattern::Stripe(Color(1, 0, 0), Color(0, 1, 1));
+    middle.material.pattern->transform = scaling(0.5, 0.5, 0.5);
     middle.material.color = Color(0.1f, 1.0f, 0.5f);
     middle.material.diffuse = 0.7f;
     middle.material.specular = 0.3f;

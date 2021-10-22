@@ -23,7 +23,7 @@ class World
     //std::vector<Light> lights;
     Light light;
 
-    World(){};
+    World() = default;
 
     std::vector<std::reference_wrapper<const Shape>> objects() const;
     std::vector<Intersection> intersect(Ray r) const;

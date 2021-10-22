@@ -22,13 +22,18 @@ class Shape
     Matrix<4> transform;
     Material material;
 
-    Shape() : transform(IdentityMatrix()), material(Material()){};
+    Shape() : transform(IdentityMatrix()), material(Material()) {};
     virtual ~Shape() = default;
+    Shape(const Shape&) = default;
+    Shape(Shape&&) = default;
+    Shape& operator=(const Shape&) = default;
+    Shape& operator=(Shape&&) = default;
 
     bool operator==(const Shape& other) const { return transform == other.transform && material == other.material; }
 
     Tuple normal(const Tuple& p) const;
     std::vector<Intersection> intersect(const Ray& r) const;
+    Color shade(const Light& light, const Tuple& position, const Tuple& eyeVector, const bool inShadow) const;
 
   private:
     // I'd prefer to not define these and have a compile time error if these are used, but *shrug*
