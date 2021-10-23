@@ -22,14 +22,16 @@ public:
 	Color b;
 	Matrix<4> transform;
 
-	Pattern() : a(Color::White), b(Color::Black), transform(IdentityMatrix()), f([](Color, Color, float) { return Color::Black;}) {};
-	Pattern(const Color& aIn, const Color& bIn, const Matrix<4>& transformIn, const std::function<Color(const Color&, const Color&, const float)>& fIn) : a(aIn), b(bIn), transform(transformIn), f(fIn){};
+	Pattern() : a(Color::White), b(Color::Black), transform(IdentityMatrix()), f([](Color, Color, Tuple) { return Color::Black;}) {};
+	Pattern(const Color& aIn, const Color& bIn, const Matrix<4>& transformIn, const std::function<Color(const Color&, const Color&, const Tuple&)>& fIn) : a(aIn), b(bIn), transform(transformIn), f(fIn){};
 	Color colorAt(const Tuple& p) const;
 
 	static Pattern Stripe(const Color& aIn, const Color& bIn);
 	static Pattern Gradient(const Color& aIn, const Color& bIn);
+	static Pattern Ring(const Color& aIn, const Color& bIn);
+	static Pattern Checker(const Color& aIn, const Color& bIn);
 private:
-	std::function<Color(const Color&, const Color&, const float)> f;
+	std::function<Color(const Color&, const Color&, const Tuple&)> f;
 };
 
 // All values should be positive, but I'm not sure how to enforce that without something like c++ contracts

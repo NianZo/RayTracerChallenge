@@ -126,6 +126,62 @@ TEST(PatternTest, GradientLinearlyInterpolatesBetweenColors)
 	EXPECT_EQ(p.colorAt(Point(0.75, 0, 0)), Color(0.25, 0.25, 0.25));
 }
 
+TEST(PatternTest, RingExtendsInXAndZ)
+{
+	Pattern p = Pattern::Ring(Color::White, Color::Black);
+
+	EXPECT_EQ(p.colorAt(Point(0, 0, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(1, 0, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, 0, 1)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0.708, 0, 0.708)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(2, 0, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(0, 0, 2)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(1.416, 0, 1.416)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(-1, 0, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, 0, -1)), Color::Black);
+}
+
+TEST(PatternTest, CheckersRepeatInX)
+{
+	Pattern p = Pattern::Checker(Color::White, Color::Black);
+
+	EXPECT_EQ(p.colorAt(Point(0, 0, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(0.99, 0, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(1, 0, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(-0.99, 0, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(-1, 0, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(-1.01, 0, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(1.99, 0, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(2, 0, 0)), Color::White);
+}
+
+TEST(PatternTest, CheckersRepeatInY)
+{
+	Pattern p = Pattern::Checker(Color::White, Color::Black);
+
+	EXPECT_EQ(p.colorAt(Point(0, 0, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(0, 0.99, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(0, 1, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, -0.99, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, -1, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, -1.01, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(0, 1.99, 0)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, 2, 0)), Color::White);
+}
+
+TEST(PatternTest, CheckersRepeatInZ)
+{
+	Pattern p = Pattern::Checker(Color::White, Color::Black);
+
+	EXPECT_EQ(p.colorAt(Point(0, 0, 0)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(0, 0, 0.99)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(0, 0, 1)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, 0, -0.99)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, 0, -1)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, 0, -1.01)), Color::White);
+	EXPECT_EQ(p.colorAt(Point(0, 0, 1.99)), Color::Black);
+	EXPECT_EQ(p.colorAt(Point(0, 0, 2)), Color::White);
+}
 
 
 
