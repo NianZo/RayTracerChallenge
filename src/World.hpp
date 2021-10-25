@@ -27,9 +27,11 @@ class World
 
     std::vector<std::reference_wrapper<const Shape>> objects() const;
     std::vector<Intersection> intersect(Ray r) const;
-    Color shadeHit(IntersectionDetails id) const;
-    Color colorAt(Ray r) const;
+    Color shadeHit(const IntersectionDetails& id, int remainingCalls = 4) const;
+    Color reflectedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
+    Color colorAt(Ray r, int remainingCalls = 4) const;
     bool isShadowed(const Tuple& point) const;
+
 
     static World BaseWorld();
 };

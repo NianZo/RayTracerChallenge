@@ -67,8 +67,9 @@ IntersectionDetails Ray::precomputeDetails(Intersection i) const
         normalVector = -normalVector;
     }
     const Tuple overPosition = position + normalVector * TUPLE_EPSILON;
+    const Tuple reflectionVector = direction.reflect(normalVector);
 
-    IntersectionDetails id = {*(i.object), position, overPosition, eyeVector, normalVector, i.t, inside};
+    IntersectionDetails id = {*(i.object), position, overPosition, eyeVector, normalVector, reflectionVector, i.t, inside};
     return id;
 }
 

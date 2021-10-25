@@ -9,6 +9,7 @@
 #include "../src/Tuple.hpp"
 #include "../src/Transformation.hpp"
 #include "../src/Ray.hpp"
+#include <cmath>
 
 
 TEST(RayTest, RayCreation)
@@ -89,7 +90,15 @@ TEST(RayTest, PrecomputeIntersectionCalculatesOverPoint)
 	EXPECT_LT(id.overPoint.z, id.point.z);
 }
 
+TEST(RayTest, PrecomputeIntersectionCalculatesReflectionVector)
+{
+	Plane p = Plane();
+	Ray r = Ray(Point(0, 1, -1), Vector(0, -sqrt(2) / 2.0, sqrt(2) / 2.0));
+	auto intersections = p.intersect(r);
+	IntersectionDetails id = r.precomputeDetails(*r.hit(intersections));
 
+	EXPECT_EQ(id.reflectionVector, Vector(0, sqrt(2) / 2, sqrt(2) / 2));
+}
 
 
 

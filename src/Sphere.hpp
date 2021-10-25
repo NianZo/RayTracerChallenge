@@ -89,6 +89,7 @@ struct IntersectionDetails
     const Tuple overPoint;
     const Tuple eyeVector;
     const Tuple normalVector;
+    const Tuple reflectionVector;
     const float t;
     const bool inside;
 };

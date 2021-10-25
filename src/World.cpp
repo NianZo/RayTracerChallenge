@@ -59,13 +59,29 @@ std::vector<Intersection> World::intersect(Ray r) const
     return intersections;
 }
 
-Color World::shadeHit(IntersectionDetails id) const
+Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const
 {
     const bool shadowed = isShadowed(id.overPoint);
-    return id.object.material.light(light, id.point, id.eyeVector, id.normalVector, shadowed);
+    const Color surface = id.object.material.light(light, id.point, id.eyeVector, id.normalVector, shadowed);
+    const Color reflected = reflectedColor(id, remainingCalls);
+    return surface + reflected;
 }
 
-Color World::colorAt(Ray r) const
+Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) const
+{
+	// Early out if object is not reflective or max recursion depth reached
+	if (id.object.material.reflectivity == 0.0f || remainingCalls < 1)
+	{
+		return Color::Black;
+	}
+
+	const Ray reflectionRay = Ray(id.overPoint, id.reflectionVector);
+	const Color reflectedColor = colorAt(reflectionRay, remainingCalls - 1);
+
+	return reflectedColor * id.object.material.reflectivity;
+}
+
+Color World::colorAt(Ray r, int remainingCalls) const
 {
     std::vector<Intersection> intersections;
     for (const auto& object : objects())
@@ -79,7 +95,7 @@ Color World::colorAt(Ray r) const
     auto hit = Ray::hit(intersections);
     if (hit)
     {
-        return shadeHit(r.precomputeDetails(*hit));
+        return shadeHit(r.precomputeDetails(*hit), remainingCalls);
     } else
     {
         return {0, 0, 0};

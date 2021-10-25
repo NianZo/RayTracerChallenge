@@ -12,6 +12,7 @@
 #include "../src/Transformation.hpp"
 #include "../src/Sphere.hpp"
 #include "../src/Ray.hpp"
+#include <cmath>
 
 TEST(WorldTest, DefaultWorld)
 {
@@ -165,6 +166,84 @@ TEST(WorldTest, ShadeHitGetsIntersectionInShadow)
 
 //TODO add tests for scenes with multiple types of objects, functional bugs found in 'putting it all together'
 
+TEST(WorldTest, ReflectedColorForNonreflectiveMaterial)
+{
+	World w = World::BaseWorld();
+	Ray r = Ray(Point(0, 0, 0), Vector(0, 0, 1));
+	// Not recommended use, but we need to change a sphere for this test
+	Shape& s2 = w.spheres[1];
+	s2.material.ambient = 1.0f;
+	auto intersection = s2.intersect(r);
+	auto comps = r.precomputeDetails(*r.hit(intersection));
+	Color c = w.reflectedColor(comps);
+
+	EXPECT_EQ(c, Color::Black);
+}
+
+TEST(WorldTest, ReflectedColorForReflectiveMaterial)
+{
+	World w = World::BaseWorld();
+	Plane p = Plane();
+	p.transform = translation(0, -1, 0);
+	p.material.reflectivity = 0.5f;
+	w.planes.push_back(p);
+
+	Ray r = Ray(Point(0, 0, -3), Vector(0, -sqrt(2) / 2, sqrt(2) / 2));
+	auto intersections = p.intersect(r);
+	auto comps = r.precomputeDetails(*r.hit(intersections));
+	Color c = w.reflectedColor(comps);
+
+	EXPECT_EQ(c, Color(0.19032f, 0.2379f, 0.14274));
+}
+
+TEST(WorldTest, ShadeHitWithReflectiveMaterial)
+{
+	World w = World::BaseWorld();
+	Plane p = Plane();
+	p.transform = translation(0, -1, 0);
+	p.material.reflectivity = 0.5f;
+	w.planes.push_back(p);
+
+	Ray r = Ray(Point(0, 0, -3), Vector(0, -sqrt(2) / 2, sqrt(2) / 2));
+	auto intersections = p.intersect(r);
+	auto comps = r.precomputeDetails(*r.hit(intersections));
+	Color c = w.shadeHit(comps);
+
+	EXPECT_EQ(c, Color(0.87677, 0.92436, 0.82918));
+}
+
+TEST(WorldTest, MutuallyReflectiveSurfaceCalculationTerminates)
+{
+	World w;
+	w.light = Light(Point(0, 0, 0), Color::White);
+	w.planes.emplace_back(Plane());
+	w.planes[0].material.reflectivity = 1.0f;
+	w.planes[0].transform = translation(0, -1, 0);
+	w.planes.emplace_back(Plane());
+	w.planes[1].material.reflectivity = 1.0f;
+	w.planes[1].transform = translation(0, 1, 0);
+	Ray r = Ray(Point(0, 0, 0), Vector(0, 1, 0));
+
+	Color c = w.colorAt(r);
+
+	// No test condition, this just needs to run to completion to pass
+}
+
+TEST(WorldTest, ReflectedColorAtMaximumRecursionDepth)
+{
+	World w = World::BaseWorld();
+	Plane p = Plane();
+	p.transform = translation(0, -1, 0);
+	p.material.reflectivity = 0.5f;
+	w.planes.push_back(p);
+
+	Ray r = Ray(Point(0, 0, -3), Vector(0, -sqrt(2) / 2, sqrt(2) / 2));
+	auto intersections = p.intersect(r);
+	auto comps = r.precomputeDetails(*r.hit(intersections));
+	Color c = w.reflectedColor(comps, 0);
+
+	EXPECT_EQ(c, Color::Black);
+}
 
 
 
