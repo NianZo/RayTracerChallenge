@@ -22,9 +22,9 @@ std::vector<Intersection> Shape::intersect(const Ray& r) const
 
 Color Shape::shade(const Light& light, const Tuple& position, const Tuple& eyeVector, const bool inShadow) const
 {
-	const Light objectLight = {transform.inverse() * light.position, light.intensity};
-	const Tuple objectPosition = transform.inverse() * position;
-	return material.light(objectLight, objectPosition, eyeVector, normal(position), inShadow);
+    const Light objectLight = {transform.inverse() * light.position, light.intensity};
+    const Tuple objectPosition = transform.inverse() * position;
+    return material.light(objectLight, objectPosition, eyeVector, normal(position), inShadow);
 }
 
 // Implicitly assumes that p is on the sphere surface and is a valid point (w = 1)

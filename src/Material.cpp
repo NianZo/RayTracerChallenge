@@ -44,45 +44,41 @@ Color Material::light(const Light& light, const Tuple& point, const Tuple& eyeVe
 
 Color Pattern::colorAt(const Tuple& p) const
 {
-	return f(a, b, p);// ? b : a;
+    return f(a, b, p); // ? b : a;
 }
 
 Pattern Pattern::Stripe(const Color& aIn, const Color& bIn)
 {
-	std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color
-	{
-		return std::fmod(p.x, 2.0f) >= 1.0f || (std::fmod(p.x, 2.0f) < 0.0f && std::fmod(p.x, 2.0f) >= -1.0f) ? b : a;
-	};
+    std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color {
+        return std::fmod(p.x, 2.0f) >= 1.0f || (std::fmod(p.x, 2.0f) < 0.0f && std::fmod(p.x, 2.0f) >= -1.0f) ? b : a;
+    };
 
-	return Pattern(aIn, bIn, IdentityMatrix(), f);
+    return Pattern(aIn, bIn, IdentityMatrix(), f);
 }
 
 Pattern Pattern::Gradient(const Color& aIn, const Color& bIn)
 {
-	std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color
-	{
-		return a + (b - a) * (p.x - std::floor(p.x));
-	};
+    std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color {
+        return a + (b - a) * (p.x - std::floor(p.x));
+    };
 
-	return Pattern(aIn, bIn, IdentityMatrix(), f);
+    return Pattern(aIn, bIn, IdentityMatrix(), f);
 }
 
 Pattern Pattern::Ring(const Color& aIn, const Color& bIn)
 {
-	std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color
-	{
-		return std::fmod(std::floor(sqrt(p.x * p.x + p.z + p.z)), 2) == 0 ? a : b;
-	};
+    std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color {
+        return std::fmod(std::floor(sqrt(p.x * p.x + p.z + p.z)), 2) == 0 ? a : b;
+    };
 
-	return Pattern(aIn, bIn, IdentityMatrix(), f);
+    return Pattern(aIn, bIn, IdentityMatrix(), f);
 }
 
 Pattern Pattern::Checker(const Color& aIn, const Color& bIn)
 {
-	std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color
-	{
-		return std::floor(std::fmod(std::floor(p.x) + std::floor(p.y) + std::floor(p.z), 2.0f)) == 0 ? a : b;
-	};
+    std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color {
+        return std::floor(std::fmod(std::floor(p.x) + std::floor(p.y) + std::floor(p.z), 2.0f)) == 0 ? a : b;
+    };
 
-	return Pattern(aIn, bIn, IdentityMatrix(), f);
+    return Pattern(aIn, bIn, IdentityMatrix(), f);
 }

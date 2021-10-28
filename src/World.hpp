@@ -32,7 +32,6 @@ class World
     Color colorAt(Ray r, int remainingCalls = 4) const;
     bool isShadowed(const Tuple& point) const;
 
-
     static World BaseWorld();
 };
 

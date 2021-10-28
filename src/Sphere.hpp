@@ -22,7 +22,7 @@ class Shape
     Matrix<4> transform;
     Material material;
 
-    Shape() : transform(IdentityMatrix()), material(Material()) {};
+    Shape() : transform(IdentityMatrix()), material(Material()){};
     virtual ~Shape() = default;
     Shape(const Shape&) = default;
     Shape(Shape&&) = default;

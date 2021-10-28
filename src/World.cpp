@@ -69,16 +69,16 @@ Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const
 
 Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) const
 {
-	// Early out if object is not reflective or max recursion depth reached
-	if (id.object.material.reflectivity == 0.0f || remainingCalls < 1)
-	{
-		return Color::Black;
-	}
+    // Early out if object is not reflective or max recursion depth reached
+    if (id.object.material.reflectivity == 0.0f || remainingCalls < 1)
+    {
+        return Color::Black;
+    }
 
-	const Ray reflectionRay = Ray(id.overPoint, id.reflectionVector);
-	const Color reflectedColor = colorAt(reflectionRay, remainingCalls - 1);
+    const Ray reflectionRay = Ray(id.overPoint, id.reflectionVector);
+    const Color reflectedColor = colorAt(reflectionRay, remainingCalls - 1);
 
-	return reflectedColor * id.object.material.reflectivity;
+    return reflectedColor * id.object.material.reflectivity;
 }
 
 Color World::colorAt(Ray r, int remainingCalls) const
