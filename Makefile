@@ -220,6 +220,21 @@ MatrixTest.s:
 .PHONY : MatrixTest.s
 
 # target to build an object file
+PatternTest.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnitTests.dir/build.make CMakeFiles/UnitTests.dir/PatternTest.o
+.PHONY : PatternTest.o
+
+# target to preprocess a source file
+PatternTest.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnitTests.dir/build.make CMakeFiles/UnitTests.dir/PatternTest.i
+.PHONY : PatternTest.i
+
+# target to generate assembly for a file
+PatternTest.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnitTests.dir/build.make CMakeFiles/UnitTests.dir/PatternTest.s
+.PHONY : PatternTest.s
+
+# target to build an object file
 RayTest.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/UnitTests.dir/build.make CMakeFiles/UnitTests.dir/RayTest.o
 .PHONY : RayTest.o
@@ -336,6 +351,9 @@ help:
 	@echo "... MatrixTest.o"
 	@echo "... MatrixTest.i"
 	@echo "... MatrixTest.s"
+	@echo "... PatternTest.o"
+	@echo "... PatternTest.i"
+	@echo "... PatternTest.s"
 	@echo "... RayTest.o"
 	@echo "... RayTest.i"
 	@echo "... RayTest.s"

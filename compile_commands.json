@@ -58,5 +58,10 @@
   "directory": "/home/nic/Documents/Projects/RayTracerChallenge",
   "command": "/usr/bin/c++    -o CMakeFiles/UnitTests.dir/CameraTest.o -c /home/nic/Documents/Projects/RayTracerChallenge/test/CameraTest.cpp",
   "file": "/home/nic/Documents/Projects/RayTracerChallenge/test/CameraTest.cpp"
+},
+{
+  "directory": "/home/nic/Documents/Projects/RayTracerChallenge",
+  "command": "/usr/bin/c++    -o CMakeFiles/UnitTests.dir/PatternTest.o -c /home/nic/Documents/Projects/RayTracerChallenge/test/PatternTest.cpp",
+  "file": "/home/nic/Documents/Projects/RayTracerChallenge/test/PatternTest.cpp"
 }
 ]

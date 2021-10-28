@@ -14,6 +14,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/nic/Documents/Projects/RayTracerChallenge/test/LightTest.cpp" "CMakeFiles/UnitTests.dir/LightTest.o" "gcc" "CMakeFiles/UnitTests.dir/LightTest.o.d"
   "/home/nic/Documents/Projects/RayTracerChallenge/test/MaterialTest.cpp" "CMakeFiles/UnitTests.dir/MaterialTest.o" "gcc" "CMakeFiles/UnitTests.dir/MaterialTest.o.d"
   "/home/nic/Documents/Projects/RayTracerChallenge/test/MatrixTest.cpp" "CMakeFiles/UnitTests.dir/MatrixTest.o" "gcc" "CMakeFiles/UnitTests.dir/MatrixTest.o.d"
+  "/home/nic/Documents/Projects/RayTracerChallenge/test/PatternTest.cpp" "CMakeFiles/UnitTests.dir/PatternTest.o" "gcc" "CMakeFiles/UnitTests.dir/PatternTest.o.d"
   "/home/nic/Documents/Projects/RayTracerChallenge/test/RayTest.cpp" "CMakeFiles/UnitTests.dir/RayTest.o" "gcc" "CMakeFiles/UnitTests.dir/RayTest.o.d"
   "/home/nic/Documents/Projects/RayTracerChallenge/test/SphereTest.cpp" "CMakeFiles/UnitTests.dir/SphereTest.o" "gcc" "CMakeFiles/UnitTests.dir/SphereTest.o.d"
   "/home/nic/Documents/Projects/RayTracerChallenge/test/TransformationTest.cpp" "CMakeFiles/UnitTests.dir/TransformationTest.o" "gcc" "CMakeFiles/UnitTests.dir/TransformationTest.o.d"

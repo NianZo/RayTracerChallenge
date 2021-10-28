@@ -11,6 +11,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/UnitTests.dir/MaterialTest.o.d"
   "CMakeFiles/UnitTests.dir/MatrixTest.o"
   "CMakeFiles/UnitTests.dir/MatrixTest.o.d"
+  "CMakeFiles/UnitTests.dir/PatternTest.o"
+  "CMakeFiles/UnitTests.dir/PatternTest.o.d"
   "CMakeFiles/UnitTests.dir/RayTest.o"
   "CMakeFiles/UnitTests.dir/RayTest.o.d"
   "CMakeFiles/UnitTests.dir/SphereTest.o"
