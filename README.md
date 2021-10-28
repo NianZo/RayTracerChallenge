@@ -6,3 +6,6 @@ Interfacing CMake projects with Eclipse seems to be a bit touchy. First, clone t
 
 ## Testing Framework
 GTest is used for unit tests in this project. Ensure you have gtest installed or tests won't compile and run.
+
+## To Get Started:
+After pulling this repository, set up CMake by running 'cmake .' in the project root directory. Then, 'cmake --build . --target all' can be run to build the project.

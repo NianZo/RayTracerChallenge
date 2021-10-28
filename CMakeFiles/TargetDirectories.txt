@@ -1,3 +1,0 @@
-/home/nic/Documents/Projects/RayTracerChallenge/CMakeFiles/edit_cache.dir
-/home/nic/Documents/Projects/RayTracerChallenge/CMakeFiles/rebuild_cache.dir
-/home/nic/Documents/Projects/RayTracerChallenge/CMakeFiles/UnitTests.dir
