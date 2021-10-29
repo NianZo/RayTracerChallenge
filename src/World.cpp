@@ -95,7 +95,7 @@ Color World::colorAt(Ray r, int remainingCalls) const
     auto hit = Ray::hit(intersections);
     if (hit)
     {
-        return shadeHit(r.precomputeDetails(*hit), remainingCalls);
+        return shadeHit(r.precomputeDetails(*hit, intersections), remainingCalls);
     } else
     {
         return {0, 0, 0};

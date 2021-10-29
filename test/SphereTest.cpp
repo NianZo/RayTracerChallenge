@@ -279,6 +279,15 @@ TEST(PlaneTest, IntersectWithRayFromBelow)
 	EXPECT_EQ(*xs[0].object, p);
 }
 
+TEST(SphereTest, GlassSphereFactory)
+{
+	Sphere s = GlassSphere();
+
+	EXPECT_EQ(s.transform, IdentityMatrix());
+	EXPECT_FLOAT_EQ(s.material.transparency, 1.0f);
+	EXPECT_FLOAT_EQ(s.material.refractiveIndex, 1.5f);
+}
+
 
 
 

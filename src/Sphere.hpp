@@ -92,6 +92,10 @@ struct IntersectionDetails
     const Tuple reflectionVector;
     const float t;
     const bool inside;
+    const float n1;
+    const float n2;
 };
+
+Sphere GlassSphere();
 
 #endif /* SRC_SPHERE_HPP_ */

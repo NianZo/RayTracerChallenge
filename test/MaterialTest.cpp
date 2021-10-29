@@ -26,7 +26,7 @@ TEST(MaterialTest, DefaultMaterial)
 
 TEST(MaterialTest, CustomConstructor)
 {
-	Material m(Color(1, 0.5, 0.25), 0.5, 0.4, 0.7, 150.0, 0.0f);
+	Material m(Color(1, 0.5, 0.25), 0.5, 0.4, 0.7, 150.0, 0.0f, 0.0f, 1.0f);
 
 	EXPECT_EQ(m.color, Color(1, 0.5, 0.25));
 	EXPECT_FLOAT_EQ(m.ambient, 0.5);
@@ -113,6 +113,14 @@ TEST(MaterialTest, DefaultMaterialReflectivity)
 	Material m;
 
 	EXPECT_FLOAT_EQ(m.reflectivity, 0.0f);
+}
+
+TEST(MaterialTest, DefaultMaterialTransparencyAndRefractiveIndex)
+{
+	Material m;
+
+	EXPECT_FLOAT_EQ(m.transparency, 0.0f);
+	EXPECT_FLOAT_EQ(m.refractiveIndex, 1.0f);
 }
 
 

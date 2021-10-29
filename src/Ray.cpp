@@ -55,7 +55,7 @@ Ray Ray::transform(const Matrix<4>& m) const
     return Ray(m * this->origin, m * this->direction);
 }
 
-IntersectionDetails Ray::precomputeDetails(Intersection i) const
+IntersectionDetails Ray::precomputeDetails(Intersection i, const std::vector<Intersection>& intersections) const
 {
     const Tuple position = cast(i.t);
     const Tuple eyeVector = -direction;
@@ -68,7 +68,46 @@ IntersectionDetails Ray::precomputeDetails(Intersection i) const
     const Tuple overPosition = position + normalVector * TUPLE_EPSILON;
     const Tuple reflectionVector = direction.reflect(normalVector);
 
-    IntersectionDetails id = {*(i.object), position, overPosition, eyeVector, normalVector, reflectionVector, i.t, inside};
+    std::vector<Shape> containers;
+    float n1 = 0.0f;
+    float n2 = 0.0f;
+    for (auto intersection : intersections)
+    {
+    	if (i == intersection)
+    	{
+    		if (containers.empty())
+    		{
+    			n1 = 1.0f;
+    		} else
+    		{
+    			n1 = containers.back().material.refractiveIndex;
+    		}
+    	}
+
+    	auto containerPosition = std::find(containers.begin(), containers.end(), *intersection.object);
+    	if (containerPosition != containers.end())
+    	{
+    		containers.erase(containerPosition);
+    	} else
+    	{
+    		containers.push_back(*intersection.object);
+    	}
+
+    	if (i == intersection)
+    	{
+    		if (containers.empty())
+    		{
+    			n2 = 1.0f;
+    		} else
+    		{
+    			n2 = containers.back().material.refractiveIndex;
+    		}
+    		break;
+    	}
+    }
+
+
+    IntersectionDetails id = {*(i.object), position, overPosition, eyeVector, normalVector, reflectionVector, i.t, inside, n1, n2};
     return id;
 }
 

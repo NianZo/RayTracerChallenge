@@ -62,8 +62,9 @@ TEST(WorldTest, ShadingIntersection)
 	World w = World::BaseWorld();
 	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
 	const Shape& s = w.objects()[0];
-	Intersection i = s.intersect(r)[0];
-	IntersectionDetails id = r.precomputeDetails(i);
+	auto intersections = s.intersect(r);
+	Intersection i = intersections[0];
+	IntersectionDetails id = r.precomputeDetails(i, intersections);
 	Color c = w.shadeHit(id);
 
 	EXPECT_EQ(c, Color(0.38066, 0.47583, 0.2855));
@@ -75,8 +76,9 @@ TEST(WorldTest, ShadingIntersectionFromInside)
 	w.light = Light(Point(0, 0.25, 0), Color(1, 1, 1));
 	Ray r(Point(0, 0, 0), Vector(0, 0, 1));
 	const Shape& s = w.objects()[1];
-	Intersection i = s.intersect(r)[1];
-	IntersectionDetails id = r.precomputeDetails(i);
+	auto intersections = s.intersect(r);
+	Intersection i = intersections[1];
+	IntersectionDetails id = r.precomputeDetails(i, intersections);
 	Color c = w.shadeHit(id);
 
 	EXPECT_EQ(c, Color(0.90498, 0.90498, 0.90498));
@@ -158,7 +160,7 @@ TEST(WorldTest, ShadeHitGetsIntersectionInShadow)
 
 	Ray r = Ray(Point(0, 0, 5), Vector(0, 0, 1));
 	auto intersection = s2.intersect(r);
-	auto comps = r.precomputeDetails(*r.hit(intersection));
+	auto comps = r.precomputeDetails(*r.hit(intersection), intersection);
 	Color c = w.shadeHit(comps);
 
 	EXPECT_EQ(c, Color(0.1, 0.1, 0.1));
@@ -174,7 +176,7 @@ TEST(WorldTest, ReflectedColorForNonreflectiveMaterial)
 	Shape& s2 = w.spheres[1];
 	s2.material.ambient = 1.0f;
 	auto intersection = s2.intersect(r);
-	auto comps = r.precomputeDetails(*r.hit(intersection));
+	auto comps = r.precomputeDetails(*r.hit(intersection), intersection);
 	Color c = w.reflectedColor(comps);
 
 	EXPECT_EQ(c, Color::Black);
@@ -190,7 +192,7 @@ TEST(WorldTest, ReflectedColorForReflectiveMaterial)
 
 	Ray r = Ray(Point(0, 0, -3), Vector(0, -sqrt(2) / 2, sqrt(2) / 2));
 	auto intersections = p.intersect(r);
-	auto comps = r.precomputeDetails(*r.hit(intersections));
+	auto comps = r.precomputeDetails(*r.hit(intersections), intersections);
 	Color c = w.reflectedColor(comps);
 
 	EXPECT_EQ(c, Color(0.19032f, 0.2379f, 0.14274));
@@ -206,7 +208,7 @@ TEST(WorldTest, ShadeHitWithReflectiveMaterial)
 
 	Ray r = Ray(Point(0, 0, -3), Vector(0, -sqrt(2) / 2, sqrt(2) / 2));
 	auto intersections = p.intersect(r);
-	auto comps = r.precomputeDetails(*r.hit(intersections));
+	auto comps = r.precomputeDetails(*r.hit(intersections), intersections);
 	Color c = w.shadeHit(comps);
 
 	EXPECT_EQ(c, Color(0.87677, 0.92436, 0.82918));
@@ -239,7 +241,7 @@ TEST(WorldTest, ReflectedColorAtMaximumRecursionDepth)
 
 	Ray r = Ray(Point(0, 0, -3), Vector(0, -sqrt(2) / 2, sqrt(2) / 2));
 	auto intersections = p.intersect(r);
-	auto comps = r.precomputeDetails(*r.hit(intersections));
+	auto comps = r.precomputeDetails(*r.hit(intersections), intersections);
 	Color c = w.reflectedColor(comps, 0);
 
 	EXPECT_EQ(c, Color::Black);
