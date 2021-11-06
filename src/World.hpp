@@ -29,6 +29,7 @@ class World
     std::vector<Intersection> intersect(Ray r) const;
     Color shadeHit(const IntersectionDetails& id, int remainingCalls = 4) const;
     Color reflectedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
+    Color refractedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
     Color colorAt(Ray r, int remainingCalls = 4) const;
     bool isShadowed(const Tuple& point) const;
 

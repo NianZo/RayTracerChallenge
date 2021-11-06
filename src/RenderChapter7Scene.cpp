@@ -15,6 +15,7 @@
 #include <iostream>
 #include <numbers>
 #include <string>
+#include <chrono>
 
 void RenderChapter7Scene(const std::string& fileName)
 {
@@ -65,10 +66,14 @@ void RenderChapter7Scene(const std::string& fileName)
     w.spheres.push_back(right);
     w.spheres.push_back(left);
 
-    Camera c = Camera(100, 50, std::numbers::pi_v<float> / 3);
+    Camera c = Camera(640, 480, std::numbers::pi_v<float> / 3);
     c.transform = ViewTransform(Point(0, 1.5, -5), Point(0, 1, 0), Vector(0, 1, 0));
 
+    auto startRenderTime = std::chrono::steady_clock::now();
     Canvas canvas = c.Render(w);
+    auto endRenderTime = std::chrono::steady_clock::now();
+
+    std::cout << "Time to render scene: " << static_cast<std::chrono::duration<double>>(endRenderTime - startRenderTime).count() << std::endl;
 
     std::ofstream imageFile(fileName, std::ios::out);
     //imageFile.open(fileName, std::ios::out);

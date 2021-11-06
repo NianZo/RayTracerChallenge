@@ -6,6 +6,7 @@
  */
 
 #include "Camera.hpp"
+#include <omp.h>
 
 Ray Camera::rayForPixel(const uint32_t px, const uint32_t py) const
 {
@@ -26,12 +27,14 @@ Canvas Camera::Render(const World& w) const
 {
     Canvas image = Canvas(hSize, vSize);
 
+#pragma omp parallel for
     for (uint32_t i = 0; i < vSize; i++)
     {
         for (uint32_t j = 0; j < hSize; j++)
         {
             const Ray r = rayForPixel(j, i);
             const Color c = w.colorAt(r);
+#pragma omp critical
             image.pixels[i][j] = c;
         }
     }

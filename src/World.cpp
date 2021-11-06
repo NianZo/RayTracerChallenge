@@ -81,6 +81,17 @@ Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) c
     return reflectedColor * id.object.material.reflectivity;
 }
 
+Color World::refractedColor(const IntersectionDetails& id, int remainingCalls) const
+{
+	// Early out if object is not reflective or max recursion depth reached
+	if (id.object.material.transparency == 0 || remainingCalls < 1)
+	{
+		return Color::Black;
+	}
+
+	return Color::White;
+}
+
 Color World::colorAt(Ray r, int remainingCalls) const
 {
     std::vector<Intersection> intersections;
