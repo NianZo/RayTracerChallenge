@@ -1,3 +1,4 @@
+[![Actions Status](https://github.com/NianZo/RayTracerChallenge/workflows/Build%20and%20Test/badge.svg)](https://github.com/NianZo/RayTracerChallenge/actions)
 # RayTracerChallenge
 Test driven code following along with 'The Ray Tracer Challenge' book by Jamis Buck
 
