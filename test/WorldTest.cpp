@@ -273,6 +273,20 @@ TEST(WorldTest, RefracedColorAtMaximumRecursionDepth)
 	EXPECT_EQ(c, Color::Black);
 }
 
+TEST(WorldTest, RefractedColorUnderTotalInternalReflection)
+{
+	World w = World::BaseWorld();
+	w.spheres[0].material.transparency = 1.0f;
+	w.spheres[0].material.refractiveIndex = 1.5f;
+	const Shape& s = w.objects()[0].get();
+	Ray r = Ray(Point(0, 0, sqrt(2) / 2), Vector(0, 1, 0));
+	auto intersections = s.intersect(r);
+	auto id = r.precomputeDetails(intersections[0], intersections);
+	Color c = w.refractedColor(id, 5);
+
+	EXPECT_EQ(c, Color::Black);
+}
+
 
 
 
