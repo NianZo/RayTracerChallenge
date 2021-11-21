@@ -4,9 +4,11 @@ Test driven code following along with 'The Ray Tracer Challenge' book by Jamis B
 
 ## Building this project
 This project utilizes CMake. After cloning the repository run the following commands from the project root directory to build and then run the unit tests:
+```
 cmake -B build -S .
 make -C build
 ctest --test-dir build
+```
 In addition, the main project executable will be in build/src.
 
 ## Build notes for Eclipse:
