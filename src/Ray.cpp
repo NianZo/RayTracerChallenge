@@ -66,6 +66,7 @@ IntersectionDetails Ray::precomputeDetails(Intersection i, const std::vector<Int
         normalVector = -normalVector;
     }
     const Tuple overPosition = position + normalVector * TUPLE_EPSILON;
+    const Tuple underPosition = position - normalVector * TUPLE_EPSILON;
     const Tuple reflectionVector = direction.reflect(normalVector);
 
     std::vector<Shape> containers;
@@ -107,7 +108,7 @@ IntersectionDetails Ray::precomputeDetails(Intersection i, const std::vector<Int
     }
 
 
-    IntersectionDetails id = {*(i.object), position, overPosition, eyeVector, normalVector, reflectionVector, i.t, inside, n1, n2};
+    IntersectionDetails id = {*(i.object), position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, i.t, inside, n1, n2};
     return id;
 }
 

@@ -8,6 +8,7 @@
 #include "World.hpp"
 #include "Transformation.hpp"
 #include <algorithm>
+#include <cmath>
 
 // TODO this is the cause of the failed test, essentially returning references to local objects
 World World::BaseWorld()
@@ -64,7 +65,8 @@ Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const
     const bool shadowed = isShadowed(id.overPoint);
     const Color surface = id.object.material.light(light, id.point, id.eyeVector, id.normalVector, shadowed);
     const Color reflected = reflectedColor(id, remainingCalls);
-    return surface + reflected;
+    const Color refracted = refractedColor(id, remainingCalls);
+    return surface + reflected + refracted;
 }
 
 Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) const
@@ -97,7 +99,10 @@ Color World::refractedColor(const IntersectionDetails& id, int remainingCalls) c
 		return Color::Black;
 	}
 
-	return Color::White;
+	const float cosT = sqrtf(1.0f - sin2T);
+	const Tuple refractionDirection = id.normalVector * (nRatio * cosI - cosT) - id.eyeVector * nRatio;
+	const Ray refractionRay = Ray(id.underPoint, refractionDirection);
+	return colorAt(refractionRay, remainingCalls - 1) * id.object.material.transparency;
 }
 
 Color World::colorAt(Ray r, int remainingCalls) const

@@ -87,6 +87,7 @@ struct IntersectionDetails
     const Shape& object;
     const Tuple point;
     const Tuple overPoint;
+    const Tuple underPoint;
     const Tuple eyeVector;
     const Tuple normalVector;
     const Tuple reflectionVector;
