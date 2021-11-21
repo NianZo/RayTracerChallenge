@@ -89,6 +89,14 @@ Color World::refractedColor(const IntersectionDetails& id, int remainingCalls) c
 		return Color::Black;
 	}
 
+	const float nRatio = id.n1 / id.n2;
+	const float cosI = id.eyeVector.dot(id.normalVector);
+	const float sin2T = nRatio * nRatio * (1 - cosI * cosI);
+	if (sin2T >= 1.0f)
+	{
+		return Color::Black;
+	}
+
 	return Color::White;
 }
 
