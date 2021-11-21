@@ -183,6 +183,52 @@ TEST(PatternTest, CheckersRepeatInZ)
 	EXPECT_EQ(p.colorAt(Point(0, 0, 2)), Color::White);
 }
 
+TEST(PatternTest, TestPatternWithObjectTransform)
+{
+	Sphere s = Sphere();
+	s.transform = scaling(2, 2, 2);
+	s.material.pattern = Pattern::Test();
+	s.material.ambient = 1;
+	s.material.diffuse = 0;
+	s.material.specular = 0;
+	Light light(Point(0, 0, -10), Color(1, 1, 1));
+	Tuple eyeV = Vector(0, -1, 0);
+	Color c = s.shade(light, Point(2, 3, 4), eyeV, false);
+
+	EXPECT_EQ(c, Color(1.0, 1.5, 2.0));
+}
+
+TEST(PatternTest, TestPatternWithPatternTransform)
+{
+	Sphere s = Sphere();
+	s.material.pattern = Pattern::Test();
+	s.material.pattern->transform = scaling(2, 2, 2);
+	s.material.ambient = 1;
+	s.material.diffuse = 0;
+	s.material.specular = 0;
+	Light light(Point(0, 0, -10), Color(1, 1, 1));
+	Tuple eyeV = Vector(0, -1, 0);
+	Color c = s.shade(light, Point(2, 3, 4), eyeV, false);
+
+	EXPECT_EQ(c, Color(1.0, 1.5, 2.0));
+}
+
+TEST(PatternTest, TestPatternWithObjectAndPatternTransform)
+{
+	Sphere s = Sphere();
+	s.transform = scaling(2, 2, 2);
+	s.material.pattern = Pattern::Test();
+	s.material.pattern->transform = translation(0.5, 1, 1.5);
+	s.material.ambient = 1;
+	s.material.diffuse = 0;
+	s.material.specular = 0;
+	Light light(Point(0, 0, -10), Color(1, 1, 1));
+	Tuple eyeV = Vector(0, -1, 0);
+	Color c = s.shade(light, Point(2.5, 3, 3.5), eyeV, false);
+
+	EXPECT_EQ(c, Color(0.75, 0.5, 0.25));
+}
+
 
 
 

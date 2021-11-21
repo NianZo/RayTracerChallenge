@@ -26,6 +26,7 @@ class Pattern
     Pattern(const Color& aIn, const Color& bIn, const Matrix<4>& transformIn, const std::function<Color(const Color&, const Color&, const Tuple&)>& fIn) : a(aIn), b(bIn), transform(transformIn), f(fIn){};
     Color colorAt(const Tuple& p) const;
 
+    static Pattern Test();
     static Pattern Stripe(const Color& aIn, const Color& bIn);
     static Pattern Gradient(const Color& aIn, const Color& bIn);
     static Pattern Ring(const Color& aIn, const Color& bIn);

@@ -47,6 +47,14 @@ Color Pattern::colorAt(const Tuple& p) const
     return f(a, b, p); // ? b : a;
 }
 
+Pattern Pattern::Test()
+{
+	std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color&, const Color&, const Tuple& p) -> Color {
+		return Color(p.x, p.y, p.z);
+	};
+	return Pattern(Color::Black, Color::Black, IdentityMatrix(), f);
+}
+
 Pattern Pattern::Stripe(const Color& aIn, const Color& bIn)
 {
     std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& a, const Color& b, const Tuple& p) -> Color {
