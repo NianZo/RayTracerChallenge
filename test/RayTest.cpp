@@ -138,6 +138,16 @@ TEST(RayTest, PrecomputeIntersectionFindsIndicesOfRefraction)
 	}
 }
 
+TEST(RayTest, PrecomputeIntersectionFindsSchlickReflectance)
+{
+	Sphere s = GlassSphere();
+	Ray r = Ray(Point(0, 0, sqrt(2) / 2), Vector(0, 1, 0));
+	auto intersections = s.intersect(r);
+	auto id = r.precomputeDetails(intersections[1], intersections);
+
+	EXPECT_FLOAT_EQ(id.reflectance, 1.0f);
+}
+
 
 
 

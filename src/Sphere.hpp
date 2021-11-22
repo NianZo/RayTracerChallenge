@@ -92,6 +92,7 @@ struct IntersectionDetails
     const Tuple normalVector;
     const Tuple reflectionVector;
     const float t;
+    const float reflectance;
     const bool inside;
     const float n1;
     const float n2;

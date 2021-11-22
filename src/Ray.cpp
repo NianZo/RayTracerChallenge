@@ -107,8 +107,21 @@ IntersectionDetails Ray::precomputeDetails(Intersection i, const std::vector<Int
     	}
     }
 
+    // Schlick reflectance
+    const float cosT = eyeVector.dot(normalVector);
+    float reflectance = 0.0f;
+    if (n1 > n2)
+    {
+    	const float nRatio = n1 / n2;
+    	const float sin2T = nRatio * nRatio * (1 - cosT * cosT);
+    	if (sin2T > 1.0f)
+    	{
+    		reflectance = 1.0f;
+    	}
+    }
 
-    IntersectionDetails id = {*(i.object), position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, i.t, inside, n1, n2};
+
+    IntersectionDetails id = {*(i.object), position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, i.t, reflectance, inside, n1, n2};
     return id;
 }
 
