@@ -34,17 +34,21 @@ void RenderChapter7Scene(const std::string& fileName)
 
     Sphere middle;
     middle.transform = translation(-0.5, 1, 4.5) * scaling(4, 4, 4);
-    middle.material.pattern = Pattern::Stripe(Color(1, 0, 0), Color(0, 1, 1));
+    middle.material.pattern = Pattern::Stripe(Color(0.1f, 0, 0), Color(0, 0.1f, 0.1f));
     middle.material.pattern->transform = scaling(0.5, 0.5, 0.5);
-    middle.material.color = Color(0.1f, 1.0f, 0.5f);
+    middle.material.color = Color(0.0f, 0.2f, 0.0f);
     middle.material.diffuse = 0.7f;
     middle.material.specular = 0.3f;
+    middle.material.reflectivity = 0.9f;
+    middle.material.transparency = 0.9f;
+    middle.material.refractiveIndex = 1.5f;
 
     Sphere right;
     right.transform = translation(1.5, 0.5, -0.5) * scaling(0.5, 0.5, 0.5);
     right.material.color = Color(0.5f, 1.0f, 0.1f);
     right.material.diffuse = 0.7f;
     right.material.specular = 0.3f;
+    right.material.reflectivity = 1.0f;
 
     Sphere left;
     left.transform = translation(-1.5f, 0.33f, -0.75f) * scaling(0.33f, 0.33f, 0.33f);

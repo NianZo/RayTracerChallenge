@@ -11,6 +11,7 @@
 #include "Ray.hpp"
 
 #include <algorithm>
+#include <cmath>
 
 const Tuple Ray::cast(const float t) const
 {
@@ -107,18 +108,22 @@ IntersectionDetails Ray::precomputeDetails(Intersection i, const std::vector<Int
     	}
     }
 
-    // Schlick reflectance
-    const float cosT = eyeVector.dot(normalVector);
-    float reflectance = 0.0f;
+    // Schlick reflectance - Algorithm from "Reflections and Refractions in Ray Tracing" by Bram de Greve
+    float cos = eyeVector.dot(normalVector);
+    //float reflectance = 0.0f;
+    float sin2T = 0.0f;
     if (n1 > n2)
     {
     	const float nRatio = n1 / n2;
-    	const float sin2T = nRatio * nRatio * (1 - cosT * cosT);
-    	if (sin2T > 1.0f)
-    	{
-    		reflectance = 1.0f;
-    	}
+    	sin2T = nRatio * nRatio * (1 - cos * cos);
+//    	if (sin2T > 1.0f)
+//    	{
+//    		reflectance = 1.0f;
+//    	}
+    	cos = sqrtf(1.0f - sin2T);
     }
+    const float r0 = powf(((n1 - n2) / (n1 + n2)), 2);
+    const float reflectance = sin2T > 1.0f ? 1.0f : r0 + (1 - r0) * powf(1 - cos, 5);
 
 
     IntersectionDetails id = {*(i.object), position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, i.t, reflectance, inside, n1, n2};

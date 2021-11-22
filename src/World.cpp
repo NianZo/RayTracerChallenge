@@ -66,7 +66,16 @@ Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const
     const Color surface = id.object.material.light(light, id.point, id.eyeVector, id.normalVector, shadowed);
     const Color reflected = reflectedColor(id, remainingCalls);
     const Color refracted = refractedColor(id, remainingCalls);
-    return surface + reflected + refracted;
+
+    Color finalColor;
+    if (id.object.material.reflectivity > 0.0f && id.object.material.transparency > 0.0f)
+    {
+    	finalColor = surface + reflected * id.reflectance + refracted * (1 - id.reflectance);
+    } else
+    {
+    	finalColor = surface + reflected + refracted;
+    }
+    return finalColor;
 }
 
 Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) const

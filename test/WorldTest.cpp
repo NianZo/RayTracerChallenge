@@ -323,6 +323,28 @@ TEST(WorldTest, ShadeHitWithTransparentMaterial)
 	EXPECT_EQ(c, Color(0.93642, 0.68642, 0.68642));
 }
 
+TEST(WorldTest, ShadeHitWithReflectiveTransparentMaterial)
+{
+	World w = World::BaseWorld();
+	Plane p;
+	p.transform = translation(0, -1, 0);
+	p.material.reflectivity = 0.5f;
+	p.material.transparency = 0.5f;
+	p.material.refractiveIndex = 1.5f;
+	w.planes.push_back(p);
+	Sphere s;
+	s.transform = translation(0, -3.5, -0.5);
+	s.material.color = Color(1, 0, 0);
+	s.material.ambient = 0.5f;
+	w.spheres.push_back(s);
+	Ray r = Ray(Point(0, 0, -3), Vector(0, -sqrt(2) / 2, sqrt(2) / 2));
+	auto intersections = w.intersect(r);
+	auto id = r.precomputeDetails(*r.hit(intersections), intersections);
+	Color c = w.shadeHit(id, 5);
+
+	EXPECT_EQ(c, Color(0.93391, 0.69643, 0.69243));
+}
+
 
 
 

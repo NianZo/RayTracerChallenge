@@ -143,9 +143,29 @@ TEST(RayTest, PrecomputeIntersectionFindsSchlickReflectance)
 	Sphere s = GlassSphere();
 	Ray r = Ray(Point(0, 0, sqrt(2) / 2), Vector(0, 1, 0));
 	auto intersections = s.intersect(r);
-	auto id = r.precomputeDetails(intersections[1], intersections);
+	auto id = r.precomputeDetails(*r.hit(intersections), intersections);
 
 	EXPECT_FLOAT_EQ(id.reflectance, 1.0f);
+}
+
+TEST(RayTest, SchlickReflectanceWithPerpendicularViewAngle)
+{
+	Sphere s = GlassSphere();
+	Ray r = Ray(Point(0, 0, 0), Vector(0, 1, 0));
+	auto intersections = s.intersect(r);
+	auto id = r.precomputeDetails(*r.hit(intersections), intersections);
+
+	EXPECT_FLOAT_EQ(id.reflectance, 0.04f);
+}
+
+TEST(RayTest, SchlickReflectanceWithSmallAngleAndN2GreaterThanN1)
+{
+	Sphere s = GlassSphere();
+	Ray r = Ray(Point(0, 0.99f, -2), Vector(0, 0, 1));
+	auto intersections = s.intersect(r);
+	auto id = r.precomputeDetails(*r.hit(intersections), intersections);
+
+	EXPECT_NEAR(id.reflectance, 0.48873, COLOR_EPSILON); // Just slightly out of precision for EXPECT_FLOAT_EQ
 }
 
 
