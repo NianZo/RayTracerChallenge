@@ -51,8 +51,7 @@ class Material
     float refractiveIndex;
 
     Material() : color(Color(1, 1, 1)), ambient(0.1f), diffuse(0.9f), specular(0.9f), shininess(200.0f), reflectivity(0.0f), transparency(0.0f), refractiveIndex(1.0f){};
-    Material(const Color& colorIn, const float ambientIn, const float diffuseIn, const float specularIn, const float shininessIn, const float reflectivityIn, const float transparencyIn, const float refractiveIndexIn) :
-    	color(colorIn), ambient(ambientIn), diffuse(diffuseIn), specular(specularIn), shininess(shininessIn), reflectivity(reflectivityIn), transparency(transparencyIn), refractiveIndex(refractiveIndexIn){};
+    Material(const Color& colorIn, const float ambientIn, const float diffuseIn, const float specularIn, const float shininessIn, const float reflectivityIn, const float transparencyIn, const float refractiveIndexIn) : color(colorIn), ambient(ambientIn), diffuse(diffuseIn), specular(specularIn), shininess(shininessIn), reflectivity(reflectivityIn), transparency(transparencyIn), refractiveIndex(refractiveIndexIn){};
 
     bool operator==(const Material& other) const;
 

@@ -76,8 +76,8 @@ std::vector<Intersection> Plane::objectIntersect([[maybe_unused]] const Ray& r) 
 
 Sphere GlassSphere()
 {
-	Sphere s;
-	s.material.transparency = 1.0f;
-	s.material.refractiveIndex = 1.5f;
-	return s;
+    Sphere s;
+    s.material.transparency = 1.0f;
+    s.material.refractiveIndex = 1.5f;
+    return s;
 }

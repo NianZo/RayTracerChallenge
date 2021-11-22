@@ -49,10 +49,10 @@ Color Pattern::colorAt(const Tuple& p) const
 
 Pattern Pattern::Test()
 {
-	std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color&, const Color&, const Tuple& p) -> Color {
-		return Color(p.x, p.y, p.z);
-	};
-	return Pattern(Color::Black, Color::Black, IdentityMatrix(), f);
+    std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color&, const Color&, const Tuple& p) -> Color {
+        return Color(p.x, p.y, p.z);
+    };
+    return Pattern(Color::Black, Color::Black, IdentityMatrix(), f);
 }
 
 Pattern Pattern::Stripe(const Color& aIn, const Color& bIn)

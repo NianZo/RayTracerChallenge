@@ -39,7 +39,8 @@ const Tuple Ray::cast(const float t) const
 //	return intersections;
 //}
 
-const std::optional<Intersection> Ray::hit(std::vector<Intersection> intersections){
+const std::optional<Intersection> Ray::hit(std::vector<Intersection> intersections)
+{
     std::sort(intersections.begin(), intersections.end());
     for (const auto intersection : intersections)
     {
@@ -75,37 +76,37 @@ IntersectionDetails Ray::precomputeDetails(Intersection i, const std::vector<Int
     float n2 = 0.0f;
     for (auto intersection : intersections)
     {
-    	if (i == intersection)
-    	{
-    		if (containers.empty())
-    		{
-    			n1 = 1.0f;
-    		} else
-    		{
-    			n1 = containers.back().material.refractiveIndex;
-    		}
-    	}
+        if (i == intersection)
+        {
+            if (containers.empty())
+            {
+                n1 = 1.0f;
+            } else
+            {
+                n1 = containers.back().material.refractiveIndex;
+            }
+        }
 
-    	auto containerPosition = std::find(containers.begin(), containers.end(), *intersection.object);
-    	if (containerPosition != containers.end())
-    	{
-    		containers.erase(containerPosition);
-    	} else
-    	{
-    		containers.push_back(*intersection.object);
-    	}
+        auto containerPosition = std::find(containers.begin(), containers.end(), *intersection.object);
+        if (containerPosition != containers.end())
+        {
+            containers.erase(containerPosition);
+        } else
+        {
+            containers.push_back(*intersection.object);
+        }
 
-    	if (i == intersection)
-    	{
-    		if (containers.empty())
-    		{
-    			n2 = 1.0f;
-    		} else
-    		{
-    			n2 = containers.back().material.refractiveIndex;
-    		}
-    		break;
-    	}
+        if (i == intersection)
+        {
+            if (containers.empty())
+            {
+                n2 = 1.0f;
+            } else
+            {
+                n2 = containers.back().material.refractiveIndex;
+            }
+            break;
+        }
     }
 
     // Schlick reflectance - Algorithm from "Reflections and Refractions in Ray Tracing" by Bram de Greve
@@ -114,17 +115,16 @@ IntersectionDetails Ray::precomputeDetails(Intersection i, const std::vector<Int
     float sin2T = 0.0f;
     if (n1 > n2)
     {
-    	const float nRatio = n1 / n2;
-    	sin2T = nRatio * nRatio * (1 - cos * cos);
-//    	if (sin2T > 1.0f)
-//    	{
-//    		reflectance = 1.0f;
-//    	}
-    	cos = sqrtf(1.0f - sin2T);
+        const float nRatio = n1 / n2;
+        sin2T = nRatio * nRatio * (1 - cos * cos);
+        //    	if (sin2T > 1.0f)
+        //    	{
+        //    		reflectance = 1.0f;
+        //    	}
+        cos = sqrtf(1.0f - sin2T);
     }
     const float r0 = powf(((n1 - n2) / (n1 + n2)), 2);
     const float reflectance = sin2T > 1.0f ? 1.0f : r0 + (1 - r0) * powf(1 - cos, 5);
-
 
     IntersectionDetails id = {*(i.object), position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, i.t, reflectance, inside, n1, n2};
     return id;

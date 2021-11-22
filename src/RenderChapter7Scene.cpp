@@ -11,11 +11,11 @@
 #include "Sphere.hpp"
 #include "Transformation.hpp"
 #include "World.hpp"
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <numbers>
 #include <string>
-#include <chrono>
 
 void RenderChapter7Scene(const std::string& fileName)
 {

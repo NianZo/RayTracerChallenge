@@ -70,10 +70,10 @@ Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const
     Color finalColor;
     if (id.object.material.reflectivity > 0.0f && id.object.material.transparency > 0.0f)
     {
-    	finalColor = surface + reflected * id.reflectance + refracted * (1 - id.reflectance);
+        finalColor = surface + reflected * id.reflectance + refracted * (1 - id.reflectance);
     } else
     {
-    	finalColor = surface + reflected + refracted;
+        finalColor = surface + reflected + refracted;
     }
     return finalColor;
 }
@@ -94,24 +94,24 @@ Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) c
 
 Color World::refractedColor(const IntersectionDetails& id, int remainingCalls) const
 {
-	// Early out if object is not reflective or max recursion depth reached
-	if (id.object.material.transparency == 0 || remainingCalls < 1)
-	{
-		return Color::Black;
-	}
+    // Early out if object is not reflective or max recursion depth reached
+    if (id.object.material.transparency == 0 || remainingCalls < 1)
+    {
+        return Color::Black;
+    }
 
-	const float nRatio = id.n1 / id.n2;
-	const float cosI = id.eyeVector.dot(id.normalVector);
-	const float sin2T = nRatio * nRatio * (1 - cosI * cosI);
-	if (sin2T >= 1.0f)
-	{
-		return Color::Black;
-	}
+    const float nRatio = id.n1 / id.n2;
+    const float cosI = id.eyeVector.dot(id.normalVector);
+    const float sin2T = nRatio * nRatio * (1 - cosI * cosI);
+    if (sin2T >= 1.0f)
+    {
+        return Color::Black;
+    }
 
-	const float cosT = sqrtf(1.0f - sin2T);
-	const Tuple refractionDirection = id.normalVector * (nRatio * cosI - cosT) - id.eyeVector * nRatio;
-	const Ray refractionRay = Ray(id.underPoint, refractionDirection);
-	return colorAt(refractionRay, remainingCalls - 1) * id.object.material.transparency;
+    const float cosT = sqrtf(1.0f - sin2T);
+    const Tuple refractionDirection = id.normalVector * (nRatio * cosI - cosT) - id.eyeVector * nRatio;
+    const Ray refractionRay = Ray(id.underPoint, refractionDirection);
+    return colorAt(refractionRay, remainingCalls - 1) * id.object.material.transparency;
 }
 
 Color World::colorAt(Ray r, int remainingCalls) const
