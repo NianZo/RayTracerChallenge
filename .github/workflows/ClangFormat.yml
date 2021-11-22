@@ -24,7 +24,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: Setup
+        # Need to install a newer compiler for numbers header to be seen
+        run: sudo apt-get install clang-format-3.6;
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: clang-format --dry-run --Werror src/*pp
+        run: clang-format-3.6 --dry-run --Werror src/*pp
