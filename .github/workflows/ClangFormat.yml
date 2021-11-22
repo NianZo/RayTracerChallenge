@@ -31,4 +31,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: ls -l /usr/bin/clang-format*; clang-format-3.6 --dry-run --Werror src/*pp
+        run: clang-format-12 --dry-run --Werror src/*pp
