@@ -8,6 +8,7 @@ add_executable(${BINARY}_run ${SOURCES})
 add_library(${BINARY}_lib STATIC ${SOURCES})
 
 target_link_libraries(${BINARY}_run PRIVATE project_warnings)
+target_link_libraries(${BINARY}_run PRIVATE --coverage)
 
 # Link OpenMP
 find_package(OpenMP)
