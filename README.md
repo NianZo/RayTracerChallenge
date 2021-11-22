@@ -1,5 +1,6 @@
 [![Actions Status](https://github.com/NianZo/RayTracerChallenge/workflows/Build%20and%20Test/badge.svg)](https://github.com/NianZo/RayTracerChallenge/actions)
 [![Actions Status](https://github.com/NianZo/RayTracerChallenge/workflows/Clang%20Format/badge.svg)](https://github.com/NianZo/RayTracerChallenge/actions)
+[![codecov](https://codecov.io/gh/NianZo/RayTracerChallenge/branch/main/graph/badge.svg?token=PC1EF3KWN5)](https://codecov.io/gh/NianZo/RayTracerChallenge)
 # RayTracerChallenge
 Test driven code following along with 'The Ray Tracer Challenge' book by Jamis Buck
 
