@@ -69,6 +69,13 @@ class Plane : public Shape
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
+class Cube : public Shape
+{
+  private:
+	Tuple objectNormal(const Tuple& p) const override;
+	std::vector<Intersection> objectIntersect(const Ray& r) const override;
+};
+
 class Intersection
 {
   public:

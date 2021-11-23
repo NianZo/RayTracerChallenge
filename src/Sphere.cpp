@@ -74,6 +74,43 @@ std::vector<Intersection> Plane::objectIntersect([[maybe_unused]] const Ray& r) 
     return i;
 }
 
+Tuple Cube::objectNormal(const Tuple&) const
+{
+	return Tuple(0, 0, 0, 0);
+}
+
+std::vector<Intersection> Cube::objectIntersect(const Ray& r) const
+{
+	float xTMin = (-1.0f - r.origin.x) / r.direction.x;
+	float xTMax = (1.0f - r.origin.x) / r.direction.x;
+	if (xTMin > xTMax)
+	{
+		std::swap(xTMin, xTMax);
+	}
+
+	float yTMin = (-1.0f - r.origin.y) / r.direction.y;
+	float yTMax = (1.0f - r.origin.y) / r.direction.y;
+	if (yTMin > yTMax)
+	{
+		std::swap(yTMin, yTMax);
+	}
+
+	float zTMin = (-1.0f - r.origin.z) / r.direction.z;
+	float zTMax = (1.0f - r.origin.z) / r.direction.z;
+	if (zTMin > zTMax)
+	{
+		std::swap(zTMin, zTMax);
+	}
+
+	const float tMin = std::max(std::max(xTMin, yTMin), zTMin);
+	const float tMax = std::min(std::min(xTMax, yTMax), zTMax);
+
+	std::vector<Intersection> i;
+	i.emplace_back(Intersection(tMin, this));
+	i.emplace_back(Intersection(tMax, this));
+	return i;
+}
+
 Sphere GlassSphere()
 {
     Sphere s;

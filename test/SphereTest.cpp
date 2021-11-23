@@ -288,6 +288,53 @@ TEST(SphereTest, GlassSphereFactory)
 	EXPECT_FLOAT_EQ(s.material.refractiveIndex, 1.5f);
 }
 
+TEST(CubeTest, IntersectWithRay)
+{
+	Cube c;
+
+	Ray r1(Point(5, 0.5, 0), Vector(-1, 0, 0));
+	auto intersections1 = c.intersect(r1);
+	EXPECT_EQ(intersections1.size(), 2);
+	EXPECT_FLOAT_EQ(intersections1[0].t, 4);
+	EXPECT_FLOAT_EQ(intersections1[1].t, 6);
+
+	Ray r2(Point(-5, 0.5, 0), Vector(1, 0, 0));
+	auto intersections2 = c.intersect(r2);
+	EXPECT_EQ(intersections2.size(), 2);
+	EXPECT_FLOAT_EQ(intersections2[0].t, 4);
+	EXPECT_FLOAT_EQ(intersections2[1].t, 6);
+
+	Ray r3(Point(0.5, 5, 0), Vector(0, -1, 0));
+	auto intersections3 = c.intersect(r3);
+	EXPECT_EQ(intersections3.size(), 2);
+	EXPECT_FLOAT_EQ(intersections3[0].t, 4);
+	EXPECT_FLOAT_EQ(intersections3[1].t, 6);
+
+	Ray r4(Point(0.5, -5, 0), Vector(0, 1, 0));
+	auto intersections4 = c.intersect(r4);
+	EXPECT_EQ(intersections4.size(), 2);
+	EXPECT_FLOAT_EQ(intersections4[0].t, 4);
+	EXPECT_FLOAT_EQ(intersections4[1].t, 6);
+
+	Ray r5(Point(0.5, 0, 5), Vector(0, 0, -1));
+	auto intersections5 = c.intersect(r5);
+	EXPECT_EQ(intersections5.size(), 2);
+	EXPECT_FLOAT_EQ(intersections5[0].t, 4);
+	EXPECT_FLOAT_EQ(intersections5[1].t, 6);
+
+	Ray r6(Point(0.5, 0, -5), Vector(0, 0, 1));
+	auto intersections6 = c.intersect(r6);
+	EXPECT_EQ(intersections6.size(), 2);
+	EXPECT_FLOAT_EQ(intersections6[0].t, 4);
+	EXPECT_FLOAT_EQ(intersections6[1].t, 6);
+
+	Ray r7(Point(0, 0.5, 0), Vector(0, 0, 1));
+	auto intersections7 = c.intersect(r7);
+	EXPECT_EQ(intersections7.size(), 2);
+	EXPECT_FLOAT_EQ(intersections7[0].t, -1);
+	EXPECT_FLOAT_EQ(intersections7[1].t, 1);
+}
+
 
 
 
