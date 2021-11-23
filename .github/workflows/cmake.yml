@@ -25,6 +25,9 @@ jobs:
     - name: Setup
       # Need to install a newer compiler for numbers header to be seen
       run: sudo apt-get install g++-11 libgtest-dev;
+           sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-11;
+           update-alternatives --config gcov;
+           gcov -v;
            cd /usr/src/gtest;
            mkdir build && cd build;
            sudo cmake .. -DBUILD_SHARED_LIBS=ON -DINSTALL_GTEST=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr;
