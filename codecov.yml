@@ -21,4 +21,4 @@ comment:
 
 ignore:
   - /usr/include/**/*
-  - *Test.+pp
+  - .*Test\..pp
