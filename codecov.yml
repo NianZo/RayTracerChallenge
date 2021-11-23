@@ -20,5 +20,5 @@ comment:
   require_changes: no
 
 ignore:
-  - "/usr/include/**/*"
-  - "*Test.+pp"
+  - /usr/include/**/*
+  - *Test.+pp
