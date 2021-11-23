@@ -25,7 +25,7 @@ jobs:
     - name: Setup
       # Need to install a newer compiler for numbers header to be seen
       run: sudo apt-get install g++-11 libgtest-dev;
-           sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-11;
+           sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-11 100;
            update-alternatives --config gcov;
            gcov -v;
            cd /usr/src/gtest;
