@@ -74,9 +74,22 @@ std::vector<Intersection> Plane::objectIntersect([[maybe_unused]] const Ray& r) 
     return i;
 }
 
-Tuple Cube::objectNormal(const Tuple&) const
+Tuple Cube::objectNormal(const Tuple& p) const
 {
-	return Tuple(0, 0, 0, 0);
+	const float maxCoord = std::max(std::max(std::abs(p.x), std::abs(p.y)), std::abs(p.z));
+
+	Tuple normal;
+	if (maxCoord == std::abs(p.x))
+	{
+		normal = Vector(p.x, 0, 0);
+	} else if (maxCoord == std::abs(p.y))
+	{
+		normal = Vector(0, p.y, 0);
+	} else
+	{
+		normal = Vector(0, 0, p.z);
+	}
+	return normal;
 }
 
 std::vector<Intersection> Cube::objectIntersect(const Ray& r) const
@@ -106,8 +119,11 @@ std::vector<Intersection> Cube::objectIntersect(const Ray& r) const
 	const float tMax = std::min(std::min(xTMax, yTMax), zTMax);
 
 	std::vector<Intersection> i;
-	i.emplace_back(Intersection(tMin, this));
-	i.emplace_back(Intersection(tMax, this));
+	if (tMax > tMin)
+	{
+		i.emplace_back(Intersection(tMin, this));
+		i.emplace_back(Intersection(tMax, this));
+	}
 	return i;
 }
 

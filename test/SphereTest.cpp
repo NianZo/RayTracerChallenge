@@ -335,6 +335,72 @@ TEST(CubeTest, IntersectWithRay)
 	EXPECT_FLOAT_EQ(intersections7[1].t, 1);
 }
 
+TEST(CubeTest, RayMissesCube)
+{
+	Cube c;
+
+	Ray r1(Point(-2, 0, 0), Vector(0.2673, 0.5345, 0.8018));
+	auto intersections1 = c.intersect(r1);
+	EXPECT_EQ(intersections1.size(), 0);
+
+	Ray r2(Point(0, -2, 0), Vector(0.8018, 0.2673, 0.5345));
+	auto intersections2 = c.intersect(r2);
+	EXPECT_EQ(intersections2.size(), 0);
+
+	Ray r3(Point(0, 0, -2), Vector(0.5345, 0.8018, 0.2673));
+	auto intersections3 = c.intersect(r3);
+	EXPECT_EQ(intersections3.size(), 0);
+
+	Ray r4(Point(2, 0, 2), Vector(0, 0, -1));
+	auto intersections4 = c.intersect(r4);
+	EXPECT_EQ(intersections4.size(), 0);
+
+	Ray r5(Point(0, 2, 2), Vector(0, -1, 0));
+	auto intersections5 = c.intersect(r5);
+	EXPECT_EQ(intersections5.size(), 0);
+
+	Ray r6(Point(2, 2, 0), Vector(-1, 0, 0));
+	auto intersections6 = c.intersect(r6);
+	EXPECT_EQ(intersections6.size(), 0);
+}
+
+TEST(CubeTest, CubeNormal)
+{
+	Cube c;
+
+	Tuple p1 = Point(1, 0.5, -0.8);
+	Tuple normal1 = c.normal(p1);
+	EXPECT_EQ(normal1, Vector(1, 0, 0));
+
+	Tuple p2 = Point(-1, -0.2, 0.9);
+	Tuple normal2 = c.normal(p2);
+	EXPECT_EQ(normal2, Vector(-1, 0, 0));
+
+	Tuple p3 = Point(-0.4, 1, -0.1);
+	Tuple normal3 = c.normal(p3);
+	EXPECT_EQ(normal3, Vector(0, 1, 0));
+
+	Tuple p4 = Point(0.3, -1, -0.7);
+	Tuple normal4 = c.normal(p4);
+	EXPECT_EQ(normal4, Vector(0, -1, 0));
+
+	Tuple p5 = Point(-0.6, 0.3, 1);
+	Tuple normal5 = c.normal(p5);
+	EXPECT_EQ(normal5, Vector(0, 0, 1));
+
+	Tuple p6 = Point(0.4, 0.4, -1);
+	Tuple normal6 = c.normal(p6);
+	EXPECT_EQ(normal6, Vector(0, 0, -1));
+
+	Tuple p7 = Point(1, 1, 1);
+	Tuple normal7 = c.normal(p7);
+	EXPECT_EQ(normal7, Vector(1, 0, 0));
+
+	Tuple p8 = Point(-1, -1, -1);
+	Tuple normal8 = c.normal(p8);
+	EXPECT_EQ(normal8, Vector(-1, 0, 0));
+}
+
 
 
 

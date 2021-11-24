@@ -18,6 +18,7 @@ class Tuple
     float z;
     float w;
 
+    Tuple() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {};
     Tuple(float xIn, float yIn, float zIn, float wIn); // : x(xIn), y(yIn), z(zIn), w(wIn) {};
 
     // Operator overloads
