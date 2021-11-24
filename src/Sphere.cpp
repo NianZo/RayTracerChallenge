@@ -76,55 +76,55 @@ std::vector<Intersection> Plane::objectIntersect([[maybe_unused]] const Ray& r) 
 
 Tuple Cube::objectNormal(const Tuple& p) const
 {
-	const float maxCoord = std::max(std::max(std::abs(p.x), std::abs(p.y)), std::abs(p.z));
+    const float maxCoord = std::max(std::max(std::abs(p.x), std::abs(p.y)), std::abs(p.z));
 
-	Tuple normal;
-	if (maxCoord == std::abs(p.x))
-	{
-		normal = Vector(p.x, 0, 0);
-	} else if (maxCoord == std::abs(p.y))
-	{
-		normal = Vector(0, p.y, 0);
-	} else
-	{
-		normal = Vector(0, 0, p.z);
-	}
-	return normal;
+    Tuple normal;
+    if (maxCoord == std::abs(p.x))
+    {
+        normal = Vector(p.x, 0, 0);
+    } else if (maxCoord == std::abs(p.y))
+    {
+        normal = Vector(0, p.y, 0);
+    } else
+    {
+        normal = Vector(0, 0, p.z);
+    }
+    return normal;
 }
 
 std::vector<Intersection> Cube::objectIntersect(const Ray& r) const
 {
-	float xTMin = (-1.0f - r.origin.x) / r.direction.x;
-	float xTMax = (1.0f - r.origin.x) / r.direction.x;
-	if (xTMin > xTMax)
-	{
-		std::swap(xTMin, xTMax);
-	}
+    float xTMin = (-1.0f - r.origin.x) / r.direction.x;
+    float xTMax = (1.0f - r.origin.x) / r.direction.x;
+    if (xTMin > xTMax)
+    {
+        std::swap(xTMin, xTMax);
+    }
 
-	float yTMin = (-1.0f - r.origin.y) / r.direction.y;
-	float yTMax = (1.0f - r.origin.y) / r.direction.y;
-	if (yTMin > yTMax)
-	{
-		std::swap(yTMin, yTMax);
-	}
+    float yTMin = (-1.0f - r.origin.y) / r.direction.y;
+    float yTMax = (1.0f - r.origin.y) / r.direction.y;
+    if (yTMin > yTMax)
+    {
+        std::swap(yTMin, yTMax);
+    }
 
-	float zTMin = (-1.0f - r.origin.z) / r.direction.z;
-	float zTMax = (1.0f - r.origin.z) / r.direction.z;
-	if (zTMin > zTMax)
-	{
-		std::swap(zTMin, zTMax);
-	}
+    float zTMin = (-1.0f - r.origin.z) / r.direction.z;
+    float zTMax = (1.0f - r.origin.z) / r.direction.z;
+    if (zTMin > zTMax)
+    {
+        std::swap(zTMin, zTMax);
+    }
 
-	const float tMin = std::max(std::max(xTMin, yTMin), zTMin);
-	const float tMax = std::min(std::min(xTMax, yTMax), zTMax);
+    const float tMin = std::max(std::max(xTMin, yTMin), zTMin);
+    const float tMax = std::min(std::min(xTMax, yTMax), zTMax);
 
-	std::vector<Intersection> i;
-	if (tMax > tMin)
-	{
-		i.emplace_back(Intersection(tMin, this));
-		i.emplace_back(Intersection(tMax, this));
-	}
-	return i;
+    std::vector<Intersection> i;
+    if (tMax > tMin)
+    {
+        i.emplace_back(Intersection(tMin, this));
+        i.emplace_back(Intersection(tMax, this));
+    }
+    return i;
 }
 
 Sphere GlassSphere()
