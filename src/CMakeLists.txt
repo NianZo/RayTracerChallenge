@@ -11,5 +11,5 @@ add_library(${BINARY}_lib STATIC ${SOURCES})
 #target_link_libraries(${BINARY}_run PRIVATE --coverage)
 
 # Link OpenMP
-#find_package(OpenMP)
-#target_link_libraries(${BINARY}_run PUBLIC OpenMP::OpenMP_CXX)
+find_package(OpenMP)
+target_link_libraries(${BINARY}_lib PRIVATE OpenMP::OpenMP_CXX)

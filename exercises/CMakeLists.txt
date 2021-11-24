@@ -8,5 +8,5 @@ target_link_libraries(${BINARY}_exercises PUBLIC ${CMAKE_PROJECT_NAME}_lib)
 target_link_libraries(${BINARY}_exercises PRIVATE project_warnings)
 
 # Link OpenMP
-find_package(OpenMP)
-target_link_libraries(${BINARY}_exercises PUBLIC OpenMP::OpenMP_CXX)
+#find_package(OpenMP)
+#target_link_libraries(${BINARY}_exercises PUBLIC OpenMP::OpenMP_CXX)
