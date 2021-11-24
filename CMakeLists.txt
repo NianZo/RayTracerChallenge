@@ -25,6 +25,8 @@ option(ENABLE_TESTING "Enable Test Builds" ON)
 
 add_subdirectory(src)
 
+add_subdirectory(exercises)
+
 if(ENABLE_TESTING)
   message("Building tests.")
   include(CTest)
