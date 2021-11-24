@@ -6,11 +6,10 @@
  */
 
 #include "gtest/gtest.h"
-
-#include "../src/Color.hpp"
-#include "../src/Material.hpp"
-#include "../src/Tuple.hpp"
-#include "../src/Light.hpp"
+#include "Color.hpp"
+#include "Material.hpp"
+#include "Tuple.hpp"
+#include "Light.hpp"
 #include <cmath>
 
 TEST(MaterialTest, DefaultMaterial)

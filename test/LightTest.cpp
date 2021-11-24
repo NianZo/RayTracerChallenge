@@ -6,10 +6,9 @@
  */
 
 #include "gtest/gtest.h"
-
-#include "../src/Light.hpp"
-#include "../src/Color.hpp"
-#include "../src/Tuple.hpp"
+#include "Light.hpp"
+#include "Color.hpp"
+#include "Tuple.hpp"
 
 TEST(LightTest, SetPositionAndIntensity)
 {
