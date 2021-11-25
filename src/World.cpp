@@ -43,15 +43,15 @@ std::vector<std::reference_wrapper<const Shape>> World::objects() const
     }
     for (const Cube& cube : cubes)
     {
-    	objects.emplace_back(std::ref(cube));
+        objects.emplace_back(std::ref(cube));
     }
     for (const Cylinder& cylinder : cylinders)
     {
-    	objects.emplace_back(std::ref(cylinder));
+        objects.emplace_back(std::ref(cylinder));
     }
     for (const Cone& cone : cones)
     {
-    	objects.emplace_back(std::ref(cone));
+        objects.emplace_back(std::ref(cone));
     }
 
     return objects;

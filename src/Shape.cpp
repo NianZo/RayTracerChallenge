@@ -130,160 +130,160 @@ std::vector<Intersection> Cube::objectIntersect(const Ray& r) const
 // Must have full constructor definition since infinity has an incomplete type
 Cylinder::Cylinder()
 {
-	transform = IdentityMatrix();
-	material = Material();
-	minimum = -std::numeric_limits<float>::infinity();
-	maximum = std::numeric_limits<float>::infinity();
-	closed = false;
+    transform = IdentityMatrix();
+    material = Material();
+    minimum = -std::numeric_limits<float>::infinity();
+    maximum = std::numeric_limits<float>::infinity();
+    closed = false;
 }
 
 Tuple Cylinder::objectNormal(const Tuple& p) const
 {
-	const float dist = p.x * p.x + p.z * p.z;
-	Tuple normal;
+    const float dist = p.x * p.x + p.z * p.z;
+    Tuple normal;
 
-	if (dist < 1.0f && p.y >= maximum - TUPLE_EPSILON)
-	{
-		normal = Vector(0, 1, 0);
-	} else if (dist < 1.0f && p.y <= minimum + TUPLE_EPSILON)
-	{
-		normal = Vector(0, -1, 0);
-	} else
-	{
-		normal = Vector(p.x, 0, p.z);
-	}
+    if (dist < 1.0f && p.y >= maximum - TUPLE_EPSILON)
+    {
+        normal = Vector(0, 1, 0);
+    } else if (dist < 1.0f && p.y <= minimum + TUPLE_EPSILON)
+    {
+        normal = Vector(0, -1, 0);
+    } else
+    {
+        normal = Vector(p.x, 0, p.z);
+    }
 
-	return normal;
+    return normal;
 }
 
 std::vector<Intersection> Cylinder::objectIntersect(const Ray& r) const
 {
-	std::vector<Intersection> i;
+    std::vector<Intersection> i;
 
-	// Calculate discriminant
-	const float a = r.direction.x * r.direction.x + r.direction.z * r.direction.z;
-	const float b = 2 * r.origin.x * r.direction.x + 2 * r.origin.z * r.direction.z;
-	const float c = r.origin.x * r.origin.x + r.origin.z * r.origin.z - 1;
-	const float discriminant = b * b - 4 * a * c;
+    // Calculate discriminant
+    const float a = r.direction.x * r.direction.x + r.direction.z * r.direction.z;
+    const float b = 2 * r.origin.x * r.direction.x + 2 * r.origin.z * r.direction.z;
+    const float c = r.origin.x * r.origin.x + r.origin.z * r.origin.z - 1;
+    const float discriminant = b * b - 4 * a * c;
 
-	if (std::abs(a) > TUPLE_EPSILON && discriminant >= 0)
-	{
-		const float t0 = (-b - sqrtf(discriminant)) / (2 * a);
-		const float t1 = (-b + sqrtf(discriminant)) / (2 * a);
+    if (std::abs(a) > TUPLE_EPSILON && discriminant >= 0)
+    {
+        const float t0 = (-b - sqrtf(discriminant)) / (2 * a);
+        const float t1 = (-b + sqrtf(discriminant)) / (2 * a);
 
-		const float y0 = r.origin.y + t0 * r.direction.y;
-		if (y0 > minimum && y0 < maximum)
-		{
-			i.emplace_back(Intersection(t0, this));
-		}
+        const float y0 = r.origin.y + t0 * r.direction.y;
+        if (y0 > minimum && y0 < maximum)
+        {
+            i.emplace_back(Intersection(t0, this));
+        }
 
-		const float y1 = r.origin.y + t1 * r.direction.y;
-		if (y1 > minimum && y1 < maximum)
-		{
-			i.emplace_back(Intersection(t1, this));
-		}
-	}
+        const float y1 = r.origin.y + t1 * r.direction.y;
+        if (y1 > minimum && y1 < maximum)
+        {
+            i.emplace_back(Intersection(t1, this));
+        }
+    }
 
-	if (closed)
-	{
-		const float tMin = (minimum - r.origin.y) / r.direction.y;
-		if (std::pow(r.origin.x + tMin * r.direction.x, 2.0f) + std::pow(r.origin.z + tMin * r.direction.z, 2.0f) <= 1.0f)
-		{
-			i.emplace_back(Intersection(tMin, this));
-		}
+    if (closed)
+    {
+        const float tMin = (minimum - r.origin.y) / r.direction.y;
+        if (std::pow(r.origin.x + tMin * r.direction.x, 2.0f) + std::pow(r.origin.z + tMin * r.direction.z, 2.0f) <= 1.0f)
+        {
+            i.emplace_back(Intersection(tMin, this));
+        }
 
-		const float tMax = (maximum - r.origin.y) / r.direction.y;
-		if (std::pow(r.origin.x + tMax * r.direction.x, 2.0f) + std::pow(r.origin.z + tMax * r.direction.z, 2.0f) <= 1.0f)
-		{
-			i.emplace_back(Intersection(tMax, this));
-		}
-	}
+        const float tMax = (maximum - r.origin.y) / r.direction.y;
+        if (std::pow(r.origin.x + tMax * r.direction.x, 2.0f) + std::pow(r.origin.z + tMax * r.direction.z, 2.0f) <= 1.0f)
+        {
+            i.emplace_back(Intersection(tMax, this));
+        }
+    }
 
-	return i;
+    return i;
 }
 
 Cone::Cone()
 {
-	transform = IdentityMatrix();
-	material = Material();
-	minimum = -std::numeric_limits<float>::infinity();
-	maximum = std::numeric_limits<float>::infinity();
-	closed = false;
+    transform = IdentityMatrix();
+    material = Material();
+    minimum = -std::numeric_limits<float>::infinity();
+    maximum = std::numeric_limits<float>::infinity();
+    closed = false;
 }
 
 Tuple Cone::objectNormal(const Tuple& p) const
 {
-	const float dist = p.x * p.x + p.z * p.z;
-	Tuple normal;
+    const float dist = p.x * p.x + p.z * p.z;
+    Tuple normal;
 
-	if (dist < 1.0f && p.y >= maximum - TUPLE_EPSILON)
-	{
-		normal = Vector(0, 1, 0);
-	} else if (dist < 1.0f && p.y <= minimum + TUPLE_EPSILON)
-	{
-		normal = Vector(0, -1, 0);
-	} else
-	{
-		float y = sqrtf(p.x * p.x + p.z * p.z);
-		y = p.y > 0 ? -y : y;
-		normal = Vector(p.x, y, p.z);
-	}
+    if (dist < 1.0f && p.y >= maximum - TUPLE_EPSILON)
+    {
+        normal = Vector(0, 1, 0);
+    } else if (dist < 1.0f && p.y <= minimum + TUPLE_EPSILON)
+    {
+        normal = Vector(0, -1, 0);
+    } else
+    {
+        float y = sqrtf(p.x * p.x + p.z * p.z);
+        y = p.y > 0 ? -y : y;
+        normal = Vector(p.x, y, p.z);
+    }
 
-	return normal;
+    return normal;
 }
 
 std::vector<Intersection> Cone::objectIntersect(const Ray& r) const
 {
-	std::vector<Intersection> i;
+    std::vector<Intersection> i;
 
-	// Calculate discriminant
-	const float a = r.direction.x * r.direction.x - r.direction.y * r.direction.y + r.direction.z * r.direction.z;
-	const float b = 2 * r.origin.x * r.direction.x - 2 * r.origin.y * r.direction.y + 2 * r.origin.z * r.direction.z;
-	const float c = r.origin.x * r.origin.x - r.origin.y * r.origin.y + r.origin.z * r.origin.z;
-	float discriminant = b * b - 4 * a * c;
-	if (std::abs(discriminant) < MATRIX_EPSILON)
-	{
-		discriminant = 0.0f;
-	}
+    // Calculate discriminant
+    const float a = r.direction.x * r.direction.x - r.direction.y * r.direction.y + r.direction.z * r.direction.z;
+    const float b = 2 * r.origin.x * r.direction.x - 2 * r.origin.y * r.direction.y + 2 * r.origin.z * r.direction.z;
+    const float c = r.origin.x * r.origin.x - r.origin.y * r.origin.y + r.origin.z * r.origin.z;
+    float discriminant = b * b - 4 * a * c;
+    if (std::abs(discriminant) < MATRIX_EPSILON)
+    {
+        discriminant = 0.0f;
+    }
 
-	if (std::abs(a) > TUPLE_EPSILON && discriminant >= 0)
-	{
-		const float t0 = (-b - sqrtf(discriminant)) / (2 * a);
-		const float t1 = (-b + sqrtf(discriminant)) / (2 * a);
+    if (std::abs(a) > TUPLE_EPSILON && discriminant >= 0)
+    {
+        const float t0 = (-b - sqrtf(discriminant)) / (2 * a);
+        const float t1 = (-b + sqrtf(discriminant)) / (2 * a);
 
-		const float y0 = r.origin.y + t0 * r.direction.y;
-		if (y0 > minimum && y0 < maximum)
-		{
-			i.emplace_back(Intersection(t0, this));
-		}
+        const float y0 = r.origin.y + t0 * r.direction.y;
+        if (y0 > minimum && y0 < maximum)
+        {
+            i.emplace_back(Intersection(t0, this));
+        }
 
-		const float y1 = r.origin.y + t1 * r.direction.y;
-		if (y1 > minimum && y1 < maximum)
-		{
-			i.emplace_back(Intersection(t1, this));
-		}
-	} else if (std::abs(a) < TUPLE_EPSILON)
-	{
-		const float t = -c / (2 * b);
-		i.emplace_back(Intersection(t, this));
-	}
+        const float y1 = r.origin.y + t1 * r.direction.y;
+        if (y1 > minimum && y1 < maximum)
+        {
+            i.emplace_back(Intersection(t1, this));
+        }
+    } else if (std::abs(a) < TUPLE_EPSILON)
+    {
+        const float t = -c / (2 * b);
+        i.emplace_back(Intersection(t, this));
+    }
 
-	if (closed)
-	{
-		const float tMin = (minimum - r.origin.y) / r.direction.y;
-		if (std::pow(r.origin.x + tMin * r.direction.x, 2.0f) + std::pow(r.origin.z + tMin * r.direction.z, 2.0f) <= minimum * minimum)
-		{
-			i.emplace_back(Intersection(tMin, this));
-		}
+    if (closed)
+    {
+        const float tMin = (minimum - r.origin.y) / r.direction.y;
+        if (std::pow(r.origin.x + tMin * r.direction.x, 2.0f) + std::pow(r.origin.z + tMin * r.direction.z, 2.0f) <= minimum * minimum)
+        {
+            i.emplace_back(Intersection(tMin, this));
+        }
 
-		const float tMax = (maximum - r.origin.y) / r.direction.y;
-		if (std::pow(r.origin.x + tMax * r.direction.x, 2.0f) + std::pow(r.origin.z + tMax * r.direction.z, 2.0f) <= maximum * maximum)
-		{
-			i.emplace_back(Intersection(tMax, this));
-		}
-	}
+        const float tMax = (maximum - r.origin.y) / r.direction.y;
+        if (std::pow(r.origin.x + tMax * r.direction.x, 2.0f) + std::pow(r.origin.z + tMax * r.direction.z, 2.0f) <= maximum * maximum)
+        {
+            i.emplace_back(Intersection(tMax, this));
+        }
+    }
 
-	return i;
+    return i;
 }
 
 Sphere GlassSphere()

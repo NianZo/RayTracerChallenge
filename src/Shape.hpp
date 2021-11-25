@@ -11,8 +11,8 @@
 #include "Material.hpp"
 #include "Matrix.hpp"
 
-#include <vector>
 #include <numbers>
+#include <vector>
 
 class Ray;
 class Intersection;
@@ -73,29 +73,29 @@ class Cube : public Shape
 class Cylinder : public Shape
 {
   public:
-	float minimum;
-	float maximum;
-	bool closed;
+    float minimum;
+    float maximum;
+    bool closed;
 
-	Cylinder();
+    Cylinder();
 
   private:
-	Tuple objectNormal(const Tuple& p) const override;
-	std::vector<Intersection> objectIntersect(const Ray& r) const override;
+    Tuple objectNormal(const Tuple& p) const override;
+    std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Cone : public Shape
 {
-public:
-	float minimum;
-	float maximum;
-	bool closed;
+  public:
+    float minimum;
+    float maximum;
+    bool closed;
 
-	Cone();
+    Cone();
 
-private:
-	Tuple objectNormal(const Tuple& p) const override;
-	std::vector<Intersection> objectIntersect(const Ray& r) const override;
+  private:
+    Tuple objectNormal(const Tuple& p) const override;
+    std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Intersection

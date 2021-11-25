@@ -8,9 +8,9 @@
 #ifndef SRC_WORLD_HPP_
 #define SRC_WORLD_HPP_
 
-#include "Shape.hpp"
 #include "Light.hpp"
 #include "Ray.hpp"
+#include "Shape.hpp"
 #include <functional>
 #include <vector>
 
