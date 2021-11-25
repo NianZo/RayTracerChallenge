@@ -12,6 +12,7 @@
 #include "Matrix.hpp"
 
 #include <vector>
+#include <numbers>
 
 class Ray;
 class Intersection;
@@ -50,12 +51,6 @@ class Shape
 
 class Sphere : public Shape
 {
-  public:
-    //Sphere() {transform = IdentityMatrix();}
-    //~Sphere() = default;
-
-    //Tuple normal(const Tuple& p) const;
-
   private:
     Tuple objectNormal(const Tuple& p) const override;
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
@@ -63,7 +58,6 @@ class Sphere : public Shape
 
 class Plane : public Shape
 {
-  public:
   private:
     Tuple objectNormal(const Tuple& p) const override;
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
@@ -74,6 +68,19 @@ class Cube : public Shape
   private:
     Tuple objectNormal(const Tuple& p) const override;
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
+};
+
+class Cylinder : public Shape
+{
+  public:
+	float minimum;
+	float maximum;
+	bool closed;
+
+	Cylinder();
+  private:
+	Tuple objectNormal(const Tuple& p) const override;
+	std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Intersection
