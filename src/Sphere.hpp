@@ -78,7 +78,22 @@ class Cylinder : public Shape
 	bool closed;
 
 	Cylinder();
+
   private:
+	Tuple objectNormal(const Tuple& p) const override;
+	std::vector<Intersection> objectIntersect(const Ray& r) const override;
+};
+
+class Cone : public Shape
+{
+public:
+	float minimum;
+	float maximum;
+	bool closed;
+
+	Cone();
+
+private:
 	Tuple objectNormal(const Tuple& p) const override;
 	std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
