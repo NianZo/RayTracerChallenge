@@ -5,10 +5,10 @@
  *      Author: nic
  */
 
+#include "Shape.hpp"
 #include "Camera.hpp"
 #include "Canvas.hpp"
 #include "Ray.hpp"
-#include "Sphere.hpp"
 #include "Transformation.hpp"
 #include "World.hpp"
 #include <chrono>

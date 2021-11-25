@@ -5,9 +5,9 @@
  *      Author: nic
  */
 
+#include "Shape.hpp"
 #include "Canvas.hpp"
 #include "Ray.hpp"
-#include "Sphere.hpp"
 #include "Transformation.hpp"
 #include <fstream>
 #include <iostream>

@@ -5,10 +5,10 @@
  *      Author: nic
  */
 
+#include "Shape.hpp"
 #include "gtest/gtest.h"
 #include "Tuple.hpp"
 #include "Ray.hpp"
-#include "Sphere.hpp"
 #include "Transformation.hpp"
 #include "Material.hpp"
 #include <cmath>

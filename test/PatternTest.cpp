@@ -5,9 +5,9 @@
  *      Author: nic
  */
 
+#include "Shape.hpp"
 #include "gtest/gtest.h"
 #include "Material.hpp"
-#include "Sphere.hpp"
 #include "Transformation.hpp"
 
 TEST(PatternTest, CreatingStripePattern)

@@ -8,7 +8,7 @@
 #ifndef SRC_RAY_HPP_
 #define SRC_RAY_HPP_
 
-#include "Sphere.hpp"
+#include "Shape.hpp"
 #include "Tuple.hpp"
 
 #include <optional>

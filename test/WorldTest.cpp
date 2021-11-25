@@ -5,11 +5,11 @@
  *      Author: nic
  */
 
+#include "Shape.hpp"
 #include "gtest/gtest.h"
 #include "World.hpp"
 #include "Light.hpp"
 #include "Transformation.hpp"
-#include "Sphere.hpp"
 #include "Ray.hpp"
 #include <cmath>
 

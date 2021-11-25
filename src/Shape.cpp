@@ -5,7 +5,7 @@
  *      Author: nic
  */
 
-#include "Sphere.hpp"
+#include "Shape.hpp"
 #include "Ray.hpp"
 
 #include <cmath>

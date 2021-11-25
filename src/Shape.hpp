@@ -5,8 +5,8 @@
  *      Author: nic
  */
 
-#ifndef SRC_SPHERE_HPP_
-#define SRC_SPHERE_HPP_
+#ifndef SRC_SHAPE_HPP_
+#define SRC_SHAPE_HPP_
 
 #include "Material.hpp"
 #include "Matrix.hpp"
@@ -129,4 +129,4 @@ struct IntersectionDetails
 
 Sphere GlassSphere();
 
-#endif /* SRC_SPHERE_HPP_ */
+#endif /* SRC_SHAPE_HPP_ */
