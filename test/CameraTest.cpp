@@ -6,14 +6,13 @@
  */
 
 #include "gtest/gtest.h"
-
 #include <numbers>
-#include "../src/Camera.hpp"
-#include "../src/Matrix.hpp"
-#include "../src/Ray.hpp"
-#include "../src/Transformation.hpp"
-#include "../src/World.hpp"
-#include "../src/Canvas.hpp"
+#include "Camera.hpp"
+#include "Matrix.hpp"
+#include "Ray.hpp"
+#include "Transformation.hpp"
+#include "World.hpp"
+#include "Canvas.hpp"
 
 TEST(CameraTest, CameraConstruction)
 {

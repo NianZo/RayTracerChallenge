@@ -6,9 +6,9 @@
  */
 
 #include "gtest/gtest.h"
-#include "../src/Material.hpp"
-#include "../src/Sphere.hpp"
-#include "../src/Transformation.hpp"
+#include "Material.hpp"
+#include "Sphere.hpp"
+#include "Transformation.hpp"
 
 TEST(PatternTest, CreatingStripePattern)
 {

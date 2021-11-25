@@ -5,10 +5,8 @@
  *      Author: nic
  */
 
-#include "../src/Canvas.hpp"
-
+#include "Canvas.hpp"
 #include "gtest/gtest.h"
-
 #include <cmath>
 #include <string_view>
 #include <string>

@@ -5,12 +5,9 @@
  *      Author: nic
  */
 
-#include "../src/Matrix.hpp"
-#include "../src/Tuple.hpp"
-//#include "../src/Matrix.cpp" // TODO I get link errors for templated member functions without this... why is this?
-
+#include "Matrix.hpp"
+#include "Tuple.hpp"
 #include "gtest/gtest.h"
-
 #include <cmath>
 
 TEST(MatrixTest, Matrix4Creation)

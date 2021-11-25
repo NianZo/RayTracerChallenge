@@ -5,11 +5,9 @@
  *      Author: nic
  */
 
-#include "../src/Tuple.hpp"
-#include "../src/Transformation.hpp"
-
+#include "Tuple.hpp"
+#include "Transformation.hpp"
 #include "gtest/gtest.h"
-
 #include <cmath>
 #include <numbers>
 

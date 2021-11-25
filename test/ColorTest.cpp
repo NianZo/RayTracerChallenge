@@ -5,10 +5,8 @@
  *      Author: nic
  */
 
-#include "../src/Color.hpp"
-
+#include "Color.hpp"
 #include "gtest/gtest.h"
-
 #include <cmath>
 
 

@@ -6,11 +6,11 @@
  */
 
 #include "gtest/gtest.h"
-#include "../src/Tuple.hpp"
-#include "../src/Ray.hpp"
-#include "../src/Sphere.hpp"
-#include "../src/Transformation.hpp"
-#include "../src/Material.hpp"
+#include "Tuple.hpp"
+#include "Ray.hpp"
+#include "Sphere.hpp"
+#include "Transformation.hpp"
+#include "Material.hpp"
 #include <cmath>
 #include <numbers>
 

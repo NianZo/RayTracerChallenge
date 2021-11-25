@@ -6,10 +6,10 @@
  */
 
 #include "gtest/gtest.h"
-#include "../src/Tuple.hpp"
-#include "../src/Transformation.hpp"
-#include "../src/Ray.hpp"
-#include "../src/World.hpp"
+#include "Tuple.hpp"
+#include "Transformation.hpp"
+#include "Ray.hpp"
+#include "World.hpp"
 #include <cmath>
 #include <array>
 

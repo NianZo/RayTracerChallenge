@@ -1,7 +1,4 @@
-#include "BallisticsSimulator.cpp"
-#include "ClockFace.cpp"
-#include "RenderChapter7Scene.cpp"
-#include "SphereImage.cpp"
+#include "Exercises.hpp"
 #include <cstdlib>
 #include <iostream>
 

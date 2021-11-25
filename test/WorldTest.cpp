@@ -6,12 +6,11 @@
  */
 
 #include "gtest/gtest.h"
-
-#include "../src/World.hpp"
-#include "../src/Light.hpp"
-#include "../src/Transformation.hpp"
-#include "../src/Sphere.hpp"
-#include "../src/Ray.hpp"
+#include "World.hpp"
+#include "Light.hpp"
+#include "Transformation.hpp"
+#include "Sphere.hpp"
+#include "Ray.hpp"
 #include <cmath>
 
 TEST(WorldTest, DefaultWorld)

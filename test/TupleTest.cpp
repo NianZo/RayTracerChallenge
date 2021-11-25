@@ -5,10 +5,8 @@
  *      Author: nic
  */
 
-#include "../src/Tuple.hpp"
-
+#include "Tuple.hpp"
 #include "gtest/gtest.h"
-
 #include <cmath>
 
 TEST(TupleTest, TupleCreation)
