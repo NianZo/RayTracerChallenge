@@ -165,8 +165,6 @@ TEST(WorldTest, ShadeHitGetsIntersectionInShadow)
 	EXPECT_EQ(c, Color(0.1, 0.1, 0.1));
 }
 
-//TODO add tests for scenes with multiple types of objects, functional bugs found in 'putting it all together'
-
 TEST(WorldTest, ReflectedColorForNonreflectiveMaterial)
 {
 	World w = World::BaseWorld();
@@ -342,6 +340,35 @@ TEST(WorldTest, ShadeHitWithReflectiveTransparentMaterial)
 	Color c = w.shadeHit(id, 5);
 
 	EXPECT_EQ(c, Color(0.93391, 0.69643, 0.69243));
+}
+
+TEST(WorldTest, WorldCanHoldAllSupportedShapes)
+{
+	World w;
+
+	Sphere s;
+	s.transform = translation(1, 0, 0);
+	w.spheres.push_back(s);
+	Plane p;
+	p.transform = translation(2, 0, 0);
+	w.planes.push_back(p);
+	Cube c;
+	c.transform = translation(3, 0, 0);
+	w.cubes.push_back(c);
+	Cylinder cyl;
+	cyl.transform = translation(4, 0, 0);
+	w.cylinders.push_back(cyl);
+	Cone co;
+	co.transform = translation(5, 0, 0);
+	w.cones.push_back(co);
+
+	auto refs = w.objects();
+
+	EXPECT_EQ(refs[0].get(), s);
+	EXPECT_EQ(refs[1].get(), p);
+	EXPECT_EQ(refs[2].get(), c);
+	EXPECT_EQ(refs[3].get(), cyl);
+	EXPECT_EQ(refs[4].get(), co);
 }
 
 

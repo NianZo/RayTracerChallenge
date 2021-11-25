@@ -41,6 +41,18 @@ std::vector<std::reference_wrapper<const Shape>> World::objects() const
     {
         objects.emplace_back(std::ref(plane));
     }
+    for (const Cube& cube : cubes)
+    {
+    	objects.emplace_back(std::ref(cube));
+    }
+    for (const Cylinder& cylinder : cylinders)
+    {
+    	objects.emplace_back(std::ref(cylinder));
+    }
+    for (const Cone& cone : cones)
+    {
+    	objects.emplace_back(std::ref(cone));
+    }
 
     return objects;
 }
