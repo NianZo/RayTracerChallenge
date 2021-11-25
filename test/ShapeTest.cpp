@@ -5,10 +5,10 @@
  *      Author: nic
  */
 
+#include "Shape.hpp"
 #include "gtest/gtest.h"
 #include "Tuple.hpp"
 #include "Ray.hpp"
-#include "Sphere.hpp"
 #include "Transformation.hpp"
 #include "Material.hpp"
 #include <cmath>
@@ -399,6 +399,245 @@ TEST(CubeTest, CubeNormal)
 	Tuple p8 = Point(-1, -1, -1);
 	Tuple normal8 = c.normal(p8);
 	EXPECT_EQ(normal8, Vector(-1, 0, 0));
+}
+
+TEST(CylinderTest, RayMissesCylinder)
+{
+	Cylinder c;
+
+	Ray r1(Point(1, 0, 0), Vector(0, 1, 0));
+	auto intersections1 = c.intersect(r1);
+	EXPECT_EQ(intersections1.size(), 0);
+
+	Ray r2(Point(0, 0, 0), Vector(0, 1, 0));
+	auto intersections2 = c.intersect(r2);
+	EXPECT_EQ(intersections2.size(), 0);
+
+	Ray r3(Point(0, 0, -5), Vector(1, 1, 1).normalize());
+	auto intersections3 = c.intersect(r3);
+	EXPECT_EQ(intersections3.size(), 0);
+}
+
+TEST(CylinderTest, RayHitsCylinder)
+{
+	Cylinder c;
+
+	Ray r1(Point(1, 0, -5), Vector(0, 0, 1));
+	auto intersections1 = c.intersect(r1);
+	EXPECT_EQ(intersections1.size(), 2);
+	EXPECT_FLOAT_EQ(intersections1[0].t, 5);
+	EXPECT_FLOAT_EQ(intersections1[1].t, 5);
+
+	Ray r2(Point(0, 0, -5), Vector(0, 0, 1));
+	auto intersections2 = c.intersect(r2);
+	EXPECT_EQ(intersections2.size(), 2);
+	EXPECT_FLOAT_EQ(intersections2[0].t, 4);
+	EXPECT_FLOAT_EQ(intersections2[1].t, 6);
+
+	Ray r3(Point(0.5, 0, -5), Vector(0.1, 1, 1).normalize());
+	auto intersections3 = c.intersect(r3);
+	EXPECT_EQ(intersections3.size(), 2);
+	EXPECT_FLOAT_EQ(intersections3[0].t, 6.808006);
+	EXPECT_FLOAT_EQ(intersections3[1].t, 7.08870);
+}
+
+TEST(CylinderTest, NormalOfCylinder)
+{
+	Cylinder c;
+
+	Tuple n1 = c.normal(Point(1, 0, 0));
+	EXPECT_EQ(n1, Vector(1, 0, 0));
+
+	Tuple n2 = c.normal(Point(0, 5, -1));
+	EXPECT_EQ(n2, Vector(0, 0, -1));
+
+	Tuple n3 = c.normal(Point(0, -2, 1));
+	EXPECT_EQ(n3, Vector(0, 0, 1));
+
+	Tuple n4 = c.normal(Point(-1, 1, 0));
+	EXPECT_EQ(n4, Vector(-1, 0, 0));
+}
+
+TEST(CylinderTest, DefaultCylinderExtent)
+{
+	Cylinder c;
+
+	EXPECT_FLOAT_EQ(c.minimum, -std::numeric_limits<float>::infinity());
+	EXPECT_FLOAT_EQ(c.maximum, std::numeric_limits<float>::infinity());
+}
+
+TEST(CylinderTest, IntersectingConstrainedCylinder)
+{
+	Cylinder c;
+	c.minimum = 1;
+	c.maximum = 2;
+
+	Ray r1(Point(0, 1.5, 0), Vector(0.1, 1, 0));
+	auto intersections1 = c.intersect(r1);
+	EXPECT_EQ(intersections1.size(), 0);
+
+	Ray r2(Point(0, 3, -5), Vector(0, 0, 1));
+	auto intersections2 = c.intersect(r2);
+	EXPECT_EQ(intersections2.size(), 0);
+
+	Ray r3(Point(0, 0, -5), Vector(0, 0, 1));
+	auto intersections3 = c.intersect(r3);
+	EXPECT_EQ(intersections3.size(), 0);
+
+	Ray r4(Point(0, 2, -5), Vector(0, 0, 1));
+	auto intersections4 = c.intersect(r4);
+	EXPECT_EQ(intersections4.size(), 0);
+
+	Ray r5(Point(0, 1, -5), Vector(0, 0, 1));
+	auto intersections5 = c.intersect(r5);
+	EXPECT_EQ(intersections5.size(), 0);
+
+	Ray r6(Point(0, 1.5, -2), Vector(0, 0, 1));
+	auto intersections6 = c.intersect(r6);
+	EXPECT_EQ(intersections6.size(), 2);
+}
+
+TEST(CylinderTest, DefaultCylinderNotClosed)
+{
+	Cylinder c;
+
+	EXPECT_FALSE(c.closed);
+}
+
+TEST(CylinderTest, IntersectingCapsOfClosedCylinder)
+{
+	Cylinder c;
+	c.minimum = 1;
+	c.maximum = 2;
+	c.closed = true;
+
+	Ray r1(Point(0, 3, 0), Vector(0, -1, 0));
+	auto intersections1 = c.intersect(r1);
+	EXPECT_EQ(intersections1.size(), 2);
+
+	Ray r2(Point(0, 3, -2), Vector(0, -1, 2));
+	auto intersections2 = c.intersect(r2);
+	EXPECT_EQ(intersections2.size(), 2);
+
+	Ray r3(Point(0, 4, -2), Vector(0, -1, 1));
+	auto intersections3 = c.intersect(r3);
+	EXPECT_EQ(intersections3.size(), 2);
+
+	Ray r4(Point(0, 0, -2), Vector(0, 1, 2));
+	auto intersections4 = c.intersect(r4);
+	EXPECT_EQ(intersections4.size(), 2);
+
+	Ray r5(Point(0, -1, -2), Vector(0, 1, 1));
+	auto intersections5 = c.intersect(r5);
+	EXPECT_EQ(intersections5.size(), 2);
+}
+
+TEST(CylinderTest, NormalVectorOnCylinderEndCaps)
+{
+	Cylinder c;
+	c.minimum = 1;
+	c.maximum = 2;
+	c.closed = true;
+
+	Tuple n1 = c.normal(Point(0, 1, 0));
+	EXPECT_EQ(n1, Vector(0, -1, 0));
+
+	Tuple n2 = c.normal(Point(0.5, 1, 0));
+	EXPECT_EQ(n2, Vector(0, -1, 0));
+
+	Tuple n3 = c.normal(Point(0, 1, 0.5));
+	EXPECT_EQ(n3, Vector(0, -1, 0));
+
+	Tuple n4 = c.normal(Point(0, 2, 0));
+	EXPECT_EQ(n4, Vector(0, 1, 0));
+
+	Tuple n5 = c.normal(Point(0.5, 2, 0));
+	EXPECT_EQ(n5, Vector(0, 1, 0));
+
+	Tuple n6 = c.normal(Point(0, 2, 0.5));
+	EXPECT_EQ(n6, Vector(0, 1, 0));
+}
+
+TEST(ConeTest, ConeExtentDefault)
+{
+	Cone c;
+
+	EXPECT_FLOAT_EQ(c.minimum, -std::numeric_limits<float>::infinity());
+	EXPECT_FLOAT_EQ(c.maximum, std::numeric_limits<float>::infinity());
+}
+
+TEST(ConeTest, DefaultConeNotClosed)
+{
+	Cone c;
+
+	EXPECT_FALSE(c.closed);
+}
+
+TEST(ConeTest, IntersectingConeWithRay)
+{
+	Cone c;
+
+	Ray r1(Point(0, 0, -5), Vector(0, 0, 1));
+	auto intersections1 = c.intersect(r1);
+	EXPECT_EQ(intersections1.size(), 2);
+	EXPECT_FLOAT_EQ(intersections1[0].t, 5);
+	EXPECT_FLOAT_EQ(intersections1[1].t, 5);
+
+	Ray r2(Point(0, 0, -5), Vector(1, 1, 1).normalize());
+	auto intersections2 = c.intersect(r2);
+	EXPECT_EQ(intersections2.size(), 2);
+	EXPECT_FLOAT_EQ(intersections2[0].t, 8.6602545);
+	EXPECT_FLOAT_EQ(intersections2[1].t, 8.6602545);
+
+	Ray r3(Point(1, 1, -5), Vector(-0.5, -1, 1).normalize());
+	auto intersections3 = c.intersect(r3);
+	EXPECT_EQ(intersections3.size(), 2);
+	EXPECT_FLOAT_EQ(intersections3[0].t, 4.5500546);
+	EXPECT_FLOAT_EQ(intersections3[1].t, 49.44994);
+}
+
+TEST(ConeTest, IntersectingConeWithRayParallelToOneHalf)
+{
+	Cone c;
+
+	Ray r(Point(0, 0, -1), Vector(0, 1, 1).normalize());
+	auto intersections = c.intersect(r);
+	EXPECT_EQ(intersections.size(), 1);
+	EXPECT_FLOAT_EQ(intersections[0].t, 0.35355338);
+}
+
+TEST(ConeTest, IntersectingCapsOfClosedCone)
+{
+	Cone c;
+	c.minimum = -0.5f;
+	c.maximum = 0.5f;
+	c.closed = true;
+
+	Ray r1(Point(0, 0, -5), Vector(0, 1, 0));
+	auto intersections1 = c.intersect(r1);
+	EXPECT_EQ(intersections1.size(), 0);
+
+	Ray r2(Point(0, 0, -0.25), Vector(0, 1, 1).normalize());
+	auto intersections2 = c.intersect(r2);
+	EXPECT_EQ(intersections2.size(), 2);
+
+	Ray r3(Point(0, 0, -0.25), Vector(0, 1, 0));
+	auto intersections3 = c.intersect(r3);
+	EXPECT_EQ(intersections3.size(), 4);
+}
+
+TEST(ConeTest, NormalsOfCone)
+{
+	Cone c;
+
+	Tuple n1 = c.normal(Point(0, 0, 0));
+	EXPECT_EQ(n1, Vector(0, 0, 0));
+
+	Tuple n2 = c.normal(Point(1, 1, 1));
+	EXPECT_EQ(n2, Vector(1, -sqrt(2), 1));
+
+	Tuple n3 = c.normal(Point(-1, -1, 0));
+	EXPECT_EQ(n3, Vector(-1, 1, 0));
 }
 
 

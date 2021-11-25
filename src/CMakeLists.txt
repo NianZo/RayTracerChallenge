@@ -3,7 +3,7 @@ set(SOURCES
 	Camera.cpp
 	World.cpp
 	Material.cpp
-	Sphere.cpp
+	Shape.cpp
 	Ray.cpp
 	Transformation.cpp
 	Matrix.cpp

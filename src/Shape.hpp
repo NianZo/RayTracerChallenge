@@ -5,12 +5,13 @@
  *      Author: nic
  */
 
-#ifndef SRC_SPHERE_HPP_
-#define SRC_SPHERE_HPP_
+#ifndef SRC_SHAPE_HPP_
+#define SRC_SHAPE_HPP_
 
 #include "Material.hpp"
 #include "Matrix.hpp"
 
+#include <numbers>
 #include <vector>
 
 class Ray;
@@ -50,12 +51,6 @@ class Shape
 
 class Sphere : public Shape
 {
-  public:
-    //Sphere() {transform = IdentityMatrix();}
-    //~Sphere() = default;
-
-    //Tuple normal(const Tuple& p) const;
-
   private:
     Tuple objectNormal(const Tuple& p) const override;
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
@@ -63,7 +58,6 @@ class Sphere : public Shape
 
 class Plane : public Shape
 {
-  public:
   private:
     Tuple objectNormal(const Tuple& p) const override;
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
@@ -71,6 +65,34 @@ class Plane : public Shape
 
 class Cube : public Shape
 {
+  private:
+    Tuple objectNormal(const Tuple& p) const override;
+    std::vector<Intersection> objectIntersect(const Ray& r) const override;
+};
+
+class Cylinder : public Shape
+{
+  public:
+    float minimum;
+    float maximum;
+    bool closed;
+
+    Cylinder();
+
+  private:
+    Tuple objectNormal(const Tuple& p) const override;
+    std::vector<Intersection> objectIntersect(const Ray& r) const override;
+};
+
+class Cone : public Shape
+{
+  public:
+    float minimum;
+    float maximum;
+    bool closed;
+
+    Cone();
+
   private:
     Tuple objectNormal(const Tuple& p) const override;
     std::vector<Intersection> objectIntersect(const Ray& r) const override;
@@ -107,4 +129,4 @@ struct IntersectionDetails
 
 Sphere GlassSphere();
 
-#endif /* SRC_SPHERE_HPP_ */
+#endif /* SRC_SHAPE_HPP_ */

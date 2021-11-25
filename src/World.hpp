@@ -10,7 +10,7 @@
 
 #include "Light.hpp"
 #include "Ray.hpp"
-#include "Sphere.hpp"
+#include "Shape.hpp"
 #include <functional>
 #include <vector>
 
@@ -19,8 +19,9 @@ class World
   public:
     std::vector<Sphere> spheres;
     std::vector<Plane> planes;
-    //std::vector<std::reference_wrapper<Shape>> objects;
-    //std::vector<Light> lights;
+    std::vector<Cube> cubes;
+    std::vector<Cylinder> cylinders;
+    std::vector<Cone> cones;
     Light light;
 
     World() = default;

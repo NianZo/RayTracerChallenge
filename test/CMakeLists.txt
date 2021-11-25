@@ -7,7 +7,7 @@ set(TEST_SOURCES
 	MatrixTest.cpp
 	TransformationTest.cpp
 	RayTest.cpp
-	SphereTest.cpp
+	ShapeTest.cpp
 	LightTest.cpp
 	MaterialTest.cpp
 	WorldTest.cpp

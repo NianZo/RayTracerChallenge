@@ -5,7 +5,7 @@
  *      Author: nic
  */
 
-#include "../src/Tuple.hpp"
+#include "Tuple.hpp"
 #include <cmath>
 #include <cstdlib>
 
