@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+  CXX: g++-11
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -27,8 +32,8 @@ jobs:
       
       - name: Setup
         # Need to install a newer compiler for numbers header to be seen
-        run: sudo apt-get install clang clang-tidy-12;
+        run: sudo apt-get install g++-11 clang clang-tidy-12;
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: ls /usr/bin/clang*; clang --version; clang-tidy-12 src/*pp
+        run: clang-tidy-12 src/*pp
