@@ -31,4 +31,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: locate clang; clang --version; clang-tidy-12 src/*pp
+        run: ls /usr/bin/clang*; clang --version; clang-tidy-12 src/*pp
