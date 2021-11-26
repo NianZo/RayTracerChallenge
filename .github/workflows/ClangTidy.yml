@@ -27,7 +27,7 @@ jobs:
       
       - name: Setup
         # Need to install a newer compiler for numbers header to be seen
-        run: sudo apt-get install clang clang-tidy;
+        run: sudo apt-get install clang clang-tidy-12;
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
