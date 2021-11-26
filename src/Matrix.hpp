@@ -29,18 +29,18 @@ class Matrix
 
     std::array<float, N>& operator[](const uint32_t index);
     const std::array<float, N>& operator[](const uint32_t index) const;
-    bool operator==(const Matrix<N>& other) const;
-    bool operator!=(const Matrix<N>& other) const; // The inequality operator tests passed without this... what?!
-    Matrix<N> operator*(const Matrix<N>& other) const;
-    Tuple operator*(const Tuple& other) const;
+    [[nodiscard]] bool operator==(const Matrix<N>& other) const;
+    [[nodiscard]] bool operator!=(const Matrix<N>& other) const; // The inequality operator tests passed without this... what?!
+    [[nodiscard]] Matrix<N> operator*(const Matrix<N>& other) const;
+    [[nodiscard]] Tuple operator*(const Tuple& other) const;
 
-    Matrix<N> transpose() const;
-    float determinant() const;
-    Matrix<N - 1> submatrix(uint32_t row, uint32_t col) const;
-    float minor(uint32_t row, uint32_t col) const;
-    float cofactor(uint32_t row, uint32_t col) const;
-    bool invertible() const;
-    Matrix<N> inverse() const;
+    [[nodiscard]] Matrix<N> transpose() const;
+    [[nodiscard]] float determinant() const;
+    [[nodiscard]] Matrix<N - 1> submatrix(uint32_t row, uint32_t col) const;
+    [[nodiscard]] float minor(uint32_t row, uint32_t col) const;
+    [[nodiscard]] float cofactor(uint32_t row, uint32_t col) const;
+    [[nodiscard]] bool invertible() const;
+    [[nodiscard]] Matrix<N> inverse() const;
 
   private:
     std::array<std::array<float, N>, N> data;

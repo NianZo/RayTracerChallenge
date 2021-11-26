@@ -20,7 +20,7 @@ class Canvas
     std::vector<std::vector<Color>> pixels;
 
     Canvas(const uint32_t widthIn, const uint32_t heightIn);
-    std::string GetPPMString() const;
+    [[nodiscard]] std::string GetPPMString() const;
 };
 
 #endif /* SRC_CANVAS_HPP_ */

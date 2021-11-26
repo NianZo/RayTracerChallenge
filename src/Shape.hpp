@@ -32,17 +32,17 @@ class Shape
 
     bool operator==(const Shape& other) const { return transform == other.transform && material == other.material; }
 
-    Tuple normal(const Tuple& p) const;
-    std::vector<Intersection> intersect(const Ray& r) const;
-    Color shade(const Light& light, const Tuple& position, const Tuple& eyeVector, const bool inShadow) const;
+    [[nodiscard]] Tuple normal(const Tuple& p) const;
+    [[nodiscard]] std::vector<Intersection> intersect(const Ray& r) const;
+    [[nodiscard]] Color shade(const Light& light, const Tuple& position, const Tuple& eyeVector, const bool inShadow) const;
 
   private:
     // I'd prefer to not define these and have a compile time error if these are used, but *shrug*
-    virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const
+    [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const
     {
         return Tuple(0.0f, 0.0f, 0.0f, 0.0f);
     }
-    virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const
+    [[nodiscard]] virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const
     {
         std::vector<Intersection> i;
         return i;
@@ -52,22 +52,22 @@ class Shape
 class Sphere : public Shape
 {
   private:
-    Tuple objectNormal(const Tuple& p) const override;
-    std::vector<Intersection> objectIntersect(const Ray& r) const override;
+	[[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
+	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Plane : public Shape
 {
   private:
-    Tuple objectNormal(const Tuple& p) const override;
-    std::vector<Intersection> objectIntersect(const Ray& r) const override;
+	[[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
+	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Cube : public Shape
 {
   private:
-    Tuple objectNormal(const Tuple& p) const override;
-    std::vector<Intersection> objectIntersect(const Ray& r) const override;
+	[[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
+	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Cylinder : public Shape
@@ -80,8 +80,8 @@ class Cylinder : public Shape
     Cylinder();
 
   private:
-    Tuple objectNormal(const Tuple& p) const override;
-    std::vector<Intersection> objectIntersect(const Ray& r) const override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Cone : public Shape
@@ -94,8 +94,8 @@ class Cone : public Shape
     Cone();
 
   private:
-    Tuple objectNormal(const Tuple& p) const override;
-    std::vector<Intersection> objectIntersect(const Ray& r) const override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Intersection
