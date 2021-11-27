@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <cmath>
 
-const Tuple Ray::cast(const float t) const
+Tuple Ray::cast(const float t) const
 {
     return origin + direction * t;
 }
@@ -39,7 +39,7 @@ const Tuple Ray::cast(const float t) const
 //	return intersections;
 //}
 
-const std::optional<Intersection> Ray::hit(std::vector<Intersection> intersections)
+std::optional<Intersection> Ray::hit(std::vector<Intersection> intersections)
 {
     std::sort(intersections.begin(), intersections.end());
     for (const auto intersection : intersections)

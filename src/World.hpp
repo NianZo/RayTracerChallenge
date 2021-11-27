@@ -26,13 +26,13 @@ class World
 
     World() = default;
 
-    std::vector<std::reference_wrapper<const Shape>> objects() const;
-    std::vector<Intersection> intersect(Ray r) const;
-    Color shadeHit(const IntersectionDetails& id, int remainingCalls = 4) const;
-    Color reflectedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
-    Color refractedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
-    Color colorAt(Ray r, int remainingCalls = 4) const;
-    bool isShadowed(const Tuple& point) const;
+    [[nodiscard]] std::vector<std::reference_wrapper<const Shape>> objects() const;
+    [[nodiscard]] std::vector<Intersection> intersect(Ray r) const;
+    [[nodiscard]] Color shadeHit(const IntersectionDetails& id, int remainingCalls = 4) const;
+    [[nodiscard]] Color reflectedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
+    [[nodiscard]] Color refractedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
+    [[nodiscard]] Color colorAt(Ray r, int remainingCalls = 4) const;
+    [[nodiscard]] bool isShadowed(const Tuple& point) const;
 
     static World BaseWorld();
 };

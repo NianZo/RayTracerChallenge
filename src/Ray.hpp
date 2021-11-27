@@ -21,11 +21,10 @@ class Ray
     Tuple direction;
 
     Ray(const Tuple& originIn, const Tuple& directionIn) : origin(originIn), direction(directionIn){};
-    const Tuple cast(const float t) const;
-    //const std::vector<Intersection> intersect(const Sphere& s) const;
-    static const std::optional<Intersection> hit(const std::vector<Intersection> intersections);
-    Ray transform(const Matrix<4>& m) const;
-    IntersectionDetails precomputeDetails(Intersection i, const std::vector<Intersection>& intersections) const;
+    [[nodiscard]] Tuple cast(const float t) const;
+    [[nodiscard]] static std::optional<Intersection> hit(const std::vector<Intersection> intersections);
+    [[nodiscard]] Ray transform(const Matrix<4>& m) const;
+    [[nodiscard]] IntersectionDetails precomputeDetails(Intersection i, const std::vector<Intersection>& intersections) const;
 };
 
 #endif /* SRC_RAY_HPP_ */

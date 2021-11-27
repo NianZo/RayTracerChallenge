@@ -65,7 +65,6 @@ std::string Canvas::GetPPMString() const
         // Remove trailing space and add newline
         ppmData.pop_back();
         ppmData += "\n";
-        charCount = 0;
     }
     return ppmData;
 }

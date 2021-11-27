@@ -30,13 +30,13 @@ class Tuple
     Tuple operator*(const float) const;
     Tuple operator/(const float) const;
 
-    bool IsPoint() const;
-    bool IsVector() const;
-    float magnitude() const;
-    Tuple normalize() const;
-    float dot(const Tuple&) const;
-    Tuple cross(const Tuple&) const;
-    Tuple reflect(const Tuple&) const;
+    [[nodiscard]] bool IsPoint() const;
+    [[nodiscard]] bool IsVector() const;
+    [[nodiscard]] float magnitude() const;
+    [[nodiscard]] Tuple normalize() const;
+    [[nodiscard]] float dot(const Tuple&) const;
+    [[nodiscard]] Tuple cross(const Tuple&) const;
+    [[nodiscard]] Tuple reflect(const Tuple&) const;
 };
 
 Tuple Point(float xIn, float yIn, float zIn);

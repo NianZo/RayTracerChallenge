@@ -36,8 +36,8 @@ class Camera
         pixelSize = halfWidth * 2.0f / static_cast<float>(hSize);
     };
 
-    Ray rayForPixel(const uint32_t x, const uint32_t y) const;
-    Canvas Render(const World& w) const;
+    [[nodiscard]] Ray rayForPixel(const uint32_t x, const uint32_t y) const;
+    [[nodiscard]] Canvas Render(const World& w) const;
 };
 
 #endif /* SRC_CAMERA_HPP_ */
