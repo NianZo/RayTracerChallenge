@@ -17,7 +17,7 @@ target_link_libraries(${BINARY}_lib PRIVATE project_warnings)
 target_link_libraries(${BINARY}_lib PRIVATE --coverage)
 
 # Link OpenMP
-#if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-find_package(OpenMP)
-target_link_libraries(${BINARY}_lib PRIVATE OpenMP::OpenMP_CXX)
-#endif()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	find_package(OpenMP)
+	target_link_libraries(${BINARY}_lib PRIVATE OpenMP::OpenMP_CXX)
+endif()
