@@ -1,7 +1,7 @@
 function(set_project_warnings project_name)
 	option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 	
-	set(GCC_WARNINGS
+	set(CLANG_WARNINGS
 		-Wall
 		-Wextra
 		-Wshadow
@@ -17,6 +17,14 @@ function(set_project_warnings project_name)
 		-Wdouble-promotion
 		-Wformat=2
 		-Wimplicit-fallthrough
+	)
+	
+	if(WARNINGS_AS_ERRORS)
+		set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
+	endif()
+	
+	set(GCC_WARNINGS
+		${CLANG_WARNINGS}
 		-Wmisleading-indentation
 		-Wduplicated-cond
 		-Wduplicated-branches
@@ -24,11 +32,9 @@ function(set_project_warnings project_name)
 		-Wuseless-cast
 	)
 	
-	if(WARNINGS_AS_ERRORS)
-		set(GCC_WARNINGS ${GCC_WARNINGS} -Werror)
-	endif()
-	
-	if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+	if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+		set(PROJECT_WARNINGS ${CLANG_WARNINGS})
+	elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 		set(PROJECT_WARNINGS ${GCC_WARNINGS})
 	else()
 		message(AUTHOR_WARNING "No compiler warnings set for '${CMAKE_CXX_COMPILER_ID}' compiler.")
