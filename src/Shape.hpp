@@ -52,22 +52,22 @@ class Shape
 class Sphere : public Shape
 {
   private:
-	[[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
-	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Plane : public Shape
 {
   private:
-	[[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
-	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Cube : public Shape
 {
   private:
-	[[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
-	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p) const override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const override;
 };
 
 class Cylinder : public Shape
