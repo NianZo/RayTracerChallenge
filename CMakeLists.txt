@@ -8,6 +8,11 @@ set(CMAKE_BUILD_TYPE Debug)
 # Code coverage
 add_compile_options(--coverage -O0)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+	add_compile_options(-Xclang -fopenmp)
+	add_link_options(-lomp)
+endif()
+
 # Standard compiler warnings
 add_library(project_warnings INTERFACE)
 
