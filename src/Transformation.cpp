@@ -28,23 +28,23 @@ const Matrix<4> scaling(const float x, const float y, const float z)
 const Matrix<4> rotationX(const float r)
 {
     return Matrix<4>({{{1, 0, 0, 0},
-                       {0, static_cast<float>(cosf(r)), static_cast<float>(-sinf(r)), 0},
-                       {0, static_cast<float>(sinf(r)), static_cast<float>(cosf(r)), 0},
+                       {0, cosf(r), -sinf(r), 0},
+                       {0, sinf(r), cosf(r), 0},
                        {0, 0, 0, 1}}});
 }
 
 const Matrix<4> rotationY(const float r)
 {
-    return Matrix<4>({{{static_cast<float>(cosf(r)), 0, static_cast<float>(sinf(r)), 0},
+    return Matrix<4>({{{cosf(r), 0, sinf(r), 0},
                        {0, 1, 0.f, 0},
-                       {static_cast<float>(-sinf(r)), 0, static_cast<float>(cosf(r)), 0},
+                       {-sinf(r), 0, cosf(r), 0},
                        {0, 0, 0, 1}}});
 }
 
 const Matrix<4> rotationZ(const float r)
 {
-    return Matrix<4>({{{static_cast<float>(cosf(r)), static_cast<float>(-sinf(r)), 0, 0},
-                       {static_cast<float>(sinf(r)), static_cast<float>(cosf(r)), 0, 0},
+    return Matrix<4>({{{cosf(r), -sinf(r), 0, 0},
+                       {sinf(r), cosf(r), 0, 0},
                        {0, 0, 1, 0},
                        {0, 0, 0, 1}}});
 }
