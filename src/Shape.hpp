@@ -30,7 +30,7 @@ class Shape
     Shape& operator=(const Shape&) noexcept = default;
     Shape& operator=(Shape&&) noexcept = default;
 
-    bool operator==(const Shape& other) const noexcept{ return transform == other.transform && material == other.material; }
+    bool operator==(const Shape& other) const noexcept { return transform == other.transform && material == other.material; }
 
     [[nodiscard]] Tuple normal(const Tuple& p) const noexcept;
     [[nodiscard]] std::vector<Intersection> intersect(const Ray& r) const noexcept;
@@ -67,7 +67,7 @@ class Cube : public Shape
 {
   private:
     [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
-    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept  override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
 class Cylinder : public Shape
