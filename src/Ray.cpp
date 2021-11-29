@@ -13,33 +13,12 @@
 #include <algorithm>
 #include <cmath>
 
-Tuple Ray::cast(const float t) const
+Tuple Ray::cast(const float t) const noexcept
 {
     return origin + direction * t;
 }
 
-//const std::vector<Intersection> Ray::intersect(const Sphere& s) const
-//{
-//	const Ray ray2 = this->transform(s.transform.inverse());
-//	const Tuple sphereToRay = ray2.origin - Point(0, 0, 0);
-//
-//	const float a = ray2.direction.dot(ray2.direction);
-//	const float b = 2 * ray2.direction.dot(sphereToRay);
-//	const float c = sphereToRay.dot(sphereToRay) - 1;
-//
-//	const float discriminant = b * b - 4 * a * c;
-//
-//	std::vector<Intersection> intersections;
-//	if (discriminant >= 0)
-//	{
-//		intersections.push_back(Intersection((-b - sqrtf(discriminant)) / (2 * a), s));
-//		intersections.push_back(Intersection((-b + sqrtf(discriminant)) / (2 * a), s));
-//	}
-//
-//	return intersections;
-//}
-
-std::optional<Intersection> Ray::hit(std::vector<Intersection> intersections)
+std::optional<Intersection> Ray::hit(std::vector<Intersection> intersections) noexcept
 {
     std::sort(intersections.begin(), intersections.end());
     for (const auto intersection : intersections)
@@ -52,12 +31,12 @@ std::optional<Intersection> Ray::hit(std::vector<Intersection> intersections)
     return std::nullopt;
 }
 
-Ray Ray::transform(const Matrix<4>& m) const
+Ray Ray::transform(const Matrix<4>& m) const noexcept
 {
     return Ray(m * this->origin, m * this->direction);
 }
 
-IntersectionDetails Ray::precomputeDetails(Intersection i, const std::vector<Intersection>& intersections) const
+IntersectionDetails Ray::precomputeDetails(const Intersection i, const std::vector<Intersection>& intersections) const noexcept
 {
     const Tuple position = cast(i.t);
     const Tuple eyeVector = -direction;

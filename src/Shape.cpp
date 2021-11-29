@@ -10,17 +10,17 @@
 
 #include <cmath>
 
-Tuple Shape::normal(const Tuple& p) const
+Tuple Shape::normal(const Tuple& p) const noexcept
 {
     return objectNormal(transform.inverse() * p);
 }
 
-std::vector<Intersection> Shape::intersect(const Ray& r) const
+std::vector<Intersection> Shape::intersect(const Ray& r) const noexcept
 {
     return objectIntersect(r.transform(transform.inverse()));
 }
 
-Color Shape::shade(const Light& light, const Tuple& position, const Tuple& eyeVector, const bool inShadow) const
+Color Shape::shade(const Light& light, const Tuple& position, const Tuple& eyeVector, const bool inShadow) const noexcept
 {
     const Light objectLight = {transform.inverse() * light.position, light.intensity};
     const Tuple objectPosition = transform.inverse() * position;
@@ -28,7 +28,7 @@ Color Shape::shade(const Light& light, const Tuple& position, const Tuple& eyeVe
 }
 
 // Implicitly assumes that p is on the sphere surface and is a valid point (w = 1)
-Tuple Sphere::objectNormal(const Tuple& p) const
+Tuple Sphere::objectNormal(const Tuple& p) const noexcept
 {
     //const Tuple objectSpaceP = transform.inverse() * p;
     const Tuple objectSpaceNormal = (p - Point(0, 0, 0));
@@ -37,7 +37,7 @@ Tuple Sphere::objectNormal(const Tuple& p) const
     return worldSpaceNormal.normalize();
 }
 
-std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const
+std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const noexcept
 {
     //const Ray ray2 = r.transform(this->transform.inverse());
     const Tuple sphereToRay = r.origin - Point(0, 0, 0);
@@ -58,12 +58,12 @@ std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const
     return intersections;
 }
 
-Tuple Plane::objectNormal([[maybe_unused]] const Tuple& p) const
+Tuple Plane::objectNormal([[maybe_unused]] const Tuple& p) const noexcept
 {
     return Vector(0, 1, 0);
 }
 
-std::vector<Intersection> Plane::objectIntersect([[maybe_unused]] const Ray& r) const
+std::vector<Intersection> Plane::objectIntersect([[maybe_unused]] const Ray& r) const noexcept
 {
     std::vector<Intersection> i;
     if (std::abs(r.direction.y) > TUPLE_EPSILON)
@@ -74,7 +74,7 @@ std::vector<Intersection> Plane::objectIntersect([[maybe_unused]] const Ray& r) 
     return i;
 }
 
-Tuple Cube::objectNormal(const Tuple& p) const
+Tuple Cube::objectNormal(const Tuple& p) const noexcept
 {
     const float maxCoord = std::max(std::max(std::abs(p.x), std::abs(p.y)), std::abs(p.z));
 
@@ -92,7 +92,7 @@ Tuple Cube::objectNormal(const Tuple& p) const
     return normal;
 }
 
-std::vector<Intersection> Cube::objectIntersect(const Ray& r) const
+std::vector<Intersection> Cube::objectIntersect(const Ray& r) const noexcept
 {
     float xTMin = (-1.0f - r.origin.x) / r.direction.x;
     float xTMax = (1.0f - r.origin.x) / r.direction.x;
@@ -128,7 +128,7 @@ std::vector<Intersection> Cube::objectIntersect(const Ray& r) const
 }
 
 // Must have full constructor definition since infinity has an incomplete type
-Cylinder::Cylinder()
+Cylinder::Cylinder() noexcept
 {
     transform = IdentityMatrix();
     material = Material();
@@ -137,7 +137,7 @@ Cylinder::Cylinder()
     closed = false;
 }
 
-Tuple Cylinder::objectNormal(const Tuple& p) const
+Tuple Cylinder::objectNormal(const Tuple& p) const noexcept
 {
     const float dist = p.x * p.x + p.z * p.z;
     Tuple normal;
@@ -156,7 +156,7 @@ Tuple Cylinder::objectNormal(const Tuple& p) const
     return normal;
 }
 
-std::vector<Intersection> Cylinder::objectIntersect(const Ray& r) const
+std::vector<Intersection> Cylinder::objectIntersect(const Ray& r) const noexcept
 {
     std::vector<Intersection> i;
 
@@ -202,7 +202,7 @@ std::vector<Intersection> Cylinder::objectIntersect(const Ray& r) const
     return i;
 }
 
-Cone::Cone()
+Cone::Cone() noexcept
 {
     transform = IdentityMatrix();
     material = Material();
@@ -211,7 +211,7 @@ Cone::Cone()
     closed = false;
 }
 
-Tuple Cone::objectNormal(const Tuple& p) const
+Tuple Cone::objectNormal(const Tuple& p) const noexcept
 {
     const float dist = p.x * p.x + p.z * p.z;
     Tuple normal;
@@ -232,7 +232,7 @@ Tuple Cone::objectNormal(const Tuple& p) const
     return normal;
 }
 
-std::vector<Intersection> Cone::objectIntersect(const Ray& r) const
+std::vector<Intersection> Cone::objectIntersect(const Ray& r) const noexcept
 {
     std::vector<Intersection> i;
 
@@ -286,7 +286,7 @@ std::vector<Intersection> Cone::objectIntersect(const Ray& r) const
     return i;
 }
 
-Sphere GlassSphere()
+Sphere GlassSphere() noexcept
 {
     Sphere s;
     s.material.transparency = 1.0f;

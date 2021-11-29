@@ -18,10 +18,10 @@ class Light
     Tuple position;
     Color intensity;
 
-    Light() : position(Point(0, 0, 0)), intensity(Color(1, 1, 1)){};
-    Light(const Tuple& positionIn, const Color& intensityIn) : position(positionIn), intensity(intensityIn){};
+    Light() noexcept : position(Point(0, 0, 0)), intensity(Color(1, 1, 1)){};
+    Light(const Tuple& positionIn, const Color& intensityIn) noexcept : position(positionIn), intensity(intensityIn){};
 
-    bool operator==(const Light& other) const { return position == other.position && intensity == other.intensity; };
+    bool operator==(const Light& other) const noexcept { return position == other.position && intensity == other.intensity; };
 };
 
 #endif /* SRC_LIGHT_HPP_ */

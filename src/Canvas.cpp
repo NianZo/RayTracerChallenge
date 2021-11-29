@@ -8,7 +8,7 @@
 #include "Canvas.hpp"
 #include <cmath>
 
-Canvas::Canvas(const uint32_t widthIn, const uint32_t heightIn) : width(widthIn), height(heightIn)
+Canvas::Canvas(const uint32_t widthIn, const uint32_t heightIn) noexcept : width(widthIn), height(heightIn)
 {
     this->pixels.reserve(heightIn);
     for (uint32_t row = 0; row < heightIn; row++)
@@ -22,7 +22,7 @@ Canvas::Canvas(const uint32_t widthIn, const uint32_t heightIn) : width(widthIn)
     }
 }
 
-std::string Canvas::GetPPMString() const
+std::string Canvas::GetPPMString() const noexcept
 {
     // PPM Header
     std::string ppmData = "P3\n" + std::to_string(this->width) + " " + std::to_string(this->height) + "\n255\n";
