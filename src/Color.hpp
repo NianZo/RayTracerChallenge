@@ -17,16 +17,16 @@ class Color
     float g;
     float b;
 
-    Color() : r(0.0f), g(0.0f), b(0.0f){};
-    Color(float red, float green, float blue) : r(red), g(green), b(blue){};
+    Color() noexcept : r(0.0f), g(0.0f), b(0.0f){};
+    Color(float red, float green, float blue) noexcept : r(red), g(green), b(blue){};
 
     // Operator overloads
-    bool operator==(const Color&) const;
-    bool operator!=(const Color&) const;
-    Color operator+(const Color&) const;
-    Color operator-(const Color&) const;
-    Color operator*(const float) const;
-    Color operator*(const Color&) const;
+    bool operator==(const Color&) const noexcept;
+    bool operator!=(const Color&) const noexcept;
+    Color operator+(const Color&) const noexcept;
+    Color operator-(const Color&) const noexcept;
+    Color operator*(const float) const noexcept;
+    Color operator*(const Color&) const noexcept;
 
     const static Color Black;
     const static Color White;

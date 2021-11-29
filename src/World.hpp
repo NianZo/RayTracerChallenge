@@ -24,17 +24,17 @@ class World
     std::vector<Cone> cones;
     Light light;
 
-    World() = default;
+    World() noexcept = default;
 
-    [[nodiscard]] std::vector<std::reference_wrapper<const Shape>> objects() const;
-    [[nodiscard]] std::vector<Intersection> intersect(Ray r) const;
-    [[nodiscard]] Color shadeHit(const IntersectionDetails& id, int remainingCalls = 4) const;
-    [[nodiscard]] Color reflectedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
-    [[nodiscard]] Color refractedColor(const IntersectionDetails& id, int remainingCalls = 4) const;
-    [[nodiscard]] Color colorAt(Ray r, int remainingCalls = 4) const;
-    [[nodiscard]] bool isShadowed(const Tuple& point) const;
+    [[nodiscard]] std::vector<std::reference_wrapper<const Shape>> objects() const noexcept;
+    [[nodiscard]] std::vector<Intersection> intersect(Ray r) const noexcept;
+    [[nodiscard]] Color shadeHit(const IntersectionDetails& id, int remainingCalls = 4) const noexcept;
+    [[nodiscard]] Color reflectedColor(const IntersectionDetails& id, int remainingCalls = 4) const noexcept;
+    [[nodiscard]] Color refractedColor(const IntersectionDetails& id, int remainingCalls = 4) const noexcept;
+    [[nodiscard]] Color colorAt(Ray r, int remainingCalls = 4) const noexcept;
+    [[nodiscard]] bool isShadowed(const Tuple& point) const noexcept;
 
-    static World BaseWorld();
+    static World BaseWorld() noexcept;
 };
 
 #endif /* SRC_WORLD_HPP_ */

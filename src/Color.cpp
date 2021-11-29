@@ -8,36 +8,36 @@
 #include "Color.hpp"
 #include <cmath>
 
-bool Color::operator==(const Color& other) const
+bool Color::operator==(const Color& other) const noexcept
 {
     return (std::abs(this->r - other.r) < COLOR_EPSILON &&
             std::abs(this->g - other.g) < COLOR_EPSILON &&
             std::abs(this->b - other.b) < COLOR_EPSILON);
 }
 
-bool Color::operator!=(const Color& other) const
+bool Color::operator!=(const Color& other) const noexcept
 {
     return (std::abs(this->r - other.r) > COLOR_EPSILON ||
             std::abs(this->g - other.g) > COLOR_EPSILON ||
             std::abs(this->b - other.b) > COLOR_EPSILON);
 }
 
-Color Color::operator+(const Color& other) const
+Color Color::operator+(const Color& other) const noexcept
 {
     return Color(this->r + other.r, this->g + other.g, this->b + other.b);
 }
 
-Color Color::operator-(const Color& other) const
+Color Color::operator-(const Color& other) const noexcept
 {
     return Color(this->r - other.r, this->g - other.g, this->b - other.b);
 }
 
-Color Color::operator*(const float scalar) const
+Color Color::operator*(const float scalar) const noexcept
 {
     return Color(this->r * scalar, this->g * scalar, this->b * scalar);
 }
 
-Color Color::operator*(const Color& other) const
+Color Color::operator*(const Color& other) const noexcept
 {
     return Color(this->r * other.r, this->g * other.g, this->b * other.b);
 }

@@ -1,6 +1,6 @@
 ---
 # Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm*'
-Checks: 'modernize-use-nodiscard'
+Checks: 'modernize-use-nodiscard,modernize-use-noexcept'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none

@@ -8,7 +8,7 @@
 #include "Camera.hpp"
 #include <omp.h>
 
-Ray Camera::rayForPixel(const uint32_t px, const uint32_t py) const
+Ray Camera::rayForPixel(const uint32_t px, const uint32_t py) const noexcept
 {
     const float xOffset = (static_cast<float>(px) + 0.5f) * pixelSize;
     const float yOffset = (static_cast<float>(py) + 0.5f) * pixelSize;
@@ -23,7 +23,7 @@ Ray Camera::rayForPixel(const uint32_t px, const uint32_t py) const
     return Ray(origin, direction);
 }
 
-Canvas Camera::Render(const World& w) const
+Canvas Camera::Render(const World& w) const noexcept
 {
     Canvas image = Canvas(hSize, vSize);
 

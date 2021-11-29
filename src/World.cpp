@@ -10,8 +10,7 @@
 #include <algorithm>
 #include <cmath>
 
-// TODO this is the cause of the failed test, essentially returning references to local objects
-World World::BaseWorld()
+World World::BaseWorld() noexcept
 {
     Sphere s1;
     s1.material.color = Color(0.8f, 1.0f, 0.6f);
@@ -29,7 +28,7 @@ World World::BaseWorld()
     return w;
 }
 
-std::vector<std::reference_wrapper<const Shape>> World::objects() const
+std::vector<std::reference_wrapper<const Shape>> World::objects() const noexcept
 {
     std::vector<std::reference_wrapper<const Shape>> objects;
 
@@ -57,7 +56,7 @@ std::vector<std::reference_wrapper<const Shape>> World::objects() const
     return objects;
 }
 
-std::vector<Intersection> World::intersect(Ray r) const
+std::vector<Intersection> World::intersect(Ray r) const noexcept
 {
     std::vector<Intersection> intersections;
     for (const auto object : objects())
@@ -72,7 +71,7 @@ std::vector<Intersection> World::intersect(Ray r) const
     return intersections;
 }
 
-Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const
+Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const noexcept
 {
     const bool shadowed = isShadowed(id.overPoint);
     const Color surface = id.object.material.light(light, id.point, id.eyeVector, id.normalVector, shadowed);
@@ -90,7 +89,7 @@ Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const
     return finalColor;
 }
 
-Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) const
+Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) const noexcept
 {
     // Early out if object is not reflective or max recursion depth reached
     if (id.object.material.reflectivity == 0.0f || remainingCalls < 1)
@@ -104,7 +103,7 @@ Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) c
     return reflectedColor * id.object.material.reflectivity;
 }
 
-Color World::refractedColor(const IntersectionDetails& id, int remainingCalls) const
+Color World::refractedColor(const IntersectionDetails& id, int remainingCalls) const noexcept
 {
     // Early out if object is not reflective or max recursion depth reached
     if (id.object.material.transparency == 0 || remainingCalls < 1)
@@ -126,7 +125,7 @@ Color World::refractedColor(const IntersectionDetails& id, int remainingCalls) c
     return colorAt(refractionRay, remainingCalls - 1) * id.object.material.transparency;
 }
 
-Color World::colorAt(Ray r, int remainingCalls) const
+Color World::colorAt(Ray r, int remainingCalls) const noexcept
 {
     std::vector<Intersection> intersections;
     for (const auto& object : objects())
@@ -147,7 +146,7 @@ Color World::colorAt(Ray r, int remainingCalls) const
     }
 }
 
-bool World::isShadowed(const Tuple& point) const
+bool World::isShadowed(const Tuple& point) const noexcept
 {
     const Tuple shadowVector = (light.position - point).normalize();
     const float distanceToLight = (light.position - point).magnitude();
