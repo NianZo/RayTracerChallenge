@@ -1,6 +1,16 @@
 ---
 # Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm*'
-Checks: 'modernize-use-nodiscard,modernize-use-noexcept'
+Checks: 'modernize-use-nodiscard,
+    modernize-use-noexcept,
+    modernize-avoid-bind,
+    modernize-avoid-c-arrays,
+    modernize-concat-nested-namespaces,
+    modernize-deprecated-headers,
+    modernize-deprecated-ios-base-aliases,
+    modernize-loop-convert,
+    modernize-make-shared,
+    modernize-make-unique,
+    modernize-pass-by-value'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
