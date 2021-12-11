@@ -23,7 +23,7 @@ class Shape
     Matrix<4> transform;
     Material material;
 
-    Shape() noexcept : transform(IdentityMatrix()) {};
+    Shape() noexcept : transform(IdentityMatrix()){};
     virtual ~Shape() noexcept = default;
     Shape(const Shape&) noexcept = default;
     Shape(Shape&&) noexcept = default;

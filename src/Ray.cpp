@@ -19,7 +19,7 @@ Tuple Ray::cast(const float t) const noexcept
 
 std::optional<Intersection> Ray::hit(const std::vector<Intersection>& intersections) noexcept
 {
-	auto sortedIntersections = intersections;
+    auto sortedIntersections = intersections;
     std::sort(sortedIntersections.begin(), sortedIntersections.end());
     for (const auto intersection : sortedIntersections)
     {
