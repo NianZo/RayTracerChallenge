@@ -23,7 +23,7 @@ class Pattern
     Matrix<4> transform;
 
     Pattern() noexcept : a(Color::White), b(Color::Black), transform(IdentityMatrix()), f([]([[maybe_unused]] Color aF, [[maybe_unused]] Color bF, [[maybe_unused]] Tuple pF) { return Color::Black; }){};
-    Pattern(const Color& aIn, const Color& bIn, const Matrix<4>& transformIn, const std::function<Color(const Color& aF, const Color& bF, const Tuple& pF)> fIn) noexcept : a(aIn), b(bIn), transform(transformIn), f(std::move(fIn)){};
+    Pattern(const Color& aIn, const Color& bIn, const Matrix<4>& transformIn, std::function<Color(const Color& aF, const Color& bF, const Tuple& pF)> fIn) noexcept : a(aIn), b(bIn), transform(transformIn), f(std::move(fIn)){};
     [[nodiscard]] Color colorAt(const Tuple& p) const noexcept;
 
     static Pattern Test() noexcept;
