@@ -1,22 +1,6 @@
 ---
 # Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm*'
-Checks: 'modernize-use-nodiscard,
-    modernize-use-noexcept,
-    modernize-avoid-bind,
-    modernize-avoid-c-arrays,
-    modernize-concat-nested-namespaces,
-    modernize-deprecated-headers,
-    modernize-deprecated-ios-base-aliases,
-    modernize-loop-convert,
-    modernize-make-shared,
-    modernize-make-unique,
-    modernize-pass-by-value,
-    modernize-raw-string-literal,
-    modernize-redundant-void-arg,
-    modernize-replace-auto-ptr,
-    modernize-replace-disallow-copy-and-assign-macro,
-    modernize-replace-random-shuffle,
-    modernize-*,-modernize-use-trailing-return-type'
+Checks: 'modernize-*,-modernize-use-trailing-return-type'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
