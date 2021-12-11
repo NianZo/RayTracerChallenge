@@ -13,7 +13,8 @@ Checks: 'modernize-*,-modernize-use-trailing-return-type,
     mpi-*,
     performance-*,
     hicpp-*,
-    llvm-*'
+    llvm-*,-llvm-header-guard,
+    llvmlibc-*'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
