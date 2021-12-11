@@ -12,7 +12,7 @@
 #include <array>
 #include <iostream>
 
-#define MATRIX_EPSILON 0.00001F
+constexpr float MATRIX_EPSILON = 0.00001F;
 
 template <uint32_t N>
 class Matrix

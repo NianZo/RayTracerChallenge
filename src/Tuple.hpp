@@ -8,7 +8,7 @@
 #ifndef SOURCE_TUPLE_HPP_
 #define SOURCE_TUPLE_HPP_
 
-#define TUPLE_EPSILON 0.002F // Changed to be much much higher since it is now being used for acne removal offset; needed to be this high to work
+constexpr float TUPLE_EPSILON = 0.002F; // Changed to be much much higher since it is now being used for acne removal offset; needed to be this high to work
 
 class Tuple
 {

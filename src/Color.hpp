@@ -8,7 +8,7 @@
 #ifndef SRC_COLOR_HPP_
 #define SRC_COLOR_HPP_
 
-#define COLOR_EPSILON 0.001F
+constexpr float COLOR_EPSILON = 0.001F;
 
 class Color
 {
