@@ -60,7 +60,7 @@ Tuple Tuple::operator/(const float s) const noexcept
 
 bool Tuple::IsPoint() const noexcept
 {
-    return std::abs(this->w - 1.0f) < TUPLE_EPSILON;
+    return std::abs(this->w - 1.0F) < TUPLE_EPSILON;
 }
 
 bool Tuple::IsVector() const noexcept
@@ -96,10 +96,10 @@ Tuple Tuple::reflect(const Tuple& normal) const noexcept
 
 Tuple Point(float xIn, float yIn, float zIn) noexcept
 {
-    return Tuple(xIn, yIn, zIn, 1.0f);
+    return Tuple(xIn, yIn, zIn, 1.0F);
 }
 
 Tuple Vector(float xIn, float yIn, float zIn) noexcept
 {
-    return Tuple(xIn, yIn, zIn, 0.0f);
+    return Tuple(xIn, yIn, zIn, 0.0F);
 }

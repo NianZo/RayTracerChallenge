@@ -9,7 +9,7 @@
 
 #include <cmath>
 
-const Matrix<4> translation(const float x, const float y, const float z) noexcept
+Matrix<4> translation(const float x, const float y, const float z) noexcept
 {
     return Matrix<4>({{{1, 0, 0, x},
                        {0, 1, 0, y},
@@ -17,7 +17,7 @@ const Matrix<4> translation(const float x, const float y, const float z) noexcep
                        {0, 0, 0, 1}}});
 }
 
-const Matrix<4> scaling(const float x, const float y, const float z) noexcept
+Matrix<4> scaling(const float x, const float y, const float z) noexcept
 {
     return Matrix<4>({{{x, 0, 0, 0},
                        {0, y, 0, 0},
@@ -25,7 +25,7 @@ const Matrix<4> scaling(const float x, const float y, const float z) noexcept
                        {0, 0, 0, 1}}});
 }
 
-const Matrix<4> rotationX(const float r) noexcept
+Matrix<4> rotationX(const float r) noexcept
 {
     return Matrix<4>({{{1, 0, 0, 0},
                        {0, cosf(r), -sinf(r), 0},
@@ -33,15 +33,15 @@ const Matrix<4> rotationX(const float r) noexcept
                        {0, 0, 0, 1}}});
 }
 
-const Matrix<4> rotationY(const float r) noexcept
+Matrix<4> rotationY(const float r) noexcept
 {
     return Matrix<4>({{{cosf(r), 0, sinf(r), 0},
-                       {0, 1, 0.f, 0},
+                       {0, 1, 0, 0},
                        {-sinf(r), 0, cosf(r), 0},
                        {0, 0, 0, 1}}});
 }
 
-const Matrix<4> rotationZ(const float r) noexcept
+Matrix<4> rotationZ(const float r) noexcept
 {
     return Matrix<4>({{{cosf(r), -sinf(r), 0, 0},
                        {sinf(r), cosf(r), 0, 0},
@@ -49,7 +49,7 @@ const Matrix<4> rotationZ(const float r) noexcept
                        {0, 0, 0, 1}}});
 }
 
-const Matrix<4> shearing(const float xSuby, const float xSubz, const float ySubx, const float ySubz, const float zSubx, const float zSuby) noexcept
+Matrix<4> shearing(const float xSuby, const float xSubz, const float ySubx, const float ySubz, const float zSubx, const float zSuby) noexcept
 {
     return Matrix<4>({{{1, xSuby, xSubz, 0},
                        {ySubx, 1, ySubz, 0},
@@ -57,12 +57,12 @@ const Matrix<4> shearing(const float xSuby, const float xSubz, const float ySubx
                        {0, 0, 0, 1}}});
 }
 
-const Matrix<4> ViewTransform() noexcept
+Matrix<4> ViewTransform() noexcept
 {
     return IdentityMatrix();
 }
 
-const Matrix<4> ViewTransform(const Tuple& from, const Tuple& to, const Tuple& up) noexcept
+Matrix<4> ViewTransform(const Tuple& from, const Tuple& to, const Tuple& up) noexcept
 {
     const Tuple forward = (to - from).normalize();
     const Tuple left = forward.cross(up.normalize());

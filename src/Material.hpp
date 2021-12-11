@@ -22,8 +22,8 @@ class Pattern
     Color b;
     Matrix<4> transform;
 
-    Pattern() noexcept : a(Color::White), b(Color::Black), transform(IdentityMatrix()), f([](Color, Color, Tuple) { return Color::Black; }){};
-    Pattern(const Color& aIn, const Color& bIn, const Matrix<4>& transformIn, const std::function<Color(const Color&, const Color&, const Tuple&)>& fIn) noexcept : a(aIn), b(bIn), transform(transformIn), f(fIn){};
+    Pattern() noexcept : a(Color::White), b(Color::Black), transform(IdentityMatrix()), f([]([[maybe_unused]] Color aF, [[maybe_unused]] Color bF, [[maybe_unused]] Tuple pF) { return Color::Black; }){};
+    Pattern(const Color& aIn, const Color& bIn, const Matrix<4>& transformIn, std::function<Color(const Color& aF, const Color& bF, const Tuple& pF)> fIn) noexcept : a(aIn), b(bIn), transform(transformIn), f(std::move(fIn)){};
     [[nodiscard]] Color colorAt(const Tuple& p) const noexcept;
 
     static Pattern Test() noexcept;
@@ -40,21 +40,21 @@ class Pattern
 class Material
 {
   public:
-    Color color;
+    Color color = Color::White;
     std::optional<Pattern> pattern;
-    float ambient;
-    float diffuse;
-    float specular;
-    float shininess;
-    float reflectivity;
-    float transparency;
-    float refractiveIndex;
+    float ambient = 0.1F;
+    float diffuse = 0.9F;
+    float specular = 0.9F;
+    float shininess = 200.0F;
+    float reflectivity = 0.0F;
+    float transparency = 0.0F;
+    float refractiveIndex = 1.0F;
 
-    Material() noexcept : color(Color(1, 1, 1)), ambient(0.1f), diffuse(0.9f), specular(0.9f), shininess(200.0f), reflectivity(0.0f), transparency(0.0f), refractiveIndex(1.0f){};
-    Material(const Color& colorIn, const float ambientIn, const float diffuseIn, const float specularIn, const float shininessIn, const float reflectivityIn, const float transparencyIn, const float refractiveIndexIn) noexcept : color(colorIn), ambient(ambientIn), diffuse(diffuseIn), specular(specularIn), shininess(shininessIn), reflectivity(reflectivityIn), transparency(transparencyIn), refractiveIndex(refractiveIndexIn){};
+    Material() noexcept = default;
+    Material(const Color& colorIn, float ambientIn, float diffuseIn, float specularIn, float shininessIn, float reflectivityIn, float transparencyIn, float refractiveIndexIn) noexcept : color(colorIn), ambient(ambientIn), diffuse(diffuseIn), specular(specularIn), shininess(shininessIn), reflectivity(reflectivityIn), transparency(transparencyIn), refractiveIndex(refractiveIndexIn){};
 
     [[nodiscard]] bool operator==(const Material& other) const noexcept;
-    [[nodiscard]] Color light(const Light& light, const Tuple& position, const Tuple& eyeVector, const Tuple& normalVector, const bool inShadow) const noexcept;
+    [[nodiscard]] Color light(const Light& light, const Tuple& point, const Tuple& eyeVector, const Tuple& normalVector, bool inShadow) const noexcept;
 };
 
 #endif /* SRC_MATERIAL_HPP_ */

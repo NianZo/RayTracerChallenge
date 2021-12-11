@@ -13,12 +13,12 @@
 World World::BaseWorld() noexcept
 {
     Sphere s1;
-    s1.material.color = Color(0.8f, 1.0f, 0.6f);
-    s1.material.diffuse = 0.7f;
-    s1.material.specular = 0.2f;
+    s1.material.color = Color(0.8F, 1.0F, 0.6F);
+    s1.material.diffuse = 0.7F;
+    s1.material.specular = 0.2F;
 
     Sphere s2;
-    s2.transform = scaling(0.5, 0.5, 0.5);
+    s2.transform = scaling(0.5F, 0.5F, 0.5F);
 
     World w;
     w.spheres.push_back(s1);
@@ -79,7 +79,7 @@ Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const n
     const Color refracted = refractedColor(id, remainingCalls);
 
     Color finalColor;
-    if (id.object.material.reflectivity > 0.0f && id.object.material.transparency > 0.0f)
+    if (id.object.material.reflectivity > 0.0F && id.object.material.transparency > 0.0F)
     {
         finalColor = surface + reflected * id.reflectance + refracted * (1 - id.reflectance);
     } else
@@ -92,7 +92,7 @@ Color World::shadeHit(const IntersectionDetails& id, int remainingCalls) const n
 Color World::reflectedColor(const IntersectionDetails& id, int remainingCalls) const noexcept
 {
     // Early out if object is not reflective or max recursion depth reached
-    if (id.object.material.reflectivity == 0.0f || remainingCalls < 1)
+    if (id.object.material.reflectivity == 0.0F || remainingCalls < 1)
     {
         return Color::Black;
     }
@@ -114,12 +114,12 @@ Color World::refractedColor(const IntersectionDetails& id, int remainingCalls) c
     const float nRatio = id.n1 / id.n2;
     const float cosI = id.eyeVector.dot(id.normalVector);
     const float sin2T = nRatio * nRatio * (1 - cosI * cosI);
-    if (sin2T >= 1.0f)
+    if (sin2T >= 1.0F)
     {
         return Color::Black;
     }
 
-    const float cosT = sqrtf(1.0f - sin2T);
+    const float cosT = sqrtf(1.0F - sin2T);
     const Tuple refractionDirection = id.normalVector * (nRatio * cosI - cosT) - id.eyeVector * nRatio;
     const Ray refractionRay = Ray(id.underPoint, refractionDirection);
     return colorAt(refractionRay, remainingCalls - 1) * id.object.material.transparency;
@@ -137,13 +137,7 @@ Color World::colorAt(Ray r, int remainingCalls) const noexcept
         }
     }
     auto hit = Ray::hit(intersections);
-    if (hit)
-    {
-        return shadeHit(r.precomputeDetails(*hit, intersections), remainingCalls);
-    } else
-    {
-        return {0, 0, 0};
-    }
+    return hit ? shadeHit(r.precomputeDetails(*hit, intersections), remainingCalls) : Color(0, 0, 0);
 }
 
 bool World::isShadowed(const Tuple& point) const noexcept
@@ -152,7 +146,7 @@ bool World::isShadowed(const Tuple& point) const noexcept
     const float distanceToLight = (light.position - point).magnitude();
     const Ray shadowRay = Ray(point, shadowVector);
     const auto intersections = intersect(shadowRay);
-    const auto hit = shadowRay.hit(intersections);
+    const auto hit = Ray::hit(intersections);
 
     const bool shadowed = hit && hit->t < distanceToLight;
     return shadowed;

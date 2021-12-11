@@ -42,5 +42,5 @@ Color Color::operator*(const Color& other) const noexcept
     return Color(this->r * other.r, this->g * other.g, this->b * other.b);
 }
 
-const Color Color::Black = Color(0.0f, 0.0f, 0.0f);
-const Color Color::White = Color(1.0f, 1.0f, 1.0f);
+const Color Color::Black = Color(0.0F, 0.0F, 0.0F);
+const Color Color::White = Color(1.0F, 1.0F, 1.0F);

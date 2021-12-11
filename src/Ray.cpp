@@ -9,7 +9,6 @@
 #define SRC_RAY_CPP_
 
 #include "Ray.hpp"
-
 #include <algorithm>
 #include <cmath>
 
@@ -18,10 +17,11 @@ Tuple Ray::cast(const float t) const noexcept
     return origin + direction * t;
 }
 
-std::optional<Intersection> Ray::hit(std::vector<Intersection> intersections) noexcept
+std::optional<Intersection> Ray::hit(const std::vector<Intersection>& intersections) noexcept
 {
-    std::sort(intersections.begin(), intersections.end());
-    for (const auto intersection : intersections)
+    auto sortedIntersections = intersections;
+    std::sort(sortedIntersections.begin(), sortedIntersections.end());
+    for (const auto intersection : sortedIntersections)
     {
         if (intersection.t > 0)
         {
@@ -36,7 +36,7 @@ Ray Ray::transform(const Matrix<4>& m) const noexcept
     return Ray(m * this->origin, m * this->direction);
 }
 
-IntersectionDetails Ray::precomputeDetails(const Intersection i, const std::vector<Intersection>& intersections) const noexcept
+IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vector<Intersection>& intersections) const noexcept
 {
     const Tuple position = cast(i.t);
     const Tuple eyeVector = -direction;
@@ -51,15 +51,15 @@ IntersectionDetails Ray::precomputeDetails(const Intersection i, const std::vect
     const Tuple reflectionVector = direction.reflect(normalVector);
 
     std::vector<Shape> containers;
-    float n1 = 0.0f;
-    float n2 = 0.0f;
+    float n1 = 0.0F;
+    float n2 = 0.0F;
     for (auto intersection : intersections)
     {
         if (i == intersection)
         {
             if (containers.empty())
             {
-                n1 = 1.0f;
+                n1 = 1.0F;
             } else
             {
                 n1 = containers.back().material.refractiveIndex;
@@ -79,7 +79,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection i, const std::vect
         {
             if (containers.empty())
             {
-                n2 = 1.0f;
+                n2 = 1.0F;
             } else
             {
                 n2 = containers.back().material.refractiveIndex;
@@ -91,7 +91,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection i, const std::vect
     // Schlick reflectance - Algorithm from "Reflections and Refractions in Ray Tracing" by Bram de Greve
     float cos = eyeVector.dot(normalVector);
     //float reflectance = 0.0f;
-    float sin2T = 0.0f;
+    float sin2T = 0.0F;
     if (n1 > n2)
     {
         const float nRatio = n1 / n2;
@@ -100,12 +100,12 @@ IntersectionDetails Ray::precomputeDetails(const Intersection i, const std::vect
         //    	{
         //    		reflectance = 1.0f;
         //    	}
-        cos = sqrtf(1.0f - sin2T);
+        cos = sqrtf(1.0F - sin2T);
     }
     const float r0 = powf(((n1 - n2) / (n1 + n2)), 2);
-    const float reflectance = sin2T > 1.0f ? 1.0f : r0 + (1 - r0) * powf(1 - cos, 5);
+    const float reflectance = sin2T > 1.0F ? 1.0F : r0 + (1 - r0) * powf(1 - cos, 5);
 
-    IntersectionDetails id = {*(i.object), position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, i.t, reflectance, inside, n1, n2};
+    IntersectionDetails id = {position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, *(i.object), i.t, reflectance, inside, n1, n2};
     return id;
 }
 

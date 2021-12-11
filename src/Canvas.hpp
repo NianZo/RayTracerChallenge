@@ -19,7 +19,7 @@ class Canvas
     const uint32_t height;
     std::vector<std::vector<Color>> pixels;
 
-    Canvas(const uint32_t widthIn, const uint32_t heightIn) noexcept;
+    Canvas(uint32_t widthIn, uint32_t heightIn) noexcept;
     [[nodiscard]] std::string GetPPMString() const noexcept;
 };
 
