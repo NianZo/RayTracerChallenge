@@ -1,7 +1,7 @@
 ---
 # Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm*'
 Checks: 'modernize-*,-modernize-use-trailing-return-type,
-    readability-*'
+    readability-*,-readability-magic-numbers'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none

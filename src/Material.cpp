@@ -44,12 +44,12 @@ Color Material::light(const Light& light, const Tuple& point, const Tuple& eyeVe
 
 Color Pattern::colorAt(const Tuple& p) const noexcept
 {
-    return f(a, b, p); // ? b : a;
+    return f(a, b, p);
 }
 
 Pattern Pattern::Test() noexcept
 {
-    std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color&, const Color&, const Tuple& p) -> Color {
+    std::function<Color(const Color&, const Color&, const Tuple&)> f = []([[maybe_unused]] const Color& aP, [[maybe_unused]] const Color& bP, const Tuple& p) -> Color {
         return Color(p.x, p.y, p.z);
     };
     return Pattern(Color::Black, Color::Black, IdentityMatrix(), f);

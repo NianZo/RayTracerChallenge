@@ -23,7 +23,7 @@ class Shape
     Matrix<4> transform;
     Material material;
 
-    Shape() noexcept : transform(IdentityMatrix()), material(Material()){};
+    Shape() noexcept : transform(IdentityMatrix()) {};
     virtual ~Shape() noexcept = default;
     Shape(const Shape&) noexcept = default;
     Shape(Shape&&) noexcept = default;
@@ -34,13 +34,13 @@ class Shape
 
     [[nodiscard]] Tuple normal(const Tuple& p) const noexcept;
     [[nodiscard]] std::vector<Intersection> intersect(const Ray& r) const noexcept;
-    [[nodiscard]] Color shade(const Light& light, const Tuple& position, const Tuple& eyeVector, const bool inShadow) const noexcept;
+    [[nodiscard]] Color shade(const Light& light, const Tuple& position, const Tuple& eyeVector, bool inShadow) const noexcept;
 
   private:
     // I'd prefer to not define these and have a compile time error if these are used, but *shrug*
     [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const noexcept
     {
-        return Tuple(0.0f, 0.0f, 0.0f, 0.0f);
+        return Tuple(0.0F, 0.0F, 0.0F, 0.0F);
     }
     [[nodiscard]] virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const noexcept
     {
@@ -106,7 +106,7 @@ class Intersection
     float t;
     const Shape* object;
 
-    Intersection(const float tIn, const Shape* objectIn) noexcept : t(tIn), object(objectIn){};
+    Intersection(float tIn, const Shape* objectIn) noexcept : t(tIn), object(objectIn){};
     bool operator==(const Intersection& other) const noexcept { return t == other.t && object == other.object; }
     bool operator<(const Intersection& other) const noexcept { return t < other.t; }
 };

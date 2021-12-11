@@ -32,7 +32,7 @@ std::string Canvas::GetPPMString() const noexcept
         uint64_t charCount = 0;
         for (const auto& pixel : row)
         {
-            std::string redString = std::to_string(std::clamp(static_cast<int>(std::round(pixel.r * 255.0f)), 0, 255)) + " ";
+            std::string redString = std::to_string(std::clamp(static_cast<int>(std::round(pixel.r * 255.0F)), 0, 255)) + " ";
             if (charCount + redString.length() > 70)
             {
                 ppmData.pop_back();
@@ -42,7 +42,7 @@ std::string Canvas::GetPPMString() const noexcept
             ppmData += redString;
             charCount += redString.length();
 
-            std::string greenString = std::to_string(std::clamp(static_cast<int>(std::round(pixel.g * 255.0f)), 0, 255)) + " ";
+            std::string greenString = std::to_string(std::clamp(static_cast<int>(std::round(pixel.g * 255.0F)), 0, 255)) + " ";
             if (charCount + greenString.length() > 70)
             {
                 ppmData.pop_back();
@@ -52,7 +52,7 @@ std::string Canvas::GetPPMString() const noexcept
             ppmData += greenString;
             charCount += greenString.length();
 
-            std::string blueString = std::to_string(std::clamp(static_cast<int>(std::round(pixel.b * 255.0f)), 0, 255)) + " ";
+            std::string blueString = std::to_string(std::clamp(static_cast<int>(std::round(pixel.b * 255.0F)), 0, 255)) + " ";
             if (charCount + blueString.length() > 70)
             {
                 ppmData.pop_back();

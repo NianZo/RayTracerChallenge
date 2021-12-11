@@ -94,22 +94,22 @@ Tuple Cube::objectNormal(const Tuple& p) const noexcept
 
 std::vector<Intersection> Cube::objectIntersect(const Ray& r) const noexcept
 {
-    float xTMin = (-1.0f - r.origin.x) / r.direction.x;
-    float xTMax = (1.0f - r.origin.x) / r.direction.x;
+    float xTMin = (-1.0F - r.origin.x) / r.direction.x;
+    float xTMax = (1.0F - r.origin.x) / r.direction.x;
     if (xTMin > xTMax)
     {
         std::swap(xTMin, xTMax);
     }
 
-    float yTMin = (-1.0f - r.origin.y) / r.direction.y;
-    float yTMax = (1.0f - r.origin.y) / r.direction.y;
+    float yTMin = (-1.0F - r.origin.y) / r.direction.y;
+    float yTMax = (1.0F - r.origin.y) / r.direction.y;
     if (yTMin > yTMax)
     {
         std::swap(yTMin, yTMax);
     }
 
-    float zTMin = (-1.0f - r.origin.z) / r.direction.z;
-    float zTMax = (1.0f - r.origin.z) / r.direction.z;
+    float zTMin = (-1.0F - r.origin.z) / r.direction.z;
+    float zTMax = (1.0F - r.origin.z) / r.direction.z;
     if (zTMin > zTMax)
     {
         std::swap(zTMin, zTMax);
@@ -142,10 +142,10 @@ Tuple Cylinder::objectNormal(const Tuple& p) const noexcept
     const float dist = p.x * p.x + p.z * p.z;
     Tuple normal;
 
-    if (dist < 1.0f && p.y >= maximum - TUPLE_EPSILON)
+    if (dist < 1.0F && p.y >= maximum - TUPLE_EPSILON)
     {
         normal = Vector(0, 1, 0);
-    } else if (dist < 1.0f && p.y <= minimum + TUPLE_EPSILON)
+    } else if (dist < 1.0F && p.y <= minimum + TUPLE_EPSILON)
     {
         normal = Vector(0, -1, 0);
     } else
@@ -187,13 +187,13 @@ std::vector<Intersection> Cylinder::objectIntersect(const Ray& r) const noexcept
     if (closed)
     {
         const float tMin = (minimum - r.origin.y) / r.direction.y;
-        if (std::pow(r.origin.x + tMin * r.direction.x, 2.0f) + std::pow(r.origin.z + tMin * r.direction.z, 2.0f) <= 1.0f)
+        if (std::pow(r.origin.x + tMin * r.direction.x, 2.0F) + std::pow(r.origin.z + tMin * r.direction.z, 2.0F) <= 1.0F)
         {
             i.emplace_back(Intersection(tMin, this));
         }
 
         const float tMax = (maximum - r.origin.y) / r.direction.y;
-        if (std::pow(r.origin.x + tMax * r.direction.x, 2.0f) + std::pow(r.origin.z + tMax * r.direction.z, 2.0f) <= 1.0f)
+        if (std::pow(r.origin.x + tMax * r.direction.x, 2.0F) + std::pow(r.origin.z + tMax * r.direction.z, 2.0F) <= 1.0F)
         {
             i.emplace_back(Intersection(tMax, this));
         }
@@ -216,10 +216,10 @@ Tuple Cone::objectNormal(const Tuple& p) const noexcept
     const float dist = p.x * p.x + p.z * p.z;
     Tuple normal;
 
-    if (dist < 1.0f && p.y >= maximum - TUPLE_EPSILON)
+    if (dist < 1.0F && p.y >= maximum - TUPLE_EPSILON)
     {
         normal = Vector(0, 1, 0);
-    } else if (dist < 1.0f && p.y <= minimum + TUPLE_EPSILON)
+    } else if (dist < 1.0F && p.y <= minimum + TUPLE_EPSILON)
     {
         normal = Vector(0, -1, 0);
     } else
@@ -243,7 +243,7 @@ std::vector<Intersection> Cone::objectIntersect(const Ray& r) const noexcept
     float discriminant = b * b - 4 * a * c;
     if (std::abs(discriminant) < MATRIX_EPSILON)
     {
-        discriminant = 0.0f;
+        discriminant = 0.0F;
     }
 
     if (std::abs(a) > TUPLE_EPSILON && discriminant >= 0)
@@ -271,13 +271,13 @@ std::vector<Intersection> Cone::objectIntersect(const Ray& r) const noexcept
     if (closed)
     {
         const float tMin = (minimum - r.origin.y) / r.direction.y;
-        if (std::pow(r.origin.x + tMin * r.direction.x, 2.0f) + std::pow(r.origin.z + tMin * r.direction.z, 2.0f) <= minimum * minimum)
+        if (std::pow(r.origin.x + tMin * r.direction.x, 2.0F) + std::pow(r.origin.z + tMin * r.direction.z, 2.0F) <= minimum * minimum)
         {
             i.emplace_back(Intersection(tMin, this));
         }
 
         const float tMax = (maximum - r.origin.y) / r.direction.y;
-        if (std::pow(r.origin.x + tMax * r.direction.x, 2.0f) + std::pow(r.origin.z + tMax * r.direction.z, 2.0f) <= maximum * maximum)
+        if (std::pow(r.origin.x + tMax * r.direction.x, 2.0F) + std::pow(r.origin.z + tMax * r.direction.z, 2.0F) <= maximum * maximum)
         {
             i.emplace_back(Intersection(tMax, this));
         }
@@ -289,7 +289,7 @@ std::vector<Intersection> Cone::objectIntersect(const Ray& r) const noexcept
 Sphere GlassSphere() noexcept
 {
     Sphere s;
-    s.material.transparency = 1.0f;
-    s.material.refractiveIndex = 1.5f;
+    s.material.transparency = 1.0F;
+    s.material.refractiveIndex = 1.5F;
     return s;
 }

@@ -12,7 +12,6 @@
 #include "Matrix.hpp"
 #include "Ray.hpp"
 #include "World.hpp"
-
 #include <cmath>
 
 class Camera
@@ -26,17 +25,17 @@ class Camera
     float halfWidth;
     float halfHeight;
 
-    Camera(const uint32_t horizontalSize, const uint32_t verticalSize, const float fieldOfView) noexcept : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(IdentityMatrix())
+    Camera(uint32_t horizontalSize, uint32_t verticalSize, float fieldOfView) noexcept : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(IdentityMatrix())
     {
         const float halfView = std::tan(fov / 2);
         const float aspectRatio = static_cast<float>(hSize) / static_cast<float>(vSize);
         halfWidth = hSize >= vSize ? halfView : halfView * aspectRatio;
         halfHeight = hSize < vSize ? halfView : halfView / aspectRatio;
 
-        pixelSize = halfWidth * 2.0f / static_cast<float>(hSize);
+        pixelSize = halfWidth * 2.0F / static_cast<float>(hSize);
     };
 
-    [[nodiscard]] Ray rayForPixel(const uint32_t x, const uint32_t y) const noexcept;
+    [[nodiscard]] Ray rayForPixel(uint32_t x, uint32_t y) const noexcept;
     [[nodiscard]] Canvas Render(const World& w) const noexcept;
 };
 

@@ -10,8 +10,8 @@
 
 Ray Camera::rayForPixel(const uint32_t px, const uint32_t py) const noexcept
 {
-    const float xOffset = (static_cast<float>(px) + 0.5f) * pixelSize;
-    const float yOffset = (static_cast<float>(py) + 0.5f) * pixelSize;
+    const float xOffset = (static_cast<float>(px) + 0.5F) * pixelSize;
+    const float yOffset = (static_cast<float>(py) + 0.5F) * pixelSize;
 
     const float worldX = halfWidth - xOffset;
     const float worldY = halfHeight - yOffset;

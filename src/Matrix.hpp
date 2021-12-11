@@ -12,7 +12,7 @@
 #include <array>
 #include <iostream>
 
-#define MATRIX_EPSILON 0.00001f
+#define MATRIX_EPSILON 0.00001F
 
 template <uint32_t N>
 class Matrix
@@ -25,10 +25,10 @@ class Matrix
             row = {};
         }
     }
-    Matrix(std::array<std::array<float, N>, N> initialData) noexcept : data(initialData){};
+    Matrix(const std::array<std::array<float, N>, N>& initialData) noexcept : data(initialData){};
 
-    std::array<float, N>& operator[](const uint32_t index) noexcept;
-    const std::array<float, N>& operator[](const uint32_t index) const noexcept;
+    std::array<float, N>& operator[](uint32_t index) noexcept;
+    const std::array<float, N>& operator[](uint32_t index) const noexcept;
     [[nodiscard]] bool operator==(const Matrix<N>& other) const noexcept;
     [[nodiscard]] bool operator!=(const Matrix<N>& other) const noexcept; // The inequality operator tests passed without this... what?!
     [[nodiscard]] Matrix<N> operator*(const Matrix<N>& other) const noexcept;
@@ -145,7 +145,7 @@ float Matrix<N>::determinant() const noexcept
 }
 
 template <uint32_t N>
-Matrix<N - 1> Matrix<N>::submatrix(uint32_t row, uint32_t col) const noexcept
+Matrix<N - 1> Matrix<N>::submatrix(const uint32_t row, const uint32_t col) const noexcept
 {
     Matrix<N - 1> s;
     uint32_t rowOffset = 0;

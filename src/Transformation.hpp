@@ -11,13 +11,13 @@
 #include "Matrix.hpp"
 #include "Tuple.hpp"
 
-const Matrix<4> translation(const float x, const float y, const float z) noexcept;
-const Matrix<4> scaling(const float x, const float y, const float z) noexcept;
-const Matrix<4> rotationX(const float r) noexcept;
-const Matrix<4> rotationY(const float r) noexcept;
-const Matrix<4> rotationZ(const float r) noexcept;
-const Matrix<4> shearing(const float xSuby, const float xSubz, const float ySubx, const float ySubz, const float zSubx, const float zSuby) noexcept;
-const Matrix<4> ViewTransform() noexcept;
-const Matrix<4> ViewTransform(const Tuple& from, const Tuple& to, const Tuple& up) noexcept;
+Matrix<4> translation(float x, float y, float z) noexcept;
+Matrix<4> scaling(float x, float y, float z) noexcept;
+Matrix<4> rotationX(float r) noexcept;
+Matrix<4> rotationY(float r) noexcept;
+Matrix<4> rotationZ(float r) noexcept;
+Matrix<4> shearing(float xSuby, float xSubz, float ySubx, float ySubz, float zSubx, float zSuby) noexcept;
+Matrix<4> ViewTransform() noexcept;
+Matrix<4> ViewTransform(const Tuple& from, const Tuple& to, const Tuple& up) noexcept;
 
 #endif /* SRC_TRANSFORMATION_HPP_ */
