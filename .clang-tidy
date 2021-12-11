@@ -2,7 +2,8 @@
 # Checks: '*,-fuchsia-*,-google-*,-zircon-*,-abseil-*,-modernize-use-trailing-return-type,-llvm*'
 Checks: 'modernize-*,-modernize-use-trailing-return-type,
     readability-*,-readability-magic-numbers,
-    portability-*'
+    portability-*,
+    cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
