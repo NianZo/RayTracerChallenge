@@ -14,7 +14,8 @@ Checks: 'modernize-*,-modernize-use-trailing-return-type,
     performance-*,
     hicpp-*,
     llvm-*,-llvm-header-guard,
-    llvmlibc-*'
+    -llvmlibc-*,
+    google-*'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
