@@ -111,15 +111,15 @@ class Intersection
     bool operator<(const Intersection& other) const noexcept { return t < other.t; }
 };
 
-struct IntersectionDetails
+struct __attribute__((aligned(128))) IntersectionDetails
 {
-    const Shape& object;
     const Tuple point;
     const Tuple overPoint;
     const Tuple underPoint;
     const Tuple eyeVector;
     const Tuple normalVector;
     const Tuple reflectionVector;
+    const Shape& object;
     const float t;
     const float reflectance;
     const bool inside;
