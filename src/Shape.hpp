@@ -122,9 +122,9 @@ struct __attribute__((aligned(128))) IntersectionDetails
     const Shape& object;
     const float t;
     const float reflectance;
-    const bool inside;
     const float n1;
     const float n2;
+    const bool inside;
 };
 
 Sphere GlassSphere() noexcept;

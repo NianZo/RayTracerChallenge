@@ -105,7 +105,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
     const float r0 = powf(((n1 - n2) / (n1 + n2)), 2);
     const float reflectance = sin2T > 1.0F ? 1.0F : r0 + (1 - r0) * powf(1 - cos, 5);
 
-    IntersectionDetails id = {position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, *(i.object), i.t, reflectance, inside, n1, n2};
+    IntersectionDetails id = {position, overPosition, underPosition, eyeVector, normalVector, reflectionVector, *(i.object), i.t, reflectance, n1, n2, inside};
     return id;
 }
 
