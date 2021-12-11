@@ -13,11 +13,11 @@ Canvas::Canvas(const uint32_t widthIn, const uint32_t heightIn) noexcept : width
     this->pixels.reserve(heightIn);
     for (uint32_t row = 0; row < heightIn; row++)
     {
-        this->pixels.push_back(std::vector<Color>());
+        this->pixels.emplace_back(std::vector<Color>());
         this->pixels[row].reserve(widthIn);
         for (uint32_t col = 0; col < widthIn; col++)
         {
-            this->pixels[row].push_back(Color());
+            this->pixels[row].emplace_back(Color());
         }
     }
 }

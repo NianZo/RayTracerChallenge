@@ -42,15 +42,15 @@ class Material
   public:
     Color color;
     std::optional<Pattern> pattern;
-    float ambient;
-    float diffuse;
-    float specular;
-    float shininess;
-    float reflectivity;
-    float transparency;
-    float refractiveIndex;
+    float ambient = 0.1f;
+    float diffuse = 0.9f;
+    float specular = 0.9f;
+    float shininess = 200.0f;
+    float reflectivity = 0.0f;
+    float transparency = 0.0f;
+    float refractiveIndex = 1.0f;
 
-    Material() noexcept : color(Color(1, 1, 1)), ambient(0.1f), diffuse(0.9f), specular(0.9f), shininess(200.0f), reflectivity(0.0f), transparency(0.0f), refractiveIndex(1.0f){};
+    Material() noexcept : color(Color(1, 1, 1)){};
     Material(const Color& colorIn, const float ambientIn, const float diffuseIn, const float specularIn, const float shininessIn, const float reflectivityIn, const float transparencyIn, const float refractiveIndexIn) noexcept : color(colorIn), ambient(ambientIn), diffuse(diffuseIn), specular(specularIn), shininess(shininessIn), reflectivity(reflectivityIn), transparency(transparencyIn), refractiveIndex(refractiveIndexIn){};
 
     [[nodiscard]] bool operator==(const Material& other) const noexcept;

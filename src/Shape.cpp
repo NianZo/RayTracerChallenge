@@ -51,8 +51,8 @@ std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const noexcept
     std::vector<Intersection> intersections;
     if (discriminant >= 0)
     {
-        intersections.push_back(Intersection((-b - sqrtf(discriminant)) / (2 * a), this));
-        intersections.push_back(Intersection((-b + sqrtf(discriminant)) / (2 * a), this));
+        intersections.emplace_back(Intersection((-b - sqrtf(discriminant)) / (2 * a), this));
+        intersections.emplace_back(Intersection((-b + sqrtf(discriminant)) / (2 * a), this));
     }
 
     return intersections;

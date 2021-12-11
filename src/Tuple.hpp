@@ -13,12 +13,12 @@
 class Tuple
 {
   public:
-    float x;
-    float y;
-    float z;
-    float w;
+    float x = 0.0f;
+    float y = 0.0f;
+    float z = 0.0f;
+    float w = 0.0f;
 
-    Tuple() noexcept : x(0.0f), y(0.0f), z(0.0f), w(0.0f){};
+    Tuple() noexcept = default;
     Tuple(float xIn, float yIn, float zIn, float wIn) noexcept; // : x(xIn), y(yIn), z(zIn), w(wIn) {};
 
     // Operator overloads

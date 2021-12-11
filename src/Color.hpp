@@ -13,11 +13,11 @@
 class Color
 {
   public:
-    float r;
-    float g;
-    float b;
+    float r = 0.0f;
+    float g = 0.0f;
+    float b = 0.0f;
 
-    Color() noexcept : r(0.0f), g(0.0f), b(0.0f){};
+    Color() noexcept = default;
     Color(float red, float green, float blue) noexcept : r(red), g(green), b(blue){};
 
     // Operator overloads
