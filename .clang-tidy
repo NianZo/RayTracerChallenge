@@ -12,7 +12,8 @@ Checks: 'modernize-*,-modernize-use-trailing-return-type,
     objc-*,
     mpi-*,
     performance-*,
-    hicpp-*'
+    hicpp-*,
+    llvm-*'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
