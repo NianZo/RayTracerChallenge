@@ -7,7 +7,8 @@ Checks: 'modernize-*,-modernize-use-trailing-return-type,
     bugprone-*,
     cert-*,
     clang-analyzer-*,
-    concurrency-*,openmp-*'
+    concurrency-*,openmp-*,
+    misc-*,-misc-non-private-member-variables-in-classes,-misc-no-recursion'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
