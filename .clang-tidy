@@ -5,7 +5,8 @@ Checks: 'modernize-*,-modernize-use-trailing-return-type,
     portability-*,
     cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-pro-bounds-constant-array-index,-cppcoreguidelines-non-private-member-variables-in-classes,
     bugprone-*,
-    cert-*'
+    cert-*,
+    clang-analyzer-*'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
