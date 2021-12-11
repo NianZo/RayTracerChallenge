@@ -25,7 +25,7 @@ class Matrix
             row = {};
         }
     }
-    Matrix(const std::array<std::array<float, N>, N>& initialData) noexcept : data(initialData){};
+    explicit Matrix(const std::array<std::array<float, N>, N>& initialData) noexcept : data(initialData){};
 
     std::array<float, N>& operator[](uint32_t index) noexcept;
     const std::array<float, N>& operator[](uint32_t index) const noexcept;
