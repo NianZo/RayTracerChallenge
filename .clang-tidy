@@ -10,7 +10,8 @@ Checks: 'modernize-*,-modernize-use-trailing-return-type,
     concurrency-*,openmp-*,
     misc-*,-misc-non-private-member-variables-in-classes,-misc-no-recursion,
     objc-*,
-    mpi-*'
+    mpi-*,
+    performance-*'
 WarningsAsErrors: '.*'
 HeaderFilterRegex: '.*'
 FormatStyle: none
