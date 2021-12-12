@@ -37,16 +37,8 @@ class Shape
     [[nodiscard]] Color shade(const Light& light, const Tuple& position, const Tuple& eyeVector, bool inShadow) const noexcept;
 
   private:
-    // I'd prefer to not define these and have a compile time error if these are used, but *shrug*
-    [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const noexcept
-    {
-        return Tuple(0.0F, 0.0F, 0.0F, 0.0F);
-    }
-    [[nodiscard]] virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const noexcept
-    {
-        std::vector<Intersection> i;
-        return i;
-    }
+    [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const noexcept = 0;
+    [[nodiscard]] virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const noexcept = 0;
 };
 
 class Sphere : public Shape

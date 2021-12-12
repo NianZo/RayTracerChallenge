@@ -66,7 +66,61 @@ TEST(CanvasTest, PixelData)
 	EXPECT_TRUE(ppmString.starts_with("P3\n5 3\n255\n255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n"));
 }
 
-TEST(CanvasTest, MaximumLineLength)
+TEST(CanvasTest, MaximumLineLengthRed)
+{
+	Canvas c = Canvas(10, 2);
+
+	for (auto& row : c.pixels)
+	{
+		for (auto& pixel : row)
+		{
+			pixel = Color(1, 0.8, 0.6);
+		}
+	}
+	c.pixels[0][5] = Color(1, 0, 0.6);
+	c.pixels[1][5] = Color(1, 0, 0.6);
+
+	std::string ppmString = c.GetPPMString();
+	std::string compString =
+			"P3\n"
+			"10 2\n"
+			"255\n"
+			"255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 0 153\n"
+			"255 204 153 255 204 153 255 204 153 255 204 153\n"
+			"255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 0 153\n"
+			"255 204 153 255 204 153 255 204 153 255 204 153\n";
+	EXPECT_TRUE(ppmString.starts_with(compString));
+}
+
+TEST(CanvasTest, MaximumLineLengthGreen)
+{
+	Canvas c = Canvas(10, 2);
+
+	for (auto& row : c.pixels)
+	{
+		for (auto& pixel : row)
+		{
+			pixel = Color(1, 0.8, 0.6);
+		}
+	}
+	c.pixels[0][4] = Color(1, 0.8, 0);
+	c.pixels[0][5] = Color(1, 0, 0);
+	c.pixels[1][4] = Color(1, 0.8, 0);
+	c.pixels[1][5] = Color(1, 0, 0);
+
+	std::string ppmString = c.GetPPMString();
+	std::string compString =
+			"P3\n"
+			"10 2\n"
+			"255\n"
+			"255 204 153 255 204 153 255 204 153 255 204 153 255 204 0 255 0 0 255\n"
+			"204 153 255 204 153 255 204 153 255 204 153\n"
+			"255 204 153 255 204 153 255 204 153 255 204 153 255 204 0 255 0 0 255\n"
+			"204 153 255 204 153 255 204 153 255 204 153\n";
+	EXPECT_TRUE(ppmString.starts_with(compString));
+}
+
+TEST(CanvasTest, MaximumLineLengthBlue)
 {
 	Canvas c = Canvas(10, 2);
 

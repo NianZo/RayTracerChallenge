@@ -50,7 +50,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
     const Tuple underPosition = position - normalVector * TUPLE_EPSILON;
     const Tuple reflectionVector = direction.reflect(normalVector);
 
-    std::vector<Shape> containers;
+    std::vector<std::reference_wrapper<const Shape>> containers;
     float n1 = 0.0F;
     float n2 = 0.0F;
     for (auto intersection : intersections)
@@ -62,7 +62,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
                 n1 = 1.0F;
             } else
             {
-                n1 = containers.back().material.refractiveIndex;
+                n1 = containers.back().get().material.refractiveIndex;
             }
         }
 
@@ -72,7 +72,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
             containers.erase(containerPosition);
         } else
         {
-            containers.push_back(*intersection.object);
+            containers.emplace_back(*intersection.object);
         }
 
         if (i == intersection)
@@ -82,7 +82,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
                 n2 = 1.0F;
             } else
             {
-                n2 = containers.back().material.refractiveIndex;
+                n2 = containers.back().get().material.refractiveIndex;
             }
             break;
         }

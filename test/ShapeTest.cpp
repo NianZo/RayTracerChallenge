@@ -200,14 +200,16 @@ TEST(SphereTest, AssignMaterial)
 */
 TEST(ShapeTest, DefaultTransformation)
 {
-	Shape o;
+	Sphere s;
+	Shape& o = s;
 
 	EXPECT_EQ(o.transform, IdentityMatrix());
 }
 
 TEST(ShapeTest, AssignTransformation)
 {
-	Shape o;
+	Sphere s;
+	Shape& o = s;
 	o.transform = (translation(2, 3, 4));
 
 	EXPECT_EQ(o.transform, translation(2, 3, 4));
@@ -215,14 +217,16 @@ TEST(ShapeTest, AssignTransformation)
 
 TEST(ShapeTest, DefaultMaterial)
 {
-	Shape o;
+	Sphere s;
+	Shape& o = s;
 
 	EXPECT_EQ(o.material, Material());
 }
 
 TEST(ShapeTest, AssignMaterial)
 {
-	Shape o;
+	Sphere s;
+	Shape& o = s;
 	Material m;
 	m.ambient = 1.0f;
 	o.material = m;
@@ -638,6 +642,17 @@ TEST(ConeTest, NormalsOfCone)
 
 	Tuple n3 = c.normal(Point(-1, -1, 0));
 	EXPECT_EQ(n3, Vector(-1, 1, 0));
+
+	Cone c2;
+	c2.maximum = 2.0f;
+	c2.minimum = -2.0f;
+	c2.closed = true;
+
+	Tuple n4 = c2.normal(Point(0, 2, 1.9));
+	EXPECT_EQ(n4, Vector(0, 1, 0));
+
+	Tuple n5 = c2.normal(Point(1.9, -2, 0));
+	EXPECT_EQ(n5, Vector(0, -1, 0));
 }
 
 
