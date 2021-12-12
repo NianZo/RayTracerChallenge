@@ -72,7 +72,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
             containers.erase(containerPosition);
         } else
         {
-            containers.push_back(*intersection.object);
+            containers.emplace_back(*intersection.object);
         }
 
         if (i == intersection)
