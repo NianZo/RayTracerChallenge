@@ -216,10 +216,10 @@ Tuple Cone::objectNormal(const Tuple& p) const noexcept
     const float dist = p.x * p.x + p.z * p.z;
     Tuple normal;
 
-    if (dist < 1.0F && p.y >= maximum - TUPLE_EPSILON)
+    if (closed && dist < maximum * maximum && p.y >= maximum - TUPLE_EPSILON)
     {
         normal = Vector(0, 1, 0);
-    } else if (dist < 1.0F && p.y <= minimum + TUPLE_EPSILON)
+    } else if (closed && dist < minimum * minimum && p.y <= minimum + TUPLE_EPSILON)
     {
         normal = Vector(0, -1, 0);
     } else
