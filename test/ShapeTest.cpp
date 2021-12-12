@@ -200,14 +200,16 @@ TEST(SphereTest, AssignMaterial)
 */
 TEST(ShapeTest, DefaultTransformation)
 {
-	Shape o;
+	Sphere s;
+	Shape& o = s;
 
 	EXPECT_EQ(o.transform, IdentityMatrix());
 }
 
 TEST(ShapeTest, AssignTransformation)
 {
-	Shape o;
+	Sphere s;
+	Shape& o = s;
 	o.transform = (translation(2, 3, 4));
 
 	EXPECT_EQ(o.transform, translation(2, 3, 4));
@@ -215,14 +217,16 @@ TEST(ShapeTest, AssignTransformation)
 
 TEST(ShapeTest, DefaultMaterial)
 {
-	Shape o;
+	Sphere s;
+	Shape& o = s;
 
 	EXPECT_EQ(o.material, Material());
 }
 
 TEST(ShapeTest, AssignMaterial)
 {
-	Shape o;
+	Sphere s;
+	Shape& o = s;
 	Material m;
 	m.ambient = 1.0f;
 	o.material = m;
