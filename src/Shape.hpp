@@ -90,6 +90,29 @@ class Cone : public Shape
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
+class Group : public Shape
+{
+public:
+	std::vector<std::reference_wrapper<const Shape>> objects() const noexcept;
+	void addChild(const Group& c) noexcept;
+	void addChild(const Sphere& c) noexcept;
+	void addChild(const Plane& c) noexcept;
+	void addChild(const Cube& c) noexcept;
+	void addChild(const Cylinder& c) noexcept;
+	void addChild(const Cone& c) noexcept;
+
+private:
+	std::vector<Group> groups;
+	std::vector<Sphere> spheres;
+	std::vector<Plane> planes;
+	std::vector<Cube> cubes;
+	std::vector<Cylinder> cylinders;
+	std::vector<Cone> cones;
+
+	[[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
+};
+
 class Intersection
 {
   public:

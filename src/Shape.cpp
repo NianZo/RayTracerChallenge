@@ -286,6 +286,76 @@ std::vector<Intersection> Cone::objectIntersect(const Ray& r) const noexcept
     return i;
 }
 
+std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
+{
+	std::vector<std::reference_wrapper<const Shape>> objects;
+
+	for (const Shape& group : groups)
+	{
+		objects.emplace_back(std::ref(group));
+	}
+	for (const Shape& sphere : spheres)
+	{
+		objects.emplace_back(std::ref(sphere));
+	}
+	for (const Shape& plane : planes)
+	{
+		objects.emplace_back(std::ref(plane));
+	}
+	for (const Shape& cube : cubes)
+	{
+		objects.emplace_back(std::ref(cube));
+	}
+	for (const Shape& cylinder : cylinders)
+	{
+		objects.emplace_back(std::ref(cylinder));
+	}
+	for (const Shape& cone : cones)
+	{
+		objects.emplace_back(std::ref(cone));
+	}
+
+	return objects;
+}
+
+void Group::addChild(const Group& c) noexcept
+{
+	groups.push_back(c);
+}
+
+void Group::addChild(const Sphere& c) noexcept
+{
+	spheres.push_back(c);
+}
+
+void Group::addChild(const Plane& c) noexcept
+{
+	planes.push_back(c);
+}
+void Group::addChild(const Cube& c) noexcept
+{
+	cubes.push_back(c);
+}
+void Group::addChild(const Cylinder& c) noexcept
+{
+	cylinders.push_back(c);
+}
+
+void Group::addChild(const Cone& c) noexcept
+{
+	cones.push_back(c);
+}
+
+Tuple Group::objectNormal([[maybe_unused]] const Tuple& p) const noexcept
+{
+	return Tuple{};
+}
+
+std::vector<Intersection> Group::objectIntersect([[maybe_unused]] const Ray& r) const noexcept
+{
+	return std::vector<Intersection>{};
+}
+
 Sphere GlassSphere() noexcept
 {
     Sphere s;

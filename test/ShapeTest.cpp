@@ -655,6 +655,42 @@ TEST(ConeTest, NormalsOfCone)
 	EXPECT_EQ(n5, Vector(0, -1, 0));
 }
 
+TEST(GroupTest, CreateNewGroup)
+{
+	Group g;
+
+	EXPECT_EQ(g.transform, IdentityMatrix());
+	EXPECT_TRUE(g.objects().empty());
+}
+
+TEST(GroupTest, AddChildToGroup)
+{
+	Group g;
+
+	// TODO set a different transform for each; shape's operator== only tests for transform and material
+	Group g2;
+	g.addChild(g2);
+	Sphere sp;
+	g.addChild(sp);
+	Plane p;
+	g.addChild(p);
+	Cube cu;
+	g.addChild(cu);
+	Cylinder cy;
+	g.addChild(cy);
+	Cone co;
+	g.addChild(co);
+
+	std::vector<std::reference_wrapper<const Shape>> shapeRefs = g.objects();
+	EXPECT_FALSE(shapeRefs.empty());
+	EXPECT_EQ(shapeRefs[0].get(), g2);
+	EXPECT_EQ(shapeRefs[1].get(), sp);
+	EXPECT_EQ(shapeRefs[2].get(), p);
+	EXPECT_EQ(shapeRefs[3].get(), cu);
+	EXPECT_EQ(shapeRefs[4].get(), cy);
+	EXPECT_EQ(shapeRefs[5].get(), co);
+}
+
 
 
 
