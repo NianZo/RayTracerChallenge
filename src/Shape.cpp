@@ -12,7 +12,8 @@
 
 Tuple Shape::normal(const Tuple& p) const noexcept
 {
-    return objectNormal(transform.inverse() * p);
+	const Matrix<4> fullTransform = getFullTransform();
+    return fullTransform * objectNormal(fullTransform.inverse() * p);
 }
 
 std::vector<Intersection> Shape::intersect(const Ray& r) const noexcept
@@ -27,6 +28,11 @@ Color Shape::shade(const Light& light, const Tuple& position, const Tuple& eyeVe
     return material.light(objectLight, objectPosition, eyeVector, normal(position), inShadow);
 }
 
+Matrix<4> Shape::getFullTransform() const noexcept
+{
+	return parent != nullptr ? transform * parent->getFullTransform() : transform;
+}
+
 // Implicitly assumes that p is on the sphere surface and is a valid point (w = 1)
 Tuple Sphere::objectNormal(const Tuple& p) const noexcept
 {
@@ -35,6 +41,7 @@ Tuple Sphere::objectNormal(const Tuple& p) const noexcept
     Tuple worldSpaceNormal = transform.inverse().transpose() * objectSpaceNormal; // This is technically a hack and messes with w; set it to 0 at the end;
     worldSpaceNormal.w = 0;
     return worldSpaceNormal.normalize();
+    // TODO I have no idea how this bug has persisted so long, but a lot of this needs to be broken out into the Shape::normal function instead
 }
 
 std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const noexcept
@@ -321,34 +328,40 @@ std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
 void Group::addChild(const Group& c) noexcept
 {
 	groups.push_back(c);
+	groups.back().parent = this;
 }
 
 void Group::addChild(const Sphere& c) noexcept
 {
 	spheres.push_back(c);
+	spheres.back().parent = this;
 }
 
 void Group::addChild(const Plane& c) noexcept
 {
 	planes.push_back(c);
+	planes.back().parent = this;
 }
 void Group::addChild(const Cube& c) noexcept
 {
 	cubes.push_back(c);
+	cubes.back().parent = this;
 }
 void Group::addChild(const Cylinder& c) noexcept
 {
 	cylinders.push_back(c);
+	cylinders.back().parent = this;
 }
 
 void Group::addChild(const Cone& c) noexcept
 {
 	cones.push_back(c);
+	cones.back().parent = this;
 }
 
 Tuple Group::objectNormal([[maybe_unused]] const Tuple& p) const noexcept
 {
-	return Tuple{};
+	return Vector(0, 0, 0); // this should never be called, so return a clearly invalid vector
 }
 
 std::vector<Intersection> Group::objectIntersect(const Ray& r) const noexcept

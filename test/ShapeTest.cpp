@@ -688,12 +688,18 @@ TEST(GroupTest, AddChildToGroup)
 
 	std::vector<std::reference_wrapper<const Shape>> shapeRefs = g.objects();
 	EXPECT_FALSE(shapeRefs.empty());
-	EXPECT_EQ(shapeRefs[0].get(), g2);
-	EXPECT_EQ(shapeRefs[1].get(), sp);
-	EXPECT_EQ(shapeRefs[2].get(), p);
-	EXPECT_EQ(shapeRefs[3].get(), cu);
-	EXPECT_EQ(shapeRefs[4].get(), cy);
-	EXPECT_EQ(shapeRefs[5].get(), co);
+	EXPECT_EQ(shapeRefs[0].get().transform, g2.transform);
+	EXPECT_EQ(shapeRefs[1].get().transform, sp.transform);
+	EXPECT_EQ(shapeRefs[2].get().transform, p.transform);
+	EXPECT_EQ(shapeRefs[3].get().transform, cu.transform);
+	EXPECT_EQ(shapeRefs[4].get().transform, cy.transform);
+	EXPECT_EQ(shapeRefs[5].get().transform, co.transform);
+	EXPECT_EQ(shapeRefs[0].get().parent, &g);
+	EXPECT_EQ(shapeRefs[1].get().parent, &g);
+	EXPECT_EQ(shapeRefs[2].get().parent, &g);
+	EXPECT_EQ(shapeRefs[3].get().parent, &g);
+	EXPECT_EQ(shapeRefs[4].get().parent, &g);
+	EXPECT_EQ(shapeRefs[5].get().parent, &g);
 }
 
 TEST(GroupTest, IntersectRayWithEmptyGroup)
@@ -720,10 +726,10 @@ TEST(GroupTest, IntersectRayWithNonEmptyGroup)
 
 	auto intersections = g.intersect(r);
 	EXPECT_EQ(intersections.size(), 4);
-	EXPECT_EQ(*intersections[0].object, s1);
-	EXPECT_EQ(*intersections[1].object, s1);
-	EXPECT_EQ(*intersections[2].object, s2);
-	EXPECT_EQ(*intersections[3].object, s2);
+	EXPECT_EQ(intersections[0].object->transform, s1.transform);
+	EXPECT_EQ(intersections[1].object->transform, s1.transform);
+	EXPECT_EQ(intersections[2].object->transform, s2.transform);
+	EXPECT_EQ(intersections[3].object->transform, s2.transform);
 }
 
 TEST(GroupTest, IntersectRayWithTransformedGroup)
@@ -738,6 +744,23 @@ TEST(GroupTest, IntersectRayWithTransformedGroup)
 	auto intersections = g.intersect(r);
 	EXPECT_EQ(intersections.size(), 2);
 }
+
+TEST(GroupTest, NormalOfChildInGroup)
+{
+	Group g1;
+	g1.transform = rotationY(std::numbers::pi / 2);
+	Group g2;
+	g2.transform = scaling(1, 2, 3);
+	g1.addChild(g2);
+	Sphere s;
+	s.transform = translation(5, 0, 0);
+	g2.addChild(s);
+
+	Tuple n = s.normal(Point(1.7321, 1.1547, -5.5774));
+	EXPECT_EQ(n, Vector(0.2857, 0.4286, -0.8571));
+}
+
+
 
 
 

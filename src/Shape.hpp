@@ -22,6 +22,7 @@ class Shape
   public:
     Matrix<4> transform;
     Material material;
+    Shape* parent = nullptr;
 
     Shape() noexcept : transform(IdentityMatrix()){};
     virtual ~Shape() noexcept = default;
@@ -30,7 +31,7 @@ class Shape
     Shape& operator=(const Shape&) noexcept = default;
     Shape& operator=(Shape&&) noexcept = default;
 
-    bool operator==(const Shape& other) const noexcept { return transform == other.transform && material == other.material; }
+    bool operator==(const Shape& other) const noexcept { return transform == other.transform && material == other.material && parent == other.parent; }
 
     [[nodiscard]] Tuple normal(const Tuple& p) const noexcept;
     [[nodiscard]] std::vector<Intersection> intersect(const Ray& r) const noexcept;
@@ -39,6 +40,7 @@ class Shape
   private:
     [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const noexcept = 0;
     [[nodiscard]] virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const noexcept = 0;
+    Matrix<4> getFullTransform() const noexcept;
 };
 
 class Sphere : public Shape
