@@ -667,18 +667,23 @@ TEST(GroupTest, AddChildToGroup)
 {
 	Group g;
 
-	// TODO set a different transform for each; shape's operator== only tests for transform and material
 	Group g2;
+	g2.transform = translation(1, 0, 0);
 	g.addChild(g2);
 	Sphere sp;
+	sp.transform = translation(2, 0, 0);
 	g.addChild(sp);
 	Plane p;
+	p.transform = translation(3, 0, 0);
 	g.addChild(p);
 	Cube cu;
+	cu.transform = translation(4, 0, 0);
 	g.addChild(cu);
 	Cylinder cy;
+	cy.transform = translation(5, 0, 0);
 	g.addChild(cy);
 	Cone co;
+	co.transform = translation(6, 0, 0);
 	g.addChild(co);
 
 	std::vector<std::reference_wrapper<const Shape>> shapeRefs = g.objects();
@@ -689,6 +694,49 @@ TEST(GroupTest, AddChildToGroup)
 	EXPECT_EQ(shapeRefs[3].get(), cu);
 	EXPECT_EQ(shapeRefs[4].get(), cy);
 	EXPECT_EQ(shapeRefs[5].get(), co);
+}
+
+TEST(GroupTest, IntersectRayWithEmptyGroup)
+{
+	Group g;
+	Ray r(Point(0, 0, 0), Vector(0, 0, 1));
+
+	auto intersections = g.intersect(r);
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(GroupTest, IntersectRayWithNonEmptyGroup)
+{
+	Group g;
+	Sphere s1;
+	Sphere s2;
+	s2.transform = translation(0, 0, -3);
+	Sphere s3;
+	s3.transform = translation(5, 0, 0);
+	g.addChild(s1);
+	g.addChild(s2);
+	g.addChild(s3);
+	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
+
+	auto intersections = g.intersect(r);
+	EXPECT_EQ(intersections.size(), 4);
+	EXPECT_EQ(*intersections[0].object, s1);
+	EXPECT_EQ(*intersections[1].object, s1);
+	EXPECT_EQ(*intersections[2].object, s2);
+	EXPECT_EQ(*intersections[3].object, s2);
+}
+
+TEST(GroupTest, IntersectRayWithTransformedGroup)
+{
+	Group g;
+	g.transform = scaling(2, 2, 2);
+	Sphere s;
+	s.transform = translation(5, 0, 0);
+	g.addChild(s);
+	Ray r(Point(10, 0, -10), Vector(0, 0, 1));
+
+	auto intersections = g.intersect(r);
+	EXPECT_EQ(intersections.size(), 2);
 }
 
 

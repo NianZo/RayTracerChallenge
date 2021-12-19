@@ -351,9 +351,16 @@ Tuple Group::objectNormal([[maybe_unused]] const Tuple& p) const noexcept
 	return Tuple{};
 }
 
-std::vector<Intersection> Group::objectIntersect([[maybe_unused]] const Ray& r) const noexcept
+std::vector<Intersection> Group::objectIntersect(const Ray& r) const noexcept
 {
-	return std::vector<Intersection>{};
+	std::vector<Intersection> intersections;
+
+	for (const std::reference_wrapper<const Shape> shape : objects())
+	{
+		const std::vector<Intersection> shapeIntersections = shape.get().intersect(r);
+		intersections.insert(intersections.end(), shapeIntersections.begin(), shapeIntersections.end());
+	}
+	return intersections;
 }
 
 Sphere GlassSphere() noexcept
