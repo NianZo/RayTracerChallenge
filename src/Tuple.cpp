@@ -76,7 +76,7 @@ float Tuple::magnitude() const noexcept
 Tuple Tuple::normalize() const noexcept
 {
     const float mag = this->magnitude();
-    return Tuple(this->x / mag, this->y / mag, this->z / mag, this->w / mag);
+    return mag != 0.0F ? Tuple(this->x / mag, this->y / mag, this->z / mag, this->w / mag) : Tuple(0.0F, 0.0F, 0.0F, 0.0F);
 }
 
 float Tuple::dot(const Tuple& other) const noexcept

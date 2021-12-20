@@ -635,13 +635,13 @@ TEST(ConeTest, NormalsOfCone)
 	Cone c;
 
 	Tuple n1 = c.normal(Point(0, 0, 0));
-	EXPECT_EQ(n1, Vector(0, 0, 0));
+	EXPECT_EQ(n1, Vector(0, 0, 0).normalize());
 
 	Tuple n2 = c.normal(Point(1, 1, 1));
-	EXPECT_EQ(n2, Vector(1, -sqrt(2), 1));
+	EXPECT_EQ(n2, Vector(1, -sqrt(2), 1).normalize());
 
 	Tuple n3 = c.normal(Point(-1, -1, 0));
-	EXPECT_EQ(n3, Vector(-1, 1, 0));
+	EXPECT_EQ(n3, Vector(-1, 1, 0).normalize());
 
 	Cone c2;
 	c2.maximum = 2.0f;
@@ -751,12 +751,14 @@ TEST(GroupTest, NormalOfChildInGroup)
 	g1.transform = rotationY(std::numbers::pi / 2);
 	Group g2;
 	g2.transform = scaling(1, 2, 3);
-	g1.addChild(g2);
 	Sphere s;
 	s.transform = translation(5, 0, 0);
-	g2.addChild(s);
 
-	Tuple n = s.normal(Point(1.7321, 1.1547, -5.5774));
+	// Note: manually accessing these children should NOT be done; need it just for testing
+	Group& g2Ref = g1.addChild(g2);
+	Sphere& sRef = g2Ref.addChild(s);
+
+	Tuple n = sRef.normal(Point(1.7321, 1.1547, -5.5774));
 	EXPECT_EQ(n, Vector(0.2857, 0.4286, -0.8571));
 }
 

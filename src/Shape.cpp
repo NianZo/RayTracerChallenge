@@ -12,8 +12,11 @@
 
 Tuple Shape::normal(const Tuple& p) const noexcept
 {
-	const Matrix<4> fullTransform = getFullTransform();
-    return fullTransform * objectNormal(fullTransform.inverse() * p);
+	const Matrix<4> fullTransformInverse = getFullTransform().inverse();
+	// This is technically a hack and messes with w; set it to 0 at the end;
+    Tuple worldSpaceNormal = fullTransformInverse.transpose() * objectNormal(fullTransformInverse * p);
+    worldSpaceNormal.w = 0.0F;
+    return worldSpaceNormal.normalize();
 }
 
 std::vector<Intersection> Shape::intersect(const Ray& r) const noexcept
@@ -30,18 +33,13 @@ Color Shape::shade(const Light& light, const Tuple& position, const Tuple& eyeVe
 
 Matrix<4> Shape::getFullTransform() const noexcept
 {
-	return parent != nullptr ? transform * parent->getFullTransform() : transform;
+	return parent != nullptr ? parent->getFullTransform() * transform : transform;
 }
 
 // Implicitly assumes that p is on the sphere surface and is a valid point (w = 1)
 Tuple Sphere::objectNormal(const Tuple& p) const noexcept
 {
-    //const Tuple objectSpaceP = transform.inverse() * p;
-    const Tuple objectSpaceNormal = (p - Point(0, 0, 0));
-    Tuple worldSpaceNormal = transform.inverse().transpose() * objectSpaceNormal; // This is technically a hack and messes with w; set it to 0 at the end;
-    worldSpaceNormal.w = 0;
-    return worldSpaceNormal.normalize();
-    // TODO I have no idea how this bug has persisted so long, but a lot of this needs to be broken out into the Shape::normal function instead
+    return (p - Point(0, 0, 0));
 }
 
 std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const noexcept
@@ -325,38 +323,44 @@ std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
 	return objects;
 }
 
-void Group::addChild(const Group& c) noexcept
+Group& Group::addChild(const Group& c) noexcept
 {
 	groups.push_back(c);
 	groups.back().parent = this;
+	return groups.back();
 }
 
-void Group::addChild(const Sphere& c) noexcept
+Sphere& Group::addChild(const Sphere& c) noexcept
 {
 	spheres.push_back(c);
 	spheres.back().parent = this;
+	return spheres.back();
 }
 
-void Group::addChild(const Plane& c) noexcept
+Plane& Group::addChild(const Plane& c) noexcept
 {
 	planes.push_back(c);
 	planes.back().parent = this;
+	return planes.back();
 }
-void Group::addChild(const Cube& c) noexcept
+Cube& Group::addChild(const Cube& c) noexcept
 {
 	cubes.push_back(c);
 	cubes.back().parent = this;
+	return cubes.back();
 }
-void Group::addChild(const Cylinder& c) noexcept
+Cylinder& Group::addChild(const Cylinder& c) noexcept
 {
 	cylinders.push_back(c);
 	cylinders.back().parent = this;
+	return cylinders.back();
 }
 
-void Group::addChild(const Cone& c) noexcept
+Cone& Group::addChild(const Cone& c) noexcept
 {
 	cones.push_back(c);
 	cones.back().parent = this;
+	return cones.back();
 }
 
 Tuple Group::objectNormal([[maybe_unused]] const Tuple& p) const noexcept

@@ -95,13 +95,42 @@ class Cone : public Shape
 class Group : public Shape
 {
 public:
+	Group() = default;
+	Group(const Group& other) noexcept
+	{
+		transform = other.transform;
+		material = other.material;
+		parent = other.parent;
+		groups = other.groups;
+		spheres = other.spheres;
+		planes = other.planes;
+		cubes = other.cubes;
+		cylinders = other.cylinders;
+		cones = other.cones;
+	};
+    Group(Group&&) noexcept = default;
+    Group& operator=(const Group& other) noexcept
+    {
+    	transform = other.transform;
+    	material = other.material;
+    	parent = other.parent;
+    	groups = other.groups;
+    	spheres = other.spheres;
+    	planes = other.planes;
+    	cubes = other.cubes;
+    	cylinders = other.cylinders;
+    	cones = other.cones;
+    	return *this;
+    };
+    Group& operator=(Group&&) noexcept = default;
 	std::vector<std::reference_wrapper<const Shape>> objects() const noexcept;
-	void addChild(const Group& c) noexcept;
-	void addChild(const Sphere& c) noexcept;
-	void addChild(const Plane& c) noexcept;
-	void addChild(const Cube& c) noexcept;
-	void addChild(const Cylinder& c) noexcept;
-	void addChild(const Cone& c) noexcept;
+	// TODO can I make this a template? Each pushes elements to a different vector
+	Group& addChild(const Group& c) noexcept;
+	Sphere& addChild(const Sphere& c) noexcept;
+	Plane& addChild(const Plane& c) noexcept;
+	Cube& addChild(const Cube& c) noexcept;
+	Cylinder& addChild(const Cylinder& c) noexcept;
+	Cone& addChild(const Cone& c) noexcept;
 
 private:
 	std::vector<Group> groups;
