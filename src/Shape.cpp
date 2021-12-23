@@ -26,8 +26,8 @@ std::vector<Intersection> Shape::intersect(const Ray& r) const noexcept
 
 Color Shape::shade(const Light& light, const Tuple& position, const Tuple& eyeVector, const bool inShadow) const noexcept
 {
-    const Light objectLight = {transform.inverse() * light.position, light.intensity};
-    const Tuple objectPosition = transform.inverse() * position;
+    const Light objectLight = {getFullTransform().inverse() * light.position, light.intensity};
+    const Tuple objectPosition = getFullTransform().inverse() * position;
     return material.light(objectLight, objectPosition, eyeVector, normal(position), inShadow);
 }
 
