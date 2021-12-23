@@ -17,6 +17,8 @@
 #include <numbers>
 #include <string>
 
+Group hexagon();
+
 void RenderChapter7Scene(const std::string& fileName)
 {
     Sphere floor;
@@ -56,6 +58,8 @@ void RenderChapter7Scene(const std::string& fileName)
     left.material.diffuse = 0.7f;
     left.material.specular = 0.3f;
 
+
+
     Plane p;
 
     Light light(Point(-10, 10, -10), Color(1, 1, 1));
@@ -65,12 +69,13 @@ void RenderChapter7Scene(const std::string& fileName)
     //w.objects.push_back(floor);
     //w.objects.push_back(leftWall);
     //w.objects.push_back(rightWall);
+    w.groups.push_back(hexagon());
     w.planes.push_back(p);
     w.spheres.push_back(middle);
     w.spheres.push_back(right);
     w.spheres.push_back(left);
 
-    Camera c = Camera(640, 480, std::numbers::pi_v<float> / 3);
+    Camera c = Camera(320, 240, std::numbers::pi_v<float> / 3);
     c.transform = ViewTransform(Point(0, 1.5, -5), Point(0, 1, 0), Vector(0, 1, 0));
 
     auto startRenderTime = std::chrono::steady_clock::now();
@@ -83,4 +88,25 @@ void RenderChapter7Scene(const std::string& fileName)
     //imageFile.open(fileName, std::ios::out);
     imageFile << canvas.GetPPMString();
     //imageFile.close();
+}
+
+Group hexagon()
+{
+	Sphere corner;
+	corner.transform = translation(0, 0, -1) * scaling(0.25, 0.25, 0.25);
+	Cylinder edge;
+	edge.minimum = 0;
+	edge.maximum = 1;
+	edge.transform = translation(0, 0, -1) * rotationY(-std::numbers::pi_v<float> / 6.0f) * rotationZ(-std::numbers::pi_v<float> / 2.0f) * scaling(0.25, 1, 0.25);
+	Group side;
+	side.addChild(corner);
+	side.addChild(edge);
+
+	Group hexagon;
+	for (int i = 0; i < 6; i++)
+	{
+		side.transform = rotationY(static_cast<float>(i) * std::numbers::pi_v<float> / 3.0f);
+		hexagon.addChild(side);
+	}
+	return hexagon;
 }

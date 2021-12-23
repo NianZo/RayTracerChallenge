@@ -361,6 +361,9 @@ TEST(WorldTest, WorldCanHoldAllSupportedShapes)
 	Cone co;
 	co.transform = translation(5, 0, 0);
 	w.cones.push_back(co);
+	Group g;
+	g.transform = translation(6, 0, 0);
+	w.groups.push_back(g);
 
 	auto refs = w.objects();
 
@@ -369,6 +372,7 @@ TEST(WorldTest, WorldCanHoldAllSupportedShapes)
 	EXPECT_EQ(refs[2].get(), c);
 	EXPECT_EQ(refs[3].get(), cyl);
 	EXPECT_EQ(refs[4].get(), co);
+	EXPECT_EQ(refs[5].get(), g);
 }
 
 
