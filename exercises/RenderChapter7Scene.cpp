@@ -58,9 +58,15 @@ void RenderChapter7Scene(const std::string& fileName)
     left.material.diffuse = 0.7f;
     left.material.specular = 0.3f;
 
-
-
     Plane p;
+
+    Group g;
+    g.addChild(p);
+    g.addChild(middle);
+    g.addChild(right);
+    g.addChild(left);
+
+    Group hex = hexagon();
 
     Light light(Point(-10, 10, -10), Color(1, 1, 1));
 
@@ -69,11 +75,12 @@ void RenderChapter7Scene(const std::string& fileName)
     //w.objects.push_back(floor);
     //w.objects.push_back(leftWall);
     //w.objects.push_back(rightWall);
-    w.groups.push_back(hexagon());
-    w.planes.push_back(p);
-    w.spheres.push_back(middle);
-    w.spheres.push_back(right);
-    w.spheres.push_back(left);
+    w.groups.push_back(hex);
+    w.groups.push_back(g);
+    //w.planes.push_back(p);
+    //w.spheres.push_back(middle);
+    //w.spheres.push_back(right);
+    //w.spheres.push_back(left);
 
     Camera c = Camera(320, 240, std::numbers::pi_v<float> / 3);
     c.transform = ViewTransform(Point(0, 1.5, -5), Point(0, 1, 0), Vector(0, 1, 0));

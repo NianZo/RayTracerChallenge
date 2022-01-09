@@ -40,7 +40,7 @@ class Shape
   private:
     [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const noexcept = 0;
     [[nodiscard]] virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const noexcept = 0;
-    Matrix<4> getFullTransform() const noexcept;
+    [[nodiscard]] Matrix<4> getFullTransform() const noexcept;
 };
 
 class Sphere : public Shape
@@ -96,7 +96,7 @@ class Group : public Shape
 {
 public:
 	Group() = default;
-	Group(const Group& other) noexcept
+	Group(const Group& other) noexcept : Shape(other)
 	{
 		transform = other.transform;
 		material = other.material;
@@ -107,10 +107,39 @@ public:
 		cubes = other.cubes;
 		cylinders = other.cylinders;
 		cones = other.cones;
+
+		for (auto& group : groups)
+		{
+			group.parent = this;
+		}
+		for (auto& sphere : spheres)
+		{
+			sphere.parent = this;
+		}
+		for (auto& plane : planes)
+		{
+			plane.parent = this;
+		}
+		for (auto& cube : cubes)
+		{
+			cube.parent = this;
+		}
+		for (auto& cylinder : cylinders)
+		{
+			cylinder.parent = this;
+		}
+		for (auto& cone : cones)
+		{
+			cone.parent = this;
+		}
 	};
     Group(Group&&) noexcept = default;
     Group& operator=(const Group& other) noexcept
     {
+    	if (this == &other)
+    	{
+    		return *this;
+    	}
     	transform = other.transform;
     	material = other.material;
     	parent = other.parent;
@@ -120,11 +149,37 @@ public:
     	cubes = other.cubes;
     	cylinders = other.cylinders;
     	cones = other.cones;
+
+		for (auto& group : groups)
+		{
+			group.parent = this;
+		}
+		for (auto& sphere : spheres)
+		{
+			sphere.parent = this;
+		}
+		for (auto& plane : planes)
+		{
+			plane.parent = this;
+		}
+		for (auto& cube : cubes)
+		{
+			cube.parent = this;
+		}
+		for (auto& cylinder : cylinders)
+		{
+			cylinder.parent = this;
+		}
+		for (auto& cone : cones)
+		{
+			cone.parent = this;
+		}
     	return *this;
     };
     Group& operator=(Group&&) noexcept = default;
-	std::vector<std::reference_wrapper<const Shape>> objects() const noexcept;
-	// TODO can I make this a template? Each pushes elements to a different vector
+    ~Group() noexcept override = default;
+	[[nodiscard]] std::vector<std::reference_wrapper<const Shape>> objects() const noexcept;
+	// TODO(nic) can I make this a template? Each pushes elements to a different vector
 	Group& addChild(const Group& c) noexcept;
 	Sphere& addChild(const Sphere& c) noexcept;
 	Plane& addChild(const Plane& c) noexcept;

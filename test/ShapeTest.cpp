@@ -757,6 +757,8 @@ TEST(GroupTest, NormalOfChildInGroup)
 	// Note: manually accessing these children should NOT be done; need it just for testing
 	Group& g2Ref = g1.addChild(g2);
 	Sphere& sRef = g2Ref.addChild(s);
+	//Sphere& sRef = g2.addChild(s);
+	//g1.groups[0].transform = scaling(1, 1, 1);
 
 	Tuple n = sRef.normal(Point(1.7321, 1.1547, -5.5774));
 	EXPECT_EQ(n, Vector(0.2857, 0.4286, -0.8571));
