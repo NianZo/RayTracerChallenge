@@ -180,6 +180,7 @@ class Group : public Shape
     ~Group() noexcept override = default;
     [[nodiscard]] std::vector<std::reference_wrapper<const Shape>> objects() const noexcept;
     // TODO(nic) can I make this a template? Each pushes elements to a different vector
+    // TODO(nic) it is dangerous for these to return a reference to the object added...
     Group& addChild(const Group& c) noexcept;
     Sphere& addChild(const Sphere& c) noexcept;
     Plane& addChild(const Plane& c) noexcept;
