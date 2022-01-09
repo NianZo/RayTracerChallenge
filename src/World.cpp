@@ -54,7 +54,7 @@ std::vector<std::reference_wrapper<const Shape>> World::objects() const noexcept
     }
     for (const Group& group : groups)
     {
-    	objects.emplace_back(std::ref(group));
+        objects.emplace_back(std::ref(group));
     }
 
     return objects;

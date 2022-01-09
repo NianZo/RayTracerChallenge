@@ -12,8 +12,8 @@
 
 Tuple Shape::normal(const Tuple& p) const noexcept
 {
-	const Matrix<4> fullTransformInverse = getFullTransform().inverse();
-	// This is technically a hack and messes with w; set it to 0 at the end;
+    const Matrix<4> fullTransformInverse = getFullTransform().inverse();
+    // This is technically a hack and messes with w; set it to 0 at the end;
     Tuple worldSpaceNormal = fullTransformInverse.transpose() * objectNormal(fullTransformInverse * p);
     worldSpaceNormal.w = 0.0F;
     return worldSpaceNormal.normalize();
@@ -33,7 +33,7 @@ Color Shape::shade(const Light& light, const Tuple& position, const Tuple& eyeVe
 
 Matrix<4> Shape::getFullTransform() const noexcept
 {
-	return parent != nullptr ? parent->getFullTransform() * transform : transform;
+    return parent != nullptr ? parent->getFullTransform() * transform : transform;
 }
 
 // Implicitly assumes that p is on the sphere surface and is a valid point (w = 1)
@@ -293,91 +293,91 @@ std::vector<Intersection> Cone::objectIntersect(const Ray& r) const noexcept
 
 std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
 {
-	std::vector<std::reference_wrapper<const Shape>> objects;
+    std::vector<std::reference_wrapper<const Shape>> objects;
 
-	for (const Shape& group : groups)
-	{
-		objects.emplace_back(std::ref(group));
-	}
-	for (const Shape& sphere : spheres)
-	{
-		objects.emplace_back(std::ref(sphere));
-	}
-	for (const Shape& plane : planes)
-	{
-		objects.emplace_back(std::ref(plane));
-	}
-	for (const Shape& cube : cubes)
-	{
-		objects.emplace_back(std::ref(cube));
-	}
-	for (const Shape& cylinder : cylinders)
-	{
-		objects.emplace_back(std::ref(cylinder));
-	}
-	for (const Shape& cone : cones)
-	{
-		objects.emplace_back(std::ref(cone));
-	}
+    for (const Shape& group : groups)
+    {
+        objects.emplace_back(std::ref(group));
+    }
+    for (const Shape& sphere : spheres)
+    {
+        objects.emplace_back(std::ref(sphere));
+    }
+    for (const Shape& plane : planes)
+    {
+        objects.emplace_back(std::ref(plane));
+    }
+    for (const Shape& cube : cubes)
+    {
+        objects.emplace_back(std::ref(cube));
+    }
+    for (const Shape& cylinder : cylinders)
+    {
+        objects.emplace_back(std::ref(cylinder));
+    }
+    for (const Shape& cone : cones)
+    {
+        objects.emplace_back(std::ref(cone));
+    }
 
-	return objects;
+    return objects;
 }
 
 Group& Group::addChild(const Group& c) noexcept
 {
-	groups.push_back(c);
-	groups.back().parent = this;
-	return groups.back();
+    groups.push_back(c);
+    groups.back().parent = this;
+    return groups.back();
 }
 
 Sphere& Group::addChild(const Sphere& c) noexcept
 {
-	spheres.push_back(c);
-	spheres.back().parent = this;
-	return spheres.back();
+    spheres.push_back(c);
+    spheres.back().parent = this;
+    return spheres.back();
 }
 
 Plane& Group::addChild(const Plane& c) noexcept
 {
-	planes.push_back(c);
-	planes.back().parent = this;
-	return planes.back();
+    planes.push_back(c);
+    planes.back().parent = this;
+    return planes.back();
 }
 Cube& Group::addChild(const Cube& c) noexcept
 {
-	cubes.push_back(c);
-	cubes.back().parent = this;
-	return cubes.back();
+    cubes.push_back(c);
+    cubes.back().parent = this;
+    return cubes.back();
 }
 Cylinder& Group::addChild(const Cylinder& c) noexcept
 {
-	cylinders.push_back(c);
-	cylinders.back().parent = this;
-	return cylinders.back();
+    cylinders.push_back(c);
+    cylinders.back().parent = this;
+    return cylinders.back();
 }
 
 Cone& Group::addChild(const Cone& c) noexcept
 {
-	cones.push_back(c);
-	cones.back().parent = this;
-	return cones.back();
+    cones.push_back(c);
+    cones.back().parent = this;
+    return cones.back();
 }
 
 Tuple Group::objectNormal([[maybe_unused]] const Tuple& p) const noexcept
 {
-	return Vector(0, 0, 0); // this should never be called, so return a clearly invalid vector
+    return Vector(0, 0, 0); // this should never be called, so return a clearly invalid vector
 }
 
 std::vector<Intersection> Group::objectIntersect(const Ray& r) const noexcept
 {
-	std::vector<Intersection> intersections;
+    std::vector<Intersection> intersections;
 
-	for (const std::reference_wrapper<const Shape> shape : objects())
-	{
-		const std::vector<Intersection> shapeIntersections = shape.get().intersect(r);
-		intersections.insert(intersections.end(), shapeIntersections.begin(), shapeIntersections.end());
-	}
-	return intersections;
+    for (const std::reference_wrapper<const Shape> shape : objects())
+    {
+        const std::vector<Intersection> shapeIntersections = shape.get().intersect(r);
+        intersections.insert(intersections.end(), shapeIntersections.begin(), shapeIntersections.end());
+    }
+    return intersections;
 }
 
 Sphere GlassSphere() noexcept
