@@ -234,12 +234,25 @@ TEST(ShapeTest, AssignMaterial)
 	EXPECT_EQ(o.material, m);
 }
 
-TEST(ShapeTest, CopyAssignment)
+// TODO(nic) this doesn't call the shape copy constructor
+TEST(ShapeTest, CopyConstruction)
 {
 	Sphere s;
 	s.transform = translation(4, 0, 0);
 
 	Sphere s2 = s;
+
+	EXPECT_EQ(s2.transform, translation(4, 0, 0));
+}
+
+TEST(ShapeTest, CopyAssignment)
+{
+	Sphere s;
+	s.transform = translation(4, 0, 0);
+
+	Sphere s2;
+	s2.transform = translation(6, 5, 3);
+	s2 = s;
 
 	EXPECT_EQ(s2.transform, translation(4, 0, 0));
 }
