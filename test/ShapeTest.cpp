@@ -773,7 +773,7 @@ TEST(GroupTest, GroupCopyConstructor)
 	Group gc;
 	gc.transform = translation(2, 0, 0);
 	gc.addChild(sgc);
-	g.addChild(sgc);
+	g.addChild(gc);
 
 	Sphere s;
 	s.transform = translation(3, 0, 0);
@@ -838,6 +838,17 @@ TEST(GroupTest, GroupCopyAssignment)
 	g2 = g;
 
 	EXPECT_EQ(g.objects()[2].get().transform, g2.objects()[2].get().transform);
+}
+
+TEST(GroupTest, GroupCopySelfAssignment)
+{
+	Group g;
+	Group& gRef = g;
+	gRef.transform = translation(1, 0, 0);
+
+	g = gRef;
+
+	EXPECT_EQ(g.transform, translation(1, 0, 0));
 }
 
 TEST(GroupTest, GroupNormalInvalid)
