@@ -234,6 +234,29 @@ TEST(ShapeTest, AssignMaterial)
 	EXPECT_EQ(o.material, m);
 }
 
+// TODO(nic) this doesn't call the shape copy constructor
+TEST(ShapeTest, CopyConstruction)
+{
+	Sphere s;
+	s.transform = translation(4, 0, 0);
+
+	Sphere s2 = s;
+
+	EXPECT_EQ(s2.transform, translation(4, 0, 0));
+}
+
+TEST(ShapeTest, CopyAssignment)
+{
+	Sphere s;
+	s.transform = translation(4, 0, 0);
+
+	Sphere s2;
+	s2.transform = translation(6, 5, 3);
+	s2 = s;
+
+	EXPECT_EQ(s2.transform, translation(4, 0, 0));
+}
+
 TEST(PlaneTest, NormalConstantEverywhere)
 {
 	Plane p;
@@ -635,13 +658,13 @@ TEST(ConeTest, NormalsOfCone)
 	Cone c;
 
 	Tuple n1 = c.normal(Point(0, 0, 0));
-	EXPECT_EQ(n1, Vector(0, 0, 0));
+	EXPECT_EQ(n1, Vector(0, 0, 0).normalize());
 
 	Tuple n2 = c.normal(Point(1, 1, 1));
-	EXPECT_EQ(n2, Vector(1, -sqrt(2), 1));
+	EXPECT_EQ(n2, Vector(1, -sqrt(2), 1).normalize());
 
 	Tuple n3 = c.normal(Point(-1, -1, 0));
-	EXPECT_EQ(n3, Vector(-1, 1, 0));
+	EXPECT_EQ(n3, Vector(-1, 1, 0).normalize());
 
 	Cone c2;
 	c2.maximum = 2.0f;
@@ -654,6 +677,210 @@ TEST(ConeTest, NormalsOfCone)
 	Tuple n5 = c2.normal(Point(1.9, -2, 0));
 	EXPECT_EQ(n5, Vector(0, -1, 0));
 }
+
+TEST(GroupTest, CreateNewGroup)
+{
+	Group g;
+
+	EXPECT_EQ(g.transform, IdentityMatrix());
+	EXPECT_TRUE(g.objects().empty());
+}
+
+TEST(GroupTest, AddChildToGroup)
+{
+	Group g;
+
+	Group g2;
+	g2.transform = translation(1, 0, 0);
+	g.addChild(g2);
+	Sphere sp;
+	sp.transform = translation(2, 0, 0);
+	g.addChild(sp);
+	Plane p;
+	p.transform = translation(3, 0, 0);
+	g.addChild(p);
+	Cube cu;
+	cu.transform = translation(4, 0, 0);
+	g.addChild(cu);
+	Cylinder cy;
+	cy.transform = translation(5, 0, 0);
+	g.addChild(cy);
+	Cone co;
+	co.transform = translation(6, 0, 0);
+	g.addChild(co);
+
+	std::vector<std::reference_wrapper<const Shape>> shapeRefs = g.objects();
+	EXPECT_FALSE(shapeRefs.empty());
+	EXPECT_EQ(shapeRefs[0].get().transform, g2.transform);
+	EXPECT_EQ(shapeRefs[1].get().transform, sp.transform);
+	EXPECT_EQ(shapeRefs[2].get().transform, p.transform);
+	EXPECT_EQ(shapeRefs[3].get().transform, cu.transform);
+	EXPECT_EQ(shapeRefs[4].get().transform, cy.transform);
+	EXPECT_EQ(shapeRefs[5].get().transform, co.transform);
+	EXPECT_EQ(shapeRefs[0].get().parent, &g);
+	EXPECT_EQ(shapeRefs[1].get().parent, &g);
+	EXPECT_EQ(shapeRefs[2].get().parent, &g);
+	EXPECT_EQ(shapeRefs[3].get().parent, &g);
+	EXPECT_EQ(shapeRefs[4].get().parent, &g);
+	EXPECT_EQ(shapeRefs[5].get().parent, &g);
+}
+
+TEST(GroupTest, IntersectRayWithEmptyGroup)
+{
+	Group g;
+	Ray r(Point(0, 0, 0), Vector(0, 0, 1));
+
+	auto intersections = g.intersect(r);
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(GroupTest, IntersectRayWithNonEmptyGroup)
+{
+	Group g;
+	Sphere s1;
+	Sphere s2;
+	s2.transform = translation(0, 0, -3);
+	Sphere s3;
+	s3.transform = translation(5, 0, 0);
+	g.addChild(s1);
+	g.addChild(s2);
+	g.addChild(s3);
+	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
+
+	auto intersections = g.intersect(r);
+	EXPECT_EQ(intersections.size(), 4);
+	EXPECT_EQ(intersections[0].object->transform, s1.transform);
+	EXPECT_EQ(intersections[1].object->transform, s1.transform);
+	EXPECT_EQ(intersections[2].object->transform, s2.transform);
+	EXPECT_EQ(intersections[3].object->transform, s2.transform);
+}
+
+TEST(GroupTest, IntersectRayWithTransformedGroup)
+{
+	Group g;
+	g.transform = scaling(2, 2, 2);
+	Sphere s;
+	s.transform = translation(5, 0, 0);
+	g.addChild(s);
+	Ray r(Point(10, 0, -10), Vector(0, 0, 1));
+
+	auto intersections = g.intersect(r);
+	EXPECT_EQ(intersections.size(), 2);
+}
+
+TEST(GroupTest, NormalOfChildInGroup)
+{
+	Group g1;
+	g1.transform = rotationY(std::numbers::pi / 2);
+	Group g2;
+	g2.transform = scaling(1, 2, 3);
+	Sphere s;
+	s.transform = translation(5, 0, 0);
+
+	// Note: manually accessing these children should NOT be done; need it just for testing
+	Group& g2Ref = g1.addChild(g2);
+	Sphere& sRef = g2Ref.addChild(s);
+	//Sphere& sRef = g2.addChild(s);
+	//g1.groups[0].transform = scaling(1, 1, 1);
+
+	Tuple n = sRef.normal(Point(1.7321, 1.1547, -5.5774));
+	EXPECT_EQ(n, Vector(0.2857, 0.4286, -0.8571));
+}
+
+TEST(GroupTest, GroupCopyConstructor)
+{
+	Group g;
+
+	Sphere sgc;
+	sgc.transform = translation(1, 0, 0);
+	Group gc;
+	gc.transform = translation(2, 0, 0);
+	gc.addChild(sgc);
+	g.addChild(gc);
+
+	Sphere s;
+	s.transform = translation(3, 0, 0);
+	g.addChild(s);
+
+	Plane p;
+	p.transform = translation(4, 0, 0);
+	g.addChild(p);
+
+	Cube cu;
+	cu.transform = translation(5, 0, 0);
+	g.addChild(cu);
+
+	Cylinder cy;
+	cy.transform = translation(6, 0, 0);
+	g.addChild(cy);
+
+	Cone co;
+	co.transform = translation(7, 0, 0);
+	g.addChild(co);
+
+	// Exercise copy constructor
+	Group g2(g);
+
+	EXPECT_EQ(g.objects()[2].get().transform, g2.objects()[2].get().transform);
+}
+
+TEST(GroupTest, GroupCopyAssignment)
+{
+	Group g;
+
+	Sphere sgc;
+	sgc.transform = translation(1, 0, 0);
+	Group gc;
+	gc.transform = translation(2, 0, 0);
+	gc.addChild(sgc);
+	g.addChild(gc);
+
+	Sphere s;
+	s.transform = translation(3, 0, 0);
+	g.addChild(s);
+
+	Plane p;
+	p.transform = translation(4, 0, 0);
+	g.addChild(p);
+
+	Cube cu;
+	cu.transform = translation(5, 0, 0);
+	g.addChild(cu);
+
+	Cylinder cy;
+	cy.transform = translation(6, 0, 0);
+	g.addChild(cy);
+
+	Cone co;
+	co.transform = translation(7, 0, 0);
+	g.addChild(co);
+
+	// Exercise copy assignment
+	Group g2;
+	g2.transform = translation(10, 0, 0);
+	g2 = g;
+
+	EXPECT_EQ(g.objects()[2].get().transform, g2.objects()[2].get().transform);
+}
+
+TEST(GroupTest, GroupCopySelfAssignment)
+{
+	Group g;
+	Group& gRef = g;
+	gRef.transform = translation(1, 0, 0);
+
+	g = gRef;
+
+	EXPECT_EQ(g.transform, translation(1, 0, 0));
+}
+
+TEST(GroupTest, GroupNormalInvalid)
+{
+	Group g;
+
+	EXPECT_EQ(g.normal(Point(1, 1, 1)), Vector(0, 0, 0));
+}
+
 
 
 

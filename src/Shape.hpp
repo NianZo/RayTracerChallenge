@@ -22,6 +22,7 @@ class Shape
   public:
     Matrix<4> transform;
     Material material;
+    Shape* parent = nullptr;
 
     Shape() noexcept : transform(IdentityMatrix()){};
     virtual ~Shape() noexcept = default;
@@ -30,7 +31,7 @@ class Shape
     Shape& operator=(const Shape&) noexcept = default;
     Shape& operator=(Shape&&) noexcept = default;
 
-    bool operator==(const Shape& other) const noexcept { return transform == other.transform && material == other.material; }
+    bool operator==(const Shape& other) const noexcept { return transform == other.transform && material == other.material && parent == other.parent; }
 
     [[nodiscard]] Tuple normal(const Tuple& p) const noexcept;
     [[nodiscard]] std::vector<Intersection> intersect(const Ray& r) const noexcept;
@@ -39,6 +40,7 @@ class Shape
   private:
     [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const noexcept = 0;
     [[nodiscard]] virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const noexcept = 0;
+    [[nodiscard]] Matrix<4> getFullTransform() const noexcept;
 };
 
 class Sphere : public Shape
@@ -86,6 +88,115 @@ class Cone : public Shape
     Cone() noexcept;
 
   private:
+    [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
+};
+
+class Group : public Shape
+{
+  public:
+    Group() = default;
+    Group(const Group& other) noexcept : Shape(other)
+    {
+        transform = other.transform;
+        material = other.material;
+        parent = other.parent;
+        groups = other.groups;
+        spheres = other.spheres;
+        planes = other.planes;
+        cubes = other.cubes;
+        cylinders = other.cylinders;
+        cones = other.cones;
+
+        for (auto& group : groups)
+        {
+            group.parent = this;
+        }
+        for (auto& sphere : spheres)
+        {
+            sphere.parent = this;
+        }
+        for (auto& plane : planes)
+        {
+            plane.parent = this;
+        }
+        for (auto& cube : cubes)
+        {
+            cube.parent = this;
+        }
+        for (auto& cylinder : cylinders)
+        {
+            cylinder.parent = this;
+        }
+        for (auto& cone : cones)
+        {
+            cone.parent = this;
+        }
+    };
+    // TODO(nic) I'm not currently sure how to write a move constructor test for this
+    //Group(Group&&) noexcept = default;
+    Group& operator=(const Group& other) noexcept
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
+        transform = other.transform;
+        material = other.material;
+        parent = other.parent;
+        groups = other.groups;
+        spheres = other.spheres;
+        planes = other.planes;
+        cubes = other.cubes;
+        cylinders = other.cylinders;
+        cones = other.cones;
+
+        for (auto& group : groups)
+        {
+            group.parent = this;
+        }
+        for (auto& sphere : spheres)
+        {
+            sphere.parent = this;
+        }
+        for (auto& plane : planes)
+        {
+            plane.parent = this;
+        }
+        for (auto& cube : cubes)
+        {
+            cube.parent = this;
+        }
+        for (auto& cylinder : cylinders)
+        {
+            cylinder.parent = this;
+        }
+        for (auto& cone : cones)
+        {
+            cone.parent = this;
+        }
+        return *this;
+    };
+    Group& operator=(Group&&) noexcept = default;
+    ~Group() noexcept override = default;
+    [[nodiscard]] std::vector<std::reference_wrapper<const Shape>> objects() const noexcept;
+    // TODO(nic) can I make this a template? Each pushes elements to a different vector
+    // TODO(nic) it is dangerous for these to return a reference to the object added...
+    Group& addChild(const Group& c) noexcept;
+    Sphere& addChild(const Sphere& c) noexcept;
+    Plane& addChild(const Plane& c) noexcept;
+    Cube& addChild(const Cube& c) noexcept;
+    Cylinder& addChild(const Cylinder& c) noexcept;
+    Cone& addChild(const Cone& c) noexcept;
+
+  private:
+    std::vector<Group> groups;
+    std::vector<Sphere> spheres;
+    std::vector<Plane> planes;
+    std::vector<Cube> cubes;
+    std::vector<Cylinder> cylinders;
+    std::vector<Cone> cones;
+
     [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };

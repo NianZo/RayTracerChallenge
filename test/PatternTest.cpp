@@ -229,6 +229,30 @@ TEST(PatternTest, TestPatternWithObjectAndPatternTransform)
 	EXPECT_EQ(c, Color(0.75, 0.5, 0.25));
 }
 
+TEST(PatternTest, TestPatternWithGroupAndPatternTransform)
+{
+	Sphere s;
+	s.transform = translation(1, 0, 0);
+	s.material.pattern = Pattern::Test();
+	s.material.pattern->transform = scaling(2, 2, 2);
+	s.material.ambient = 1;
+	s.material.diffuse = 0;
+	s.material.specular = 0;
+	Group g1;
+	g1.transform = translation(0, 0, 3);
+	Group g2;
+	g2.transform = translation(0, 2, 0);
+
+	// Note: manually accessing these children should NOT be done; need it just for testing
+	Group& g2Ref = g1.addChild(g2);
+	Sphere& sRef = g2Ref.addChild(s);
+	Light light(Point(0, 0, -10), Color(1, 1, 1));
+	Tuple eyeV = Vector(0, -1, 0);
+	Color c = sRef.shade(light, Point(2.5, 3, 3.5), eyeV, false);
+
+	EXPECT_EQ(c, Color(0.75, 0.5, 0.25));
+}
+
 
 
 

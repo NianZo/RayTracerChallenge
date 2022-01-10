@@ -22,6 +22,7 @@ class World
     std::vector<Cube> cubes;
     std::vector<Cylinder> cylinders;
     std::vector<Cone> cones;
+    std::vector<Group> groups;
     Light light;
 
     World() noexcept = default;
