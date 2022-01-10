@@ -810,7 +810,7 @@ TEST(GroupTest, GroupCopyAssignment)
 	Group gc;
 	gc.transform = translation(2, 0, 0);
 	gc.addChild(sgc);
-	g.addChild(sgc);
+	g.addChild(gc);
 
 	Sphere s;
 	s.transform = translation(3, 0, 0);
@@ -833,7 +833,9 @@ TEST(GroupTest, GroupCopyAssignment)
 	g.addChild(co);
 
 	// Exercise copy assignment
-	Group g2 = g;
+	Group g2;
+	g2.transform = translation(10, 0, 0);
+	g2 = g;
 
 	EXPECT_EQ(g.objects()[2].get().transform, g2.objects()[2].get().transform);
 }
