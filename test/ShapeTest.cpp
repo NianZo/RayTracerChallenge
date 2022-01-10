@@ -764,6 +764,86 @@ TEST(GroupTest, NormalOfChildInGroup)
 	EXPECT_EQ(n, Vector(0.2857, 0.4286, -0.8571));
 }
 
+TEST(GroupTest, GroupCopyConstructor)
+{
+	Group g;
+
+	Sphere sgc;
+	sgc.transform = translation(1, 0, 0);
+	Group gc;
+	gc.transform = translation(2, 0, 0);
+	gc.addChild(sgc);
+	g.addChild(sgc);
+
+	Sphere s;
+	s.transform = translation(3, 0, 0);
+	g.addChild(s);
+
+	Plane p;
+	p.transform = translation(4, 0, 0);
+	g.addChild(p);
+
+	Cube cu;
+	cu.transform = translation(5, 0, 0);
+	g.addChild(cu);
+
+	Cylinder cy;
+	cy.transform = translation(6, 0, 0);
+	g.addChild(cy);
+
+	Cone co;
+	co.transform = translation(7, 0, 0);
+	g.addChild(co);
+
+	// Exercise copy constructor
+	Group g2(g);
+
+	EXPECT_EQ(g.objects()[2].get().transform, g2.objects()[2].get().transform);
+}
+
+TEST(GroupTest, GroupCopyAssignment)
+{
+	Group g;
+
+	Sphere sgc;
+	sgc.transform = translation(1, 0, 0);
+	Group gc;
+	gc.transform = translation(2, 0, 0);
+	gc.addChild(sgc);
+	g.addChild(sgc);
+
+	Sphere s;
+	s.transform = translation(3, 0, 0);
+	g.addChild(s);
+
+	Plane p;
+	p.transform = translation(4, 0, 0);
+	g.addChild(p);
+
+	Cube cu;
+	cu.transform = translation(5, 0, 0);
+	g.addChild(cu);
+
+	Cylinder cy;
+	cy.transform = translation(6, 0, 0);
+	g.addChild(cy);
+
+	Cone co;
+	co.transform = translation(7, 0, 0);
+	g.addChild(co);
+
+	// Exercise copy assignment
+	Group g2 = g;
+
+	EXPECT_EQ(g.objects()[2].get().transform, g2.objects()[2].get().transform);
+}
+
+TEST(GroupTest, GroupNormalInvalid)
+{
+	Group g;
+
+	EXPECT_EQ(g.normal(Point(1, 1, 1)), Vector(0, 0, 0));
+}
 
 
 
