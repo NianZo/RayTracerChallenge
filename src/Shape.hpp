@@ -133,7 +133,8 @@ class Group : public Shape
             cone.parent = this;
         }
     };
-    Group(Group&&) noexcept = default;
+    // TODO(nic) I'm not currently sure how to write a move constructor test for this
+    //Group(Group&&) noexcept = default;
     Group& operator=(const Group& other) noexcept
     {
         if (this == &other)

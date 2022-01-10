@@ -234,6 +234,16 @@ TEST(ShapeTest, AssignMaterial)
 	EXPECT_EQ(o.material, m);
 }
 
+TEST(ShapeTest, CopyAssignment)
+{
+	Sphere s;
+	s.transform = translation(4, 0, 0);
+
+	Sphere s2 = s;
+
+	EXPECT_EQ(s2.transform, translation(4, 0, 0));
+}
+
 TEST(PlaneTest, NormalConstantEverywhere)
 {
 	Plane p;
