@@ -14,7 +14,11 @@ set(SOURCES
 add_library(${BINARY}_lib STATIC ${SOURCES})
 
 target_link_libraries(${BINARY}_lib PRIVATE project_warnings)
-target_link_libraries(${BINARY}_lib PRIVATE --coverage)
+
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+	target_link_libraries(${BINARY}_lib PRIVATE --coverage)
+endif()
+
 
 # Link OpenMP
 find_package(OpenMP)

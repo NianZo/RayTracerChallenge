@@ -3,10 +3,12 @@ cmake_minimum_required(VERSION 3.15)
 project(RayTracerChallenge)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Debug)
 
-# Code coverage
-#add_compile_options(--coverage -O0)
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+	# Code coverage
+	add_compile_options(--coverage -O0)
+endif()
 
 # Standard compiler warnings
 add_library(project_warnings INTERFACE)
