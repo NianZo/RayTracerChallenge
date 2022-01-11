@@ -14,7 +14,7 @@ set(SOURCES
 add_library(${BINARY}_lib STATIC ${SOURCES})
 
 target_link_libraries(${BINARY}_lib PRIVATE project_warnings)
-target_link_libraries(${BINARY}_lib PRIVATE --coverage)
+#target_link_libraries(${BINARY}_lib PRIVATE --coverage)
 
 # Link OpenMP
 find_package(OpenMP)
