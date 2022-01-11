@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_BUILD_TYPE Debug)
 
 # Code coverage
-add_compile_options(--coverage -O0)
+#add_compile_options(--coverage -O0)
 
 # Standard compiler warnings
 add_library(project_warnings INTERFACE)
