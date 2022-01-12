@@ -5,8 +5,9 @@ project(RayTracerChallenge)
 set(CMAKE_CXX_STANDARD 20)
 #set(CMAKE_BUILD_TYPE Debug)
 
-if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
 	# Code coverage
+	message("Building in Debug")
 	add_compile_options(--coverage -O0)
 endif()
 
