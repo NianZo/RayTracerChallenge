@@ -17,6 +17,10 @@ set(TEST_SOURCES
 add_executable(${TEST_BINARY} ${TEST_SOURCES})
 target_include_directories(${TEST_BINARY} PUBLIC ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(${TEST_BINARY} PUBLIC ${CMAKE_PROJECT_NAME}_lib gtest)
-target_link_libraries(${TEST_BINARY} PRIVATE --coverage)
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+	target_link_libraries(${TEST_BINARY} PRIVATE --coverage)
+endif()
+
 
 add_test(NAME ${TEST_BINARY} COMMAND ${TEST_BINARY})
