@@ -906,6 +906,72 @@ TEST(TriangleTest, NormalVector)
 	EXPECT_EQ(t.normal(Point(0.5, 0.25, 0)), expectedNormal);
 }
 
+TEST(TriangleTest, NoIntersectionWithParallelRay)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(0, -1, -2), Vector(0, 1, 0));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(TriangleTest, RayMissesV0V2Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(1, 1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(TriangleTest, RayMissesV0V1Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(-1, 1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(TriangleTest, RayMissesV1V2Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(0, -1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(TriangleTest, RayIntersectionSucceeds)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(0, 0.5, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_FALSE(intersections.empty());
+	EXPECT_FLOAT_EQ(intersections[0].t, 2.0);
+}
+
 
 
 

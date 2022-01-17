@@ -308,10 +308,33 @@ Tuple Triangle::objectNormal(const Tuple&) const noexcept
 	return normalVector;
 }
 
-std::vector<Intersection> Triangle::objectIntersect(const Ray&) const noexcept
+std::vector<Intersection> Triangle::objectIntersect(const Ray& r) const noexcept
 {
-	std::vector<Intersection> i;
-	return i;
+
+	const Tuple directionCrossE1 = r.direction.cross(edges[1]);
+	const float determinant = edges[0].dot(directionCrossE1);
+	if (std::abs(determinant) < TUPLE_EPSILON)
+	{
+		return {};
+	}
+
+	const float determinantInverse = 1.0F / determinant;
+	const Tuple v0ToOrigin = r.origin - vertices[0];
+	const float u = determinantInverse * v0ToOrigin.dot(directionCrossE1);
+	if (u < 0.0F || u > 1.0F)
+	{
+		return {};
+	}
+
+	const Tuple originCrossE0 = v0ToOrigin.cross(edges[0]);
+	const float v = determinantInverse * r.direction.dot(originCrossE0);
+	if (v < 0.0F || (u + v) > 1.0F)
+	{
+		return {};
+	}
+
+	const float t = determinantInverse * edges[1].dot(originCrossE0);
+	return {Intersection(t, this)};
 }
 
 std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
