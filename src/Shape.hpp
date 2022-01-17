@@ -92,6 +92,21 @@ class Cone : public Shape
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
+class Triangle : public Shape
+{
+public:
+	std::array<Tuple, 3> vertices;
+
+	Triangle(const Tuple& v1, const Tuple& v2, const Tuple& v3) noexcept;
+
+private:
+	std::array<Tuple, 2> edges;
+	Tuple normalVector;
+
+	[[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
+};
+
 class Group : public Shape
 {
   public:

@@ -880,6 +880,31 @@ TEST(GroupTest, GroupNormalInvalid)
 	EXPECT_EQ(g.normal(Point(1, 1, 1)), Vector(0, 0, 0));
 }
 
+TEST(TriangleTest, ConstructTriangle)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+
+	EXPECT_EQ(t.vertices[0], p1);
+	EXPECT_EQ(t.vertices[1], p2);
+	EXPECT_EQ(t.vertices[2], p3);
+}
+
+TEST(TriangleTest, NormalVector)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+
+	Tuple expectedNormal = Vector(0, 0, -1);
+
+	EXPECT_EQ(t.normal(Point(0, 0.5, 0)), expectedNormal);
+	EXPECT_EQ(t.normal(Point(-0.5, 0.75, 0)), expectedNormal);
+	EXPECT_EQ(t.normal(Point(0.5, 0.25, 0)), expectedNormal);
+}
 
 
 

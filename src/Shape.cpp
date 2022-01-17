@@ -291,6 +291,29 @@ std::vector<Intersection> Cone::objectIntersect(const Ray& r) const noexcept
     return i;
 }
 
+Triangle::Triangle(const Tuple& v1, const Tuple& v2, const Tuple& v3) noexcept
+{
+	vertices[0] = v1;
+	vertices[1] = v2;
+	vertices[2] = v3;
+
+	edges[0] = vertices[1] - vertices[0];
+	edges[1] = vertices[2] - vertices[0];
+
+	normalVector = edges[1].cross(edges[0]).normalize();
+}
+
+Tuple Triangle::objectNormal(const Tuple&) const noexcept
+{
+	return normalVector;
+}
+
+std::vector<Intersection> Triangle::objectIntersect(const Ray&) const noexcept
+{
+	std::vector<Intersection> i;
+	return i;
+}
+
 std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
 {
     std::vector<std::reference_wrapper<const Shape>> objects;
