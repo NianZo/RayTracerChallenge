@@ -6,6 +6,7 @@
  */
 
 #include "Shape.hpp"
+#include "ObjParser.hpp"
 #include "gtest/gtest.h"
 #include "Tuple.hpp"
 #include "Ray.hpp"
@@ -970,6 +971,14 @@ TEST(TriangleTest, RayIntersectionSucceeds)
 
 	EXPECT_FALSE(intersections.empty());
 	EXPECT_FLOAT_EQ(intersections[0].t, 2.0);
+}
+
+TEST(ObjParserTest, IgnoreUnrecognizedLines)
+{
+	std::string gibberish = "There was a young lady named Bright\nwho traveled much faster than light.\nShe set out one day\nin a relative way,\nand came back the previous night.\nvirgo";
+	ObjParser parser(gibberish);
+
+	EXPECT_EQ(parser.ignoredLines, 6);
 }
 
 
