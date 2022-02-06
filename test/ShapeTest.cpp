@@ -989,6 +989,18 @@ TEST(ObjParserTest, IgnoreUnrecognizedLines)
 	EXPECT_EQ(parser.ignoredLines, 6);
 }
 
+TEST(ObjParserTest, ParseVertexData)
+{
+	std::string vertexData = "v -1 1 0\nv -1.0000 0.5000 0.0000\nv 1 0 0\nv 1 1 0";
+	ObjParser parser(vertexData);
+
+	EXPECT_EQ(parser.vertices.size(), 4);
+	EXPECT_EQ(parser.vertices[0], Point(-1, 1, 0));
+	EXPECT_EQ(parser.vertices[1], Point(-1, 0.5, 0));
+	EXPECT_EQ(parser.vertices[2], Point(1, 0, 0));
+	EXPECT_EQ(parser.vertices[3], Point(1, 1, 0));
+}
+
 
 
 
