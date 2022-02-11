@@ -1050,6 +1050,33 @@ TEST(ObjParserTest, ParsePolygonData)
 	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[2].get()).vertices[2], parser.vertices[4]);
 }
 
+TEST(ObjParserTest, TrianglesInNamedGroups)
+{
+	std::string data =
+			"v -1 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"v 1 1 0\n"
+			"g FirstGroup\n"
+			"f 1 2 3\n"
+			"g SecondGroup\n"
+			"f 1 3 4\n";
+	ObjParser parser(data);
+
+	auto firstGroupObjects = parser.namedGroups["FirstGroup"].objects();
+	auto secondGroupObjects = parser.namedGroups["SecondGroup"].objects();
+
+	EXPECT_EQ(firstGroupObjects.size(), 1);
+	EXPECT_EQ(secondGroupObjects.size(), 1);
+	EXPECT_EQ(parser.vertices.size(), 4);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(firstGroupObjects[0].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(firstGroupObjects[0].get()).vertices[1], parser.vertices[1]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(firstGroupObjects[0].get()).vertices[2], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(secondGroupObjects[0].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(secondGroupObjects[0].get()).vertices[1], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(secondGroupObjects[0].get()).vertices[2], parser.vertices[3]);
+}
+
 
 
 
