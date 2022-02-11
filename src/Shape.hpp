@@ -122,6 +122,7 @@ class Group : public Shape
         cubes = other.cubes;
         cylinders = other.cylinders;
         cones = other.cones;
+        triangles = other.triangles;
 
         for (auto& group : groups)
         {
@@ -146,6 +147,10 @@ class Group : public Shape
         for (auto& cone : cones)
         {
             cone.parent = this;
+        }
+        for (auto& triangle : triangles)
+        {
+        	triangle.parent = this;
         }
     };
     // TODO(nic) I'm not currently sure how to write a move constructor test for this
@@ -165,6 +170,7 @@ class Group : public Shape
         cubes = other.cubes;
         cylinders = other.cylinders;
         cones = other.cones;
+        triangles = other.triangles;
 
         for (auto& group : groups)
         {
@@ -190,6 +196,10 @@ class Group : public Shape
         {
             cone.parent = this;
         }
+        for (auto& triangle : triangles)
+        {
+        	triangle.parent = this;
+        }
         return *this;
     };
     Group& operator=(Group&&) noexcept = default;
@@ -203,6 +213,7 @@ class Group : public Shape
     Cube& addChild(const Cube& c) noexcept;
     Cylinder& addChild(const Cylinder& c) noexcept;
     Cone& addChild(const Cone& c) noexcept;
+    Triangle& addChild(const Triangle& t) noexcept;
 
   private:
     std::vector<Group> groups;
@@ -211,6 +222,7 @@ class Group : public Shape
     std::vector<Cube> cubes;
     std::vector<Cylinder> cylinders;
     std::vector<Cone> cones;
+    std::vector<Triangle> triangles;
 
     [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;

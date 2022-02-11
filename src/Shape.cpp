@@ -365,6 +365,10 @@ std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
     {
         objects.emplace_back(std::ref(cone));
     }
+    for (const Shape& triangle : triangles)
+    {
+    	objects.emplace_back(std::ref(triangle));
+    }
 
     return objects;
 }
@@ -407,6 +411,13 @@ Cone& Group::addChild(const Cone& c) noexcept
     cones.push_back(c);
     cones.back().parent = this;
     return cones.back();
+}
+
+Triangle& Group::addChild(const Triangle& t) noexcept
+{
+	triangles.push_back(t);
+	triangles.back().parent = this;
+	return triangles.back();
 }
 
 Tuple Group::objectNormal([[maybe_unused]] const Tuple& p) const noexcept

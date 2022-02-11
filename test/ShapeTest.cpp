@@ -1001,6 +1001,55 @@ TEST(ObjParserTest, ParseVertexData)
 	EXPECT_EQ(parser.vertices[3], Point(1, 1, 0));
 }
 
+TEST(ObjParserTest, ParseTriangleData)
+{
+	std::string data =
+			"v -1 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"v 1 1 0\n"
+			"f 1 2 3\n"
+			"f 1 3 4\n";
+	ObjParser parser(data);
+
+	auto objects = parser.defaultGroup.objects();
+
+	EXPECT_EQ(objects.size(), 2);
+	EXPECT_EQ(parser.vertices.size(), 4);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[1], parser.vertices[1]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[2], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[1], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[2], parser.vertices[3]);
+}
+
+TEST(ObjParserTest, ParsePolygonData)
+{
+	std::string data =
+			"v -1 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"v 1 1 0\n"
+			"v 0 2 0\n"
+			"f 1 2 3 4 5";
+	ObjParser parser(data);
+
+	auto objects = parser.defaultGroup.objects();
+
+	EXPECT_EQ(objects.size(), 3);
+	EXPECT_EQ(parser.vertices.size(), 5);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[1], parser.vertices[1]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[2], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[1], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[2], parser.vertices[3]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[2].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[2].get()).vertices[1], parser.vertices[3]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[2].get()).vertices[2], parser.vertices[4]);
+}
+
 
 
 
