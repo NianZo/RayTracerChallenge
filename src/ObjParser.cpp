@@ -19,6 +19,8 @@ ObjParser::ObjParser(const std::string& inputData)
 		return;
 	}
 
+	currentGroup = &defaultGroup;
+
 	uint64_t oldLinePos = 0;
 	uint64_t newLinePos = inputData.find('\n');
 	newLinePos = newLinePos == std::string::npos ? inputData.size() : newLinePos;
@@ -56,8 +58,16 @@ ObjParser::ObjParser(const std::string& inputData)
 			}
 			for (uint32_t i = 2; i < vertexIndices.size(); i++)
 			{
-				defaultGroup.addChild(Triangle(vertices[vertexIndices[0] - 1], vertices[vertexIndices[i - 1] - 1], vertices[vertexIndices[i] - 1]));
+				currentGroup->addChild(Triangle(vertices[vertexIndices[0] - 1], vertices[vertexIndices[i - 1] - 1], vertices[vertexIndices[i] - 1]));
 			}
+		} else if (tokens[0] == "g")
+		{
+			if (tokens.size() < 2)
+			{
+				throw std::runtime_error("ObjParser: Unable to parse group name");
+			}
+			namedGroups.emplace(tokens[1], Group());
+			currentGroup = &namedGroups[std::string(tokens[1].data(), tokens[1].size())];
 		} else
 		{
 			ignoredLines++;
