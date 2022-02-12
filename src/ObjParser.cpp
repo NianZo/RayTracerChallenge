@@ -19,7 +19,7 @@ ObjParser::ObjParser(const std::string& inputData)
 		return;
 	}
 
-	currentGroup = &defaultGroup;
+	Group* currentGroup = &defaultGroup;
 
 	uint64_t oldLinePos = 0;
 	uint64_t newLinePos = inputData.find('\n');
@@ -77,6 +77,16 @@ ObjParser::ObjParser(const std::string& inputData)
 		newLinePos = inputData.find('\n', oldLinePos);
 		newLinePos = newLinePos == std::string::npos ? inputData.size() : newLinePos;
 	}
+}
+
+Group ObjParser::getGroup()
+{
+	Group fullGroup = defaultGroup;
+	for (auto& group : namedGroups)
+	{
+		fullGroup.addChild(group.second);
+	}
+	return fullGroup;
 }
 
 std::vector<std::string_view> tokenizeString(std::string_view textLine)

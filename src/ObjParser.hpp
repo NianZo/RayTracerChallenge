@@ -20,10 +20,10 @@ public:
 	std::vector<Tuple> vertices;
 	std::unordered_map<std::string, Group> namedGroups;
 	Group defaultGroup;
-	Group* currentGroup;
 	uint32_t ignoredLines = 0;
 
 	ObjParser(const std::string& inputData);
+	Group getGroup();
 };
 
 

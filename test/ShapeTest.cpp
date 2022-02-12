@@ -1077,6 +1077,26 @@ TEST(ObjParserTest, TrianglesInNamedGroups)
 	EXPECT_EQ(dynamic_cast<const Triangle&>(secondGroupObjects[0].get()).vertices[2], parser.vertices[3]);
 }
 
+TEST(ObjParserTest, AllGroupsInDefaultGroup)
+{
+	std::string data =
+			"v -1 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"v 1 1 0\n"
+			"g FirstGroup\n"
+			"f 1 2 3\n"
+			"g SecondGroup\n"
+			"f 1 3 4\n";
+	ObjParser parser(data);
+
+	Group fullGroup = parser.getGroup();
+	auto groupChildren = fullGroup.objects();
+
+	EXPECT_EQ(dynamic_cast<const Triangle&>(dynamic_cast<const Group&>(groupChildren[1].get()).objects()[0].get()).vertices, dynamic_cast<const Triangle&>(parser.namedGroups["FirstGroup"].objects()[0].get()).vertices);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(dynamic_cast<const Group&>(groupChildren[0].get()).objects()[0].get()).vertices, dynamic_cast<const Triangle&>(parser.namedGroups["SecondGroup"].objects()[0].get()).vertices);
+}
+
 
 
 
