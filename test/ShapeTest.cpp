@@ -708,6 +708,12 @@ TEST(GroupTest, AddChildToGroup)
 	Cone co;
 	co.transform = translation(6, 0, 0);
 	g.addChild(co);
+	Triangle t;
+	t.transform = translation(7, 0, 0);
+	g.addChild(t);
+	SmoothTriangle st;
+	st.transform = translation(8, 0, 0);
+	g.addChild(st);
 
 	std::vector<std::reference_wrapper<const Shape>> shapeRefs = g.objects();
 	EXPECT_FALSE(shapeRefs.empty());
@@ -717,12 +723,16 @@ TEST(GroupTest, AddChildToGroup)
 	EXPECT_EQ(shapeRefs[3].get().transform, cu.transform);
 	EXPECT_EQ(shapeRefs[4].get().transform, cy.transform);
 	EXPECT_EQ(shapeRefs[5].get().transform, co.transform);
+	EXPECT_EQ(shapeRefs[6].get().transform, t.transform);
+	EXPECT_EQ(shapeRefs[7].get().transform, st.transform);
 	EXPECT_EQ(shapeRefs[0].get().parent, &g);
 	EXPECT_EQ(shapeRefs[1].get().parent, &g);
 	EXPECT_EQ(shapeRefs[2].get().parent, &g);
 	EXPECT_EQ(shapeRefs[3].get().parent, &g);
 	EXPECT_EQ(shapeRefs[4].get().parent, &g);
 	EXPECT_EQ(shapeRefs[5].get().parent, &g);
+	EXPECT_EQ(shapeRefs[6].get().parent, &g);
+	EXPECT_EQ(shapeRefs[7].get().parent, &g);
 }
 
 TEST(GroupTest, IntersectRayWithEmptyGroup)
@@ -818,6 +828,14 @@ TEST(GroupTest, GroupCopyConstructor)
 	co.transform = translation(7, 0, 0);
 	g.addChild(co);
 
+	Triangle t;
+	t.transform = translation(8, 0, 0);
+	g.addChild(t);
+
+	SmoothTriangle st;
+	st.transform = translation(9, 0, 0);
+	g.addChild(st);
+
 	// Exercise copy constructor
 	Group g2(g);
 
@@ -854,6 +872,14 @@ TEST(GroupTest, GroupCopyAssignment)
 	Cone co;
 	co.transform = translation(7, 0, 0);
 	g.addChild(co);
+
+	Triangle t;
+	t.transform = translation(8, 0, 0);
+	g.addChild(t);
+
+	SmoothTriangle st;
+	st.transform = translation(9, 0, 0);
+	g.addChild(st);
 
 	// Exercise copy assignment
 	Group g2;
