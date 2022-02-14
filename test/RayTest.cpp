@@ -168,6 +168,17 @@ TEST(RayTest, SchlickReflectanceWithSmallAngleAndN2GreaterThanN1)
 	EXPECT_NEAR(id.reflectance, 0.48873, COLOR_EPSILON); // Just slightly out of precision for EXPECT_FLOAT_EQ
 }
 
+TEST(RayTest, IntersectionWithUV)
+{
+	Sphere s;
+	Intersection i(3.5, &s, 0.2, 0.4);
+
+	EXPECT_FLOAT_EQ(i.t, 3.5);
+	EXPECT_EQ(*i.object, s);
+	EXPECT_FLOAT_EQ(i.u, 0.2);
+	EXPECT_FLOAT_EQ(i.v, 0.4);
+}
+
 
 
 

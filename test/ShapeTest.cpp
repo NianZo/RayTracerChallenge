@@ -973,6 +973,75 @@ TEST(TriangleTest, RayIntersectionSucceeds)
 	EXPECT_FLOAT_EQ(intersections[0].t, 2.0);
 }
 
+TEST(SmoothTriangleTest, Construction)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle st(p1, p2, p3, n1, n2, n3);
+
+	EXPECT_EQ(st.vertices[0], p1);
+	EXPECT_EQ(st.vertices[1], p2);
+	EXPECT_EQ(st.vertices[2], p3);
+	EXPECT_EQ(st.normals[0], n1);
+	EXPECT_EQ(st.normals[1], n2);
+	EXPECT_EQ(st.normals[2], n3);
+}
+
+TEST(SmoothTriangleTest, IntersectionStoresUV)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle st(p1, p2, p3, n1, n2, n3);
+
+	Ray r(Point(-0.2, 0.3, -2), Vector(0, 0, 1));
+	auto intersections = st.intersect(r);
+
+	EXPECT_FALSE(intersections.empty());
+	EXPECT_EQ(intersections.size(), 1);
+	EXPECT_FLOAT_EQ(intersections[0].u, 0.45);
+	EXPECT_FLOAT_EQ(intersections[0].v, 0.25);
+}
+
+TEST(SmoothTriangleTest, NormalInterpolation)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle st(p1, p2, p3, n1, n2, n3);
+	Ray r(Point(-0.2, 0.3, -2), Vector(0, 0, 1));
+	auto intersections = st.intersect(r);
+
+	EXPECT_EQ(intersections.size(), 1);
+	EXPECT_EQ(st.normal(Point(0, 0, 0), intersections[0]), Vector(-0.5547, 0.83205, 0));
+}
+
+TEST(SmoothTriangleTest, NormalFromPrecomputeDetails)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle st(p1, p2, p3, n1, n2, n3);
+	Ray r(Point(-0.2, 0.3, -2), Vector(0, 0, 1));
+	auto intersections = st.intersect(r);
+	auto id = r.precomputeDetails(*r.hit(intersections), intersections);
+
+	EXPECT_EQ(id.normalVector, Vector(-0.5547, 0.83205, 0));
+}
+
 TEST(ObjParserTest, IgnoreLineCountForEmptyString)
 {
 	std::string empty = "";
@@ -1095,6 +1164,51 @@ TEST(ObjParserTest, AllGroupsInDefaultGroup)
 
 	EXPECT_EQ(dynamic_cast<const Triangle&>(dynamic_cast<const Group&>(groupChildren[1].get()).objects()[0].get()).vertices, dynamic_cast<const Triangle&>(parser.namedGroups["FirstGroup"].objects()[0].get()).vertices);
 	EXPECT_EQ(dynamic_cast<const Triangle&>(dynamic_cast<const Group&>(groupChildren[0].get()).objects()[0].get()).vertices, dynamic_cast<const Triangle&>(parser.namedGroups["SecondGroup"].objects()[0].get()).vertices);
+}
+
+TEST(ObjParserTest, VertexNormalParsing)
+{
+	std::string data =
+			"vn 0 0 1\n"
+			"vn 0.707 0 -0.707\n"
+			"vn 1 2 3";
+	ObjParser parser(data);
+
+	EXPECT_EQ(parser.normals.size(), 3);
+	EXPECT_EQ(parser.normals[0], Vector(0, 0, 1));
+	EXPECT_EQ(parser.normals[1], Vector(0.707, 0, -0.707));
+	EXPECT_EQ(parser.normals[2], Vector(1, 2, 3));
+}
+
+TEST(ObjParserTest, FaceWithNormals)
+{
+	std::string data =
+			"v 0 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"vn -1 0 0\n"
+			"vn 1 0 0\n"
+			"vn 0 1 0\n"
+			"f 1//3 2//1 3//2\n"
+			"f 1/0/3 2/102/1 3/14/2";
+	ObjParser parser(data);
+
+	const SmoothTriangle& t1 = dynamic_cast<const SmoothTriangle&>(parser.defaultGroup.objects()[0].get());
+	const SmoothTriangle& t2 = dynamic_cast<const SmoothTriangle&>(parser.defaultGroup.objects()[1].get());
+
+	EXPECT_EQ(t1.vertices[0], parser.vertices[0]);
+	EXPECT_EQ(t1.vertices[1], parser.vertices[1]);
+	EXPECT_EQ(t1.vertices[2], parser.vertices[2]);
+	EXPECT_EQ(t1.normals[0], parser.normals[2]);
+	EXPECT_EQ(t1.normals[1], parser.normals[0]);
+	EXPECT_EQ(t1.normals[2], parser.normals[1]);
+
+	EXPECT_EQ(t2.vertices[0], parser.vertices[0]);
+	EXPECT_EQ(t2.vertices[1], parser.vertices[1]);
+	EXPECT_EQ(t2.vertices[2], parser.vertices[2]);
+	EXPECT_EQ(t2.normals[0], parser.normals[2]);
+	EXPECT_EQ(t2.normals[1], parser.normals[0]);
+	EXPECT_EQ(t2.normals[2], parser.normals[1]);
 }
 
 

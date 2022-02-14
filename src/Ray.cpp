@@ -40,7 +40,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
 {
     const Tuple position = cast(i.t);
     const Tuple eyeVector = -direction;
-    Tuple normalVector = i.object->normal(position);
+    Tuple normalVector = i.object->normal(position, i);
     const bool inside = normalVector.dot(eyeVector) < 0;
     if (inside)
     {

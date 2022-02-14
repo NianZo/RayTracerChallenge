@@ -18,6 +18,7 @@ class ObjParser
 {
 public:
 	std::vector<Tuple> vertices;
+	std::vector<Tuple> normals;
 	std::unordered_map<std::string, Group> namedGroups;
 	Group defaultGroup;
 	uint32_t ignoredLines = 0;

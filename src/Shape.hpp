@@ -15,7 +15,23 @@
 #include <vector>
 
 class Ray;
-class Intersection;
+class Shape;
+
+class Intersection
+{
+  public:
+    // The actual fields must not be const or we can't sort a vector of hits based on intersection parameter 't'
+    // However, object is fine because the pointer isn't const, the object it points to is const.
+    float t;
+    const Shape* object;
+    float u;
+    float v;
+
+    Intersection(float tIn, const Shape* objectIn) noexcept : t(tIn), object(objectIn), u(0.0F), v(0.0F){};
+    Intersection(float tIn, const Shape* objectIn, float uIn, float vIn) noexcept : t(tIn), object(objectIn), u(uIn), v(vIn) {};
+    bool operator==(const Intersection& other) const noexcept { return t == other.t && object == other.object; }
+    bool operator<(const Intersection& other) const noexcept { return t < other.t; }
+};
 
 class Shape
 {
@@ -33,12 +49,12 @@ class Shape
 
     bool operator==(const Shape& other) const noexcept { return transform == other.transform && material == other.material && parent == other.parent; }
 
-    [[nodiscard]] Tuple normal(const Tuple& p) const noexcept;
+    [[nodiscard]] Tuple normal(const Tuple& p, const Intersection& i = Intersection(0.0F, nullptr)) const noexcept;
     [[nodiscard]] std::vector<Intersection> intersect(const Ray& r) const noexcept;
     [[nodiscard]] Color shade(const Light& light, const Tuple& position, const Tuple& eyeVector, bool inShadow) const noexcept;
 
   private:
-    [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p) const noexcept = 0;
+    [[nodiscard]] virtual Tuple objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept = 0;
     [[nodiscard]] virtual std::vector<Intersection> objectIntersect([[maybe_unused]] const Ray& r) const noexcept = 0;
     [[nodiscard]] Matrix<4> getFullTransform() const noexcept;
 };
@@ -46,21 +62,21 @@ class Shape
 class Sphere : public Shape
 {
   private:
-    [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
 class Plane : public Shape
 {
   private:
-    [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
 class Cube : public Shape
 {
   private:
-    [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
@@ -74,7 +90,7 @@ class Cylinder : public Shape
     Cylinder() noexcept;
 
   private:
-    [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
@@ -88,7 +104,7 @@ class Cone : public Shape
     Cone() noexcept;
 
   private:
-    [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
@@ -103,7 +119,22 @@ private:
 	std::array<Tuple, 2> edges;
 	Tuple normalVector;
 
-	[[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+	[[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
+	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
+};
+
+class SmoothTriangle : public Shape
+{
+public:
+	std::array<Tuple, 3> vertices;
+	std::array<Tuple, 3> normals;
+
+	SmoothTriangle(const Tuple& v1, const Tuple& v2, const Tuple& v3, const Tuple& n1, const Tuple& n2, const Tuple& n3) noexcept;
+
+private:
+	std::array<Tuple, 2> edges;
+
+	[[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
 	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
@@ -123,6 +154,7 @@ class Group : public Shape
         cylinders = other.cylinders;
         cones = other.cones;
         triangles = other.triangles;
+        smoothTriangles = other.smoothTriangles;
 
         for (auto& group : groups)
         {
@@ -151,6 +183,10 @@ class Group : public Shape
         for (auto& triangle : triangles)
         {
         	triangle.parent = this;
+        }
+        for (auto& smoothTriangle : smoothTriangles)
+        {
+        	smoothTriangle.parent = this;
         }
     };
     // TODO(nic) I'm not currently sure how to write a move constructor test for this
@@ -171,6 +207,7 @@ class Group : public Shape
         cylinders = other.cylinders;
         cones = other.cones;
         triangles = other.triangles;
+        smoothTriangles = other.smoothTriangles;
 
         for (auto& group : groups)
         {
@@ -200,6 +237,10 @@ class Group : public Shape
         {
         	triangle.parent = this;
         }
+        for (auto& smoothTriangle : smoothTriangles)
+        {
+        	smoothTriangle.parent = this;
+        }
         return *this;
     };
     Group& operator=(Group&&) noexcept = default;
@@ -214,6 +255,7 @@ class Group : public Shape
     Cylinder& addChild(const Cylinder& c) noexcept;
     Cone& addChild(const Cone& c) noexcept;
     Triangle& addChild(const Triangle& t) noexcept;
+    SmoothTriangle& addChild(const SmoothTriangle& st) noexcept;
 
   private:
     std::vector<Group> groups;
@@ -223,23 +265,13 @@ class Group : public Shape
     std::vector<Cylinder> cylinders;
     std::vector<Cone> cones;
     std::vector<Triangle> triangles;
+    std::vector<SmoothTriangle> smoothTriangles;
 
-    [[nodiscard]] Tuple objectNormal(const Tuple& p) const noexcept override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
-class Intersection
-{
-  public:
-    // The actual fields must not be const or we can't sort a vector of hits based on intersection parameter 't'
-    // However, object is fine because the pointer isn't const, the object it points to is const.
-    float t;
-    const Shape* object;
 
-    Intersection(float tIn, const Shape* objectIn) noexcept : t(tIn), object(objectIn){};
-    bool operator==(const Intersection& other) const noexcept { return t == other.t && object == other.object; }
-    bool operator<(const Intersection& other) const noexcept { return t < other.t; }
-};
 
 struct __attribute__((aligned(128))) IntersectionDetails
 {
