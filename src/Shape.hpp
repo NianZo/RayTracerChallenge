@@ -28,7 +28,7 @@ class Intersection
     float v;
 
     Intersection(float tIn, const Shape* objectIn) noexcept : t(tIn), object(objectIn), u(0.0F), v(0.0F){};
-    Intersection(float tIn, const Shape* objectIn, float uIn, float vIn) noexcept : t(tIn), object(objectIn), u(uIn), v(vIn) {};
+    Intersection(float tIn, const Shape* objectIn, float uIn, float vIn) noexcept : t(tIn), object(objectIn), u(uIn), v(vIn){};
     bool operator==(const Intersection& other) const noexcept { return t == other.t && object == other.object; }
     bool operator<(const Intersection& other) const noexcept { return t < other.t; }
 };
@@ -110,32 +110,32 @@ class Cone : public Shape
 
 class Triangle : public Shape
 {
-public:
-	std::array<Tuple, 3> vertices;
+  public:
+    std::array<Tuple, 3> vertices;
 
-	Triangle(const Tuple& v1, const Tuple& v2, const Tuple& v3) noexcept;
+    Triangle(const Tuple& v1, const Tuple& v2, const Tuple& v3) noexcept;
 
-private:
-	std::array<Tuple, 2> edges;
-	Tuple normalVector;
+  private:
+    std::array<Tuple, 2> edges;
+    Tuple normalVector;
 
-	[[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
-	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
 class SmoothTriangle : public Shape
 {
-public:
-	std::array<Tuple, 3> vertices;
-	std::array<Tuple, 3> normals;
+  public:
+    std::array<Tuple, 3> vertices;
+    std::array<Tuple, 3> normals;
 
-	SmoothTriangle(const Tuple& v1, const Tuple& v2, const Tuple& v3, const Tuple& n1, const Tuple& n2, const Tuple& n3) noexcept;
+    SmoothTriangle(const Tuple& v1, const Tuple& v2, const Tuple& v3, const Tuple& n1, const Tuple& n2, const Tuple& n3) noexcept;
 
-private:
-	std::array<Tuple, 2> edges;
+  private:
+    std::array<Tuple, 2> edges;
 
-	[[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
-	[[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
+    [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
+    [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
 
 class Group : public Shape
@@ -182,11 +182,11 @@ class Group : public Shape
         }
         for (auto& triangle : triangles)
         {
-        	triangle.parent = this;
+            triangle.parent = this;
         }
         for (auto& smoothTriangle : smoothTriangles)
         {
-        	smoothTriangle.parent = this;
+            smoothTriangle.parent = this;
         }
     };
     // TODO(nic) I'm not currently sure how to write a move constructor test for this
@@ -235,11 +235,11 @@ class Group : public Shape
         }
         for (auto& triangle : triangles)
         {
-        	triangle.parent = this;
+            triangle.parent = this;
         }
         for (auto& smoothTriangle : smoothTriangles)
         {
-        	smoothTriangle.parent = this;
+            smoothTriangle.parent = this;
         }
         return *this;
     };
@@ -270,8 +270,6 @@ class Group : public Shape
     [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };
-
-
 
 struct __attribute__((aligned(128))) IntersectionDetails
 {
