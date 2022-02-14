@@ -708,10 +708,10 @@ TEST(GroupTest, AddChildToGroup)
 	Cone co;
 	co.transform = translation(6, 0, 0);
 	g.addChild(co);
-	Triangle t;
+	Triangle t(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
 	t.transform = translation(7, 0, 0);
 	g.addChild(t);
-	SmoothTriangle st;
+	SmoothTriangle st(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
 	st.transform = translation(8, 0, 0);
 	g.addChild(st);
 
@@ -828,11 +828,11 @@ TEST(GroupTest, GroupCopyConstructor)
 	co.transform = translation(7, 0, 0);
 	g.addChild(co);
 
-	Triangle t;
+	Triangle t(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
 	t.transform = translation(8, 0, 0);
 	g.addChild(t);
 
-	SmoothTriangle st;
+	SmoothTriangle st(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
 	st.transform = translation(9, 0, 0);
 	g.addChild(st);
 
@@ -873,11 +873,11 @@ TEST(GroupTest, GroupCopyAssignment)
 	co.transform = translation(7, 0, 0);
 	g.addChild(co);
 
-	Triangle t;
+	Triangle t(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
 	t.transform = translation(8, 0, 0);
 	g.addChild(t);
 
-	SmoothTriangle st;
+	SmoothTriangle st(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
 	st.transform = translation(9, 0, 0);
 	g.addChild(st);
 
@@ -997,6 +997,58 @@ TEST(TriangleTest, RayIntersectionSucceeds)
 
 	EXPECT_FALSE(intersections.empty());
 	EXPECT_FLOAT_EQ(intersections[0].t, 2.0);
+}
+
+TEST(SmoothTriangleTest, NoIntersectionWithParallelRay)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	SmoothTriangle t(p1, p2, p3, Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
+	Ray r(Point(0, -1, -2), Vector(0, 1, 0));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(SmoothTriangleTest, RayMissesV0V2Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	SmoothTriangle t(p1, p2, p3, Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
+	Ray r(Point(1, 1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(SmoothTriangleTest, RayMissesV0V1Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	SmoothTriangle t(p1, p2, p3, Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
+	Ray r(Point(-1, 1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(SmoothTriangleTest, RayMissesV1V2Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	SmoothTriangle t(p1, p2, p3, Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
+	Ray r(Point(0, -1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
 }
 
 TEST(SmoothTriangleTest, Construction)
@@ -1235,6 +1287,54 @@ TEST(ObjParserTest, FaceWithNormals)
 	EXPECT_EQ(t2.normals[0], parser.normals[2]);
 	EXPECT_EQ(t2.normals[1], parser.normals[0]);
 	EXPECT_EQ(t2.normals[2], parser.normals[1]);
+}
+
+TEST(ObjParserTest, VertexParsingError)
+{
+	std::string data = "v 0 0";
+	try
+	{
+		ObjParser parser(data);
+	} catch(std::runtime_error& e)
+	{
+		EXPECT_EQ(std::string(e.what()), "ObjParser: Unable to parse vertex");
+	}
+}
+
+TEST(ObjParserTest, VertexNormalParsingError)
+{
+	std::string data = "vn 0 0";
+	try
+	{
+		ObjParser parser(data);
+	} catch(std::runtime_error& e)
+	{
+		EXPECT_EQ(std::string(e.what()), "ObjParser: Unable to parse vertex normal");
+	}
+}
+
+TEST(ObjParserTest, FaceParsingError)
+{
+	std::string data = "f 0 0";
+	try
+	{
+		ObjParser parser(data);
+	} catch(std::runtime_error& e)
+	{
+		EXPECT_EQ(std::string(e.what()), "ObjParser: Unable to parse face");
+	}
+}
+
+TEST(ObjParserTest, GroupParsingError)
+{
+	std::string data = "g";
+	try
+	{
+		ObjParser parser(data);
+	} catch(std::runtime_error& e)
+	{
+		EXPECT_EQ(std::string(e.what()), "ObjParser: Unable to parse group name");
+	}
 }
 
 
