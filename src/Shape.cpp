@@ -303,7 +303,7 @@ Triangle::Triangle(const Tuple& v1, const Tuple& v2, const Tuple& v3) noexcept
     normalVector = edges[1].cross(edges[0]).normalize();
 }
 
-Tuple Triangle::objectNormal(const Tuple&, [[maybe_unused]] const Intersection& i) const noexcept
+Tuple Triangle::objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     return normalVector;
 }
@@ -351,7 +351,7 @@ SmoothTriangle::SmoothTriangle(const Tuple& v1, const Tuple& v2, const Tuple& v3
     edges[1] = vertices[2] - vertices[0];
 }
 
-Tuple SmoothTriangle::objectNormal(const Tuple&, const Intersection& i) const noexcept
+Tuple SmoothTriangle::objectNormal([[maybe_unused]] const Tuple& p, const Intersection& i) const noexcept
 {
     Tuple interpolatedNormal = normals[0] * (1 - i.u - i.v) + normals[1] * i.u + normals[2] * i.v;
     return interpolatedNormal;

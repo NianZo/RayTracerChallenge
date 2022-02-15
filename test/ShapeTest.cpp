@@ -900,6 +900,15 @@ TEST(GroupTest, GroupCopySelfAssignment)
 	EXPECT_EQ(g.transform, translation(1, 0, 0));
 }
 
+TEST(GroupTest, MoveConstruction)
+{
+	Group g;
+	g.transform = translation(1, 0, 0);
+
+	Group g2 = std::move(g);
+	EXPECT_EQ(g2.transform, translation(1, 0, 0));
+}
+
 TEST(GroupTest, GroupNormalInvalid)
 {
 	Group g;

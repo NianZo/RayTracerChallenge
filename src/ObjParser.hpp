@@ -23,8 +23,11 @@ class ObjParser
     Group defaultGroup;
     uint32_t ignoredLines = 0;
 
-    ObjParser(const std::string& inputData);
+    explicit ObjParser(const std::string& inputData);
     Group getGroup();
+
+  private:
+    void ParseTokens(std::vector<std::string_view>& tokens, Group*& currentGroup);
 };
 
 #endif /* SRC_OBJPARSER_HPP_ */
