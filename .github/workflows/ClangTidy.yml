@@ -32,7 +32,7 @@ jobs:
       
       - name: Setup
         # Need to install a newer compiler for numbers header to be seen
-        run: sudo apt-get install clang libomp-12-dev;
+        run: sudo apt-get install clang-13 libomp-12-dev;
         
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
