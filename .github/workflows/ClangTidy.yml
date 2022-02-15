@@ -16,7 +16,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  CXX: clang-13
+  CXX: clang++-13
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
