@@ -16,7 +16,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
-  CXX: clang-12
+  CXX: clang-13
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -32,7 +32,7 @@ jobs:
       
       - name: Setup
         # Need to install a newer compiler for numbers header to be seen
-        run: sudo apt-get install clang clang-tidy-12 libomp-12-dev;
+        run: sudo apt-get install llvm-toolchain-13;
         
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
