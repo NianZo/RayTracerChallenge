@@ -33,7 +33,7 @@ std::optional<Intersection> Ray::hit(const std::vector<Intersection>& intersecti
 
 Ray Ray::transform(const Matrix<4>& m) const noexcept
 {
-    return Ray(m * this->origin, m * this->direction);
+    return {m * this->origin, m * this->direction};
 }
 
 IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vector<Intersection>& intersections) const noexcept

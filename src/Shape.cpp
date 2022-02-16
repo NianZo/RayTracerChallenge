@@ -132,15 +132,8 @@ std::vector<Intersection> Cube::objectIntersect(const Ray& r) const noexcept
     return i;
 }
 
-// Must have full constructor definition since infinity has an incomplete type
-Cylinder::Cylinder() noexcept
-{
-    transform = IdentityMatrix();
-    material = Material();
-    minimum = -std::numeric_limits<float>::infinity();
-    maximum = std::numeric_limits<float>::infinity();
-    closed = false;
-}
+// Must have constructor definition in source file since infinity has an incomplete type
+Cylinder::Cylinder() noexcept : minimum(-std::numeric_limits<float>::infinity()), maximum(std::numeric_limits<float>::infinity()) {};
 
 Tuple Cylinder::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
@@ -207,14 +200,7 @@ std::vector<Intersection> Cylinder::objectIntersect(const Ray& r) const noexcept
     return i;
 }
 
-Cone::Cone() noexcept
-{
-    transform = IdentityMatrix();
-    material = Material();
-    minimum = -std::numeric_limits<float>::infinity();
-    maximum = std::numeric_limits<float>::infinity();
-    closed = false;
-}
+Cone::Cone() noexcept : minimum(-std::numeric_limits<float>::infinity()), maximum(std::numeric_limits<float>::infinity()) {};
 
 Tuple Cone::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {

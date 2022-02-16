@@ -9,13 +9,7 @@
 #include <cmath>
 #include <cstdlib>
 
-Tuple::Tuple(float xIn, float yIn, float zIn, float wIn) noexcept
-{
-    x = xIn;
-    y = yIn;
-    z = zIn;
-    w = wIn;
-}
+Tuple::Tuple(float xIn, float yIn, float zIn, float wIn) noexcept : x(xIn), y(yIn), z(zIn), w(wIn) {};
 
 bool Tuple::operator==(const Tuple& other) const noexcept
 {
@@ -35,27 +29,27 @@ bool Tuple::operator!=(const Tuple& other) const noexcept
 
 Tuple Tuple::operator+(const Tuple& other) const noexcept
 {
-    return Tuple(this->x + other.x, this->y + other.y, this->z + other.z, this->w + other.w);
+    return {this->x + other.x, this->y + other.y, this->z + other.z, this->w + other.w};
 }
 
 Tuple Tuple::operator-(const Tuple& other) const noexcept
 {
-    return Tuple(this->x - other.x, this->y - other.y, this->z - other.z, this->w - other.w);
+    return {this->x - other.x, this->y - other.y, this->z - other.z, this->w - other.w};
 }
 
 Tuple Tuple::operator-() const noexcept
 {
-    return Tuple(-this->x, -this->y, -this->z, -this->w);
+    return {-this->x, -this->y, -this->z, -this->w};
 }
 
 Tuple Tuple::operator*(const float s) const noexcept
 {
-    return Tuple(this->x * s, this->y * s, this->z * s, this->w * s);
+    return {this->x * s, this->y * s, this->z * s, this->w * s};
 }
 
 Tuple Tuple::operator/(const float s) const noexcept
 {
-    return Tuple(this->x / s, this->y / s, this->z / s, this->w / s);
+    return {this->x / s, this->y / s, this->z / s, this->w / s};
 }
 
 bool Tuple::IsPoint() const noexcept
@@ -96,10 +90,10 @@ Tuple Tuple::reflect(const Tuple& normal) const noexcept
 
 Tuple Point(float xIn, float yIn, float zIn) noexcept
 {
-    return Tuple(xIn, yIn, zIn, 1.0F);
+    return {xIn, yIn, zIn, 1.0F};
 }
 
 Tuple Vector(float xIn, float yIn, float zIn) noexcept
 {
-    return Tuple(xIn, yIn, zIn, 0.0F);
+    return {xIn, yIn, zIn, 0.0F};
 }

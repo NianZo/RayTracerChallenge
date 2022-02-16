@@ -85,7 +85,7 @@ class Cylinder : public Shape
   public:
     float minimum;
     float maximum;
-    bool closed;
+    bool closed{false};
 
     Cylinder() noexcept;
 
@@ -99,7 +99,7 @@ class Cone : public Shape
   public:
     float minimum;
     float maximum;
-    bool closed;
+    bool closed{false};
 
     Cone() noexcept;
 
@@ -142,20 +142,17 @@ class Group : public Shape
 {
   public:
     Group() = default;
-    Group(const Group& other) noexcept : Shape(other)
+    Group(const Group& other) noexcept :
+    		Shape(other),
+	        groups(other.groups),
+	        spheres(other.spheres),
+	        planes(other.planes),
+	        cubes(other.cubes),
+	        cylinders(other.cylinders),
+	        cones(other.cones),
+	        triangles(other.triangles),
+	        smoothTriangles(other.smoothTriangles)
     {
-        transform = other.transform;
-        material = other.material;
-        parent = other.parent;
-        groups = other.groups;
-        spheres = other.spheres;
-        planes = other.planes;
-        cubes = other.cubes;
-        cylinders = other.cylinders;
-        cones = other.cones;
-        triangles = other.triangles;
-        smoothTriangles = other.smoothTriangles;
-
         for (auto& group : groups)
         {
             group.parent = this;
@@ -189,7 +186,6 @@ class Group : public Shape
             smoothTriangle.parent = this;
         }
     };
-    // TODO(nic) I'm not currently sure how to write a move constructor test for this
     Group(Group&&) noexcept = default;
     Group& operator=(const Group& other) noexcept
     {
