@@ -10,6 +10,7 @@
 #include <charconv>
 #include <cstdlib>
 #include <limits>
+#include <stdexcept>
 
 std::vector<std::string_view> tokenizeString(std::string_view textLine, char delimiter);
 void ParseVertexData(std::vector<std::string_view>& tokens, std::vector<Tuple>& vertices);
