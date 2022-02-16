@@ -1346,6 +1346,21 @@ TEST(ObjParserTest, GroupParsingError)
 	}
 }
 
+TEST(ConstructiveSolidGeometry, Creation)
+{
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+
+	CSG csg(CSG::Union, std::move(s1), std::move(s2));
+
+	EXPECT_EQ(csg.operation, CSG::Union);
+	EXPECT_EQ(csg.left->transform, translation(1, 0, 0));
+	EXPECT_EQ(csg.right->transform, translation(2, 0, 0));
+	EXPECT_EQ(csg.left->parent, &csg);
+	EXPECT_EQ(csg.right->parent, &csg);
+}
 
 
 

@@ -482,6 +482,18 @@ std::vector<Intersection> Group::objectIntersect(const Ray& r) const noexcept
     return intersections;
 }
 
+const std::string CSG::Union = "Union";
+
+Tuple CSG::objectNormal(const Tuple&, [[maybe_unused]] const Intersection& i) const noexcept
+{
+	return {0, 0, 0, 0};
+}
+
+std::vector<Intersection> CSG::objectIntersect(const Ray&) const noexcept
+{
+	return {};
+}
+
 Sphere GlassSphere() noexcept
 {
     Sphere s;
