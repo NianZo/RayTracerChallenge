@@ -9,7 +9,7 @@
 #include <cmath>
 #include <cstdlib>
 
-Tuple::Tuple(float xIn, float yIn, float zIn, float wIn) noexcept : x(xIn), y(yIn), z(zIn), w(wIn) {};
+Tuple::Tuple(float xIn, float yIn, float zIn, float wIn) noexcept : x(xIn), y(yIn), z(zIn), w(wIn){};
 
 bool Tuple::operator==(const Tuple& other) const noexcept
 {

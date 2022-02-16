@@ -90,7 +90,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
 
     // Schlick reflectance - Algorithm from "Reflections and Refractions in Ray Tracing" by Bram de Greve
     float cos = eyeVector.dot(normalVector);
-    //float reflectance = 0.0f;
+    // float reflectance = 0.0f;
     float sin2T = 0.0F;
     if (n1 > n2)
     {

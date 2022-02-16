@@ -44,7 +44,7 @@ Tuple Sphere::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& 
 
 std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const noexcept
 {
-    //const Ray ray2 = r.transform(this->transform.inverse());
+    // const Ray ray2 = r.transform(this->transform.inverse());
     const Tuple sphereToRay = r.origin - Point(0, 0, 0);
 
     const float a = r.direction.dot(r.direction);
@@ -133,7 +133,7 @@ std::vector<Intersection> Cube::objectIntersect(const Ray& r) const noexcept
 }
 
 // Must have constructor definition in source file since infinity has an incomplete type
-Cylinder::Cylinder() noexcept : minimum(-std::numeric_limits<float>::infinity()), maximum(std::numeric_limits<float>::infinity()) {};
+Cylinder::Cylinder() noexcept : minimum(-std::numeric_limits<float>::infinity()), maximum(std::numeric_limits<float>::infinity()){};
 
 Tuple Cylinder::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
@@ -200,7 +200,7 @@ std::vector<Intersection> Cylinder::objectIntersect(const Ray& r) const noexcept
     return i;
 }
 
-Cone::Cone() noexcept : minimum(-std::numeric_limits<float>::infinity()), maximum(std::numeric_limits<float>::infinity()) {};
+Cone::Cone() noexcept : minimum(-std::numeric_limits<float>::infinity()), maximum(std::numeric_limits<float>::infinity()){};
 
 Tuple Cone::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {

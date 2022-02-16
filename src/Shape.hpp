@@ -142,16 +142,15 @@ class Group : public Shape
 {
   public:
     Group() = default;
-    Group(const Group& other) noexcept :
-    		Shape(other),
-	        groups(other.groups),
-	        spheres(other.spheres),
-	        planes(other.planes),
-	        cubes(other.cubes),
-	        cylinders(other.cylinders),
-	        cones(other.cones),
-	        triangles(other.triangles),
-	        smoothTriangles(other.smoothTriangles)
+    Group(const Group& other) noexcept : Shape(other),
+                                         groups(other.groups),
+                                         spheres(other.spheres),
+                                         planes(other.planes),
+                                         cubes(other.cubes),
+                                         cylinders(other.cylinders),
+                                         cones(other.cones),
+                                         triangles(other.triangles),
+                                         smoothTriangles(other.smoothTriangles)
     {
         for (auto& group : groups)
         {
