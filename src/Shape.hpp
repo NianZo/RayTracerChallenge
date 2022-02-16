@@ -11,10 +11,10 @@
 #include "Material.hpp"
 #include "Matrix.hpp"
 
-#include <numbers>
-#include <vector>
-#include <string>
 #include <memory>
+#include <numbers>
+#include <string>
+#include <vector>
 
 class Ray;
 class Shape;
@@ -270,21 +270,22 @@ class Group : public Shape
 
 class CSG : public Shape
 {
-public:
-	std::string operation;
-	std::unique_ptr<Shape> left;
-	std::unique_ptr<Shape> right;
+  public:
+    std::string operation;
+    std::unique_ptr<Shape> left;
+    std::unique_ptr<Shape> right;
 
-	CSG(const std::string& operationIn, std::unique_ptr<Shape> leftIn, std::unique_ptr<Shape> rightIn) noexcept : operation(operationIn), left(std::move(leftIn)), right(std::move(rightIn))
-	{
-		left->parent = this;
-		right->parent = this;
-	};
-	~CSG() noexcept override = default;
+    CSG(const std::string& operationIn, std::unique_ptr<Shape> leftIn, std::unique_ptr<Shape> rightIn)
+    noexcept : operation(operationIn), left(std::move(leftIn)), right(std::move(rightIn))
+    {
+        left->parent = this;
+        right->parent = this;
+    };
+    ~CSG() noexcept override = default;
 
-	const static std::string Union;
+    const static std::string Union;
 
-private:
+  private:
     [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
 };

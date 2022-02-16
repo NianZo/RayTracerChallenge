@@ -10,9 +10,9 @@
 
 #include "Shape.hpp"
 #include "Tuple.hpp"
+#include <string>
 #include <unordered_map>
 #include <vector>
-#include <string>
 
 class ObjParser
 {

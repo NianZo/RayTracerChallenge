@@ -486,12 +486,12 @@ const std::string CSG::Union = "Union";
 
 Tuple CSG::objectNormal(const Tuple&, [[maybe_unused]] const Intersection& i) const noexcept
 {
-	return {0, 0, 0, 0};
+    return {0, 0, 0, 0};
 }
 
 std::vector<Intersection> CSG::objectIntersect(const Ray&) const noexcept
 {
-	return {};
+    return {};
 }
 
 Sphere GlassSphere() noexcept
