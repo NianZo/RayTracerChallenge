@@ -9,7 +9,8 @@ set(SOURCES
 	Matrix.cpp
 	Tuple.cpp
 	Color.cpp
-	Canvas.cpp)
+	Canvas.cpp
+	ObjParser.cpp)
 
 add_library(${BINARY}_lib STATIC ${SOURCES})
 

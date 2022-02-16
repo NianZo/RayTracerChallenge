@@ -11,11 +11,11 @@
 template <>
 Tuple Matrix<4>::operator*(const Tuple& other) const noexcept // This is only valid for Matrix<4> until Tuple is overhauled
 {
-    return Tuple(
+    return {
         data[0][0] * other.x + data[0][1] * other.y + data[0][2] * other.z + data[0][3] * other.w,
         data[1][0] * other.x + data[1][1] * other.y + data[1][2] * other.z + data[1][3] * other.w,
         data[2][0] * other.x + data[2][1] * other.y + data[2][2] * other.z + data[2][3] * other.w,
-        data[3][0] * other.x + data[3][1] * other.y + data[3][2] * other.z + data[3][3] * other.w);
+        data[3][0] * other.x + data[3][1] * other.y + data[3][2] * other.z + data[3][3] * other.w};
 }
 
 template <>

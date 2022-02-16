@@ -10,11 +10,11 @@
 
 #include <cmath>
 
-Tuple Shape::normal(const Tuple& p) const noexcept
+Tuple Shape::normal(const Tuple& p, const Intersection& i) const noexcept
 {
     const Matrix<4> fullTransformInverse = getFullTransform().inverse();
     // This is technically a hack and messes with w; set it to 0 at the end;
-    Tuple worldSpaceNormal = fullTransformInverse.transpose() * objectNormal(fullTransformInverse * p);
+    Tuple worldSpaceNormal = fullTransformInverse.transpose() * objectNormal(fullTransformInverse * p, i);
     worldSpaceNormal.w = 0.0F;
     return worldSpaceNormal.normalize();
 }
@@ -37,14 +37,14 @@ Matrix<4> Shape::getFullTransform() const noexcept
 }
 
 // Implicitly assumes that p is on the sphere surface and is a valid point (w = 1)
-Tuple Sphere::objectNormal(const Tuple& p) const noexcept
+Tuple Sphere::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     return (p - Point(0, 0, 0));
 }
 
 std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const noexcept
 {
-    //const Ray ray2 = r.transform(this->transform.inverse());
+    // const Ray ray2 = r.transform(this->transform.inverse());
     const Tuple sphereToRay = r.origin - Point(0, 0, 0);
 
     const float a = r.direction.dot(r.direction);
@@ -63,7 +63,7 @@ std::vector<Intersection> Sphere::objectIntersect(const Ray& r) const noexcept
     return intersections;
 }
 
-Tuple Plane::objectNormal([[maybe_unused]] const Tuple& p) const noexcept
+Tuple Plane::objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     return Vector(0, 1, 0);
 }
@@ -79,7 +79,7 @@ std::vector<Intersection> Plane::objectIntersect([[maybe_unused]] const Ray& r) 
     return i;
 }
 
-Tuple Cube::objectNormal(const Tuple& p) const noexcept
+Tuple Cube::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     const float maxCoord = std::max(std::max(std::abs(p.x), std::abs(p.y)), std::abs(p.z));
 
@@ -132,17 +132,10 @@ std::vector<Intersection> Cube::objectIntersect(const Ray& r) const noexcept
     return i;
 }
 
-// Must have full constructor definition since infinity has an incomplete type
-Cylinder::Cylinder() noexcept
-{
-    transform = IdentityMatrix();
-    material = Material();
-    minimum = -std::numeric_limits<float>::infinity();
-    maximum = std::numeric_limits<float>::infinity();
-    closed = false;
-}
+// Must have constructor definition in source file since infinity has an incomplete type
+Cylinder::Cylinder() noexcept : minimum(-std::numeric_limits<float>::infinity()), maximum(std::numeric_limits<float>::infinity()){};
 
-Tuple Cylinder::objectNormal(const Tuple& p) const noexcept
+Tuple Cylinder::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     const float dist = p.x * p.x + p.z * p.z;
     Tuple normal;
@@ -207,16 +200,9 @@ std::vector<Intersection> Cylinder::objectIntersect(const Ray& r) const noexcept
     return i;
 }
 
-Cone::Cone() noexcept
-{
-    transform = IdentityMatrix();
-    material = Material();
-    minimum = -std::numeric_limits<float>::infinity();
-    maximum = std::numeric_limits<float>::infinity();
-    closed = false;
-}
+Cone::Cone() noexcept : minimum(-std::numeric_limits<float>::infinity()), maximum(std::numeric_limits<float>::infinity()){};
 
-Tuple Cone::objectNormal(const Tuple& p) const noexcept
+Tuple Cone::objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     const float dist = p.x * p.x + p.z * p.z;
     Tuple normal;
@@ -291,6 +277,100 @@ std::vector<Intersection> Cone::objectIntersect(const Ray& r) const noexcept
     return i;
 }
 
+Triangle::Triangle(const Tuple& v1, const Tuple& v2, const Tuple& v3) noexcept
+{
+    vertices[0] = v1;
+    vertices[1] = v2;
+    vertices[2] = v3;
+
+    edges[0] = vertices[1] - vertices[0];
+    edges[1] = vertices[2] - vertices[0];
+
+    normalVector = edges[1].cross(edges[0]).normalize();
+}
+
+Tuple Triangle::objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
+{
+    return normalVector;
+}
+
+std::vector<Intersection> Triangle::objectIntersect(const Ray& r) const noexcept
+{
+
+    const Tuple directionCrossE1 = r.direction.cross(edges[1]);
+    const float determinant = edges[0].dot(directionCrossE1);
+    if (std::abs(determinant) < TUPLE_EPSILON)
+    {
+        return {};
+    }
+
+    const float determinantInverse = 1.0F / determinant;
+    const Tuple v0ToOrigin = r.origin - vertices[0];
+    const float u = determinantInverse * v0ToOrigin.dot(directionCrossE1);
+    if (u < 0.0F || u > 1.0F)
+    {
+        return {};
+    }
+
+    const Tuple originCrossE0 = v0ToOrigin.cross(edges[0]);
+    const float v = determinantInverse * r.direction.dot(originCrossE0);
+    if (v < 0.0F || (u + v) > 1.0F)
+    {
+        return {};
+    }
+
+    const float t = determinantInverse * edges[1].dot(originCrossE0);
+    return {Intersection(t, this)};
+}
+
+SmoothTriangle::SmoothTriangle(const Tuple& v1, const Tuple& v2, const Tuple& v3, const Tuple& n1, const Tuple& n2, const Tuple& n3) noexcept
+{
+    vertices[0] = v1;
+    vertices[1] = v2;
+    vertices[2] = v3;
+
+    normals[0] = n1;
+    normals[1] = n2;
+    normals[2] = n3;
+
+    edges[0] = vertices[1] - vertices[0];
+    edges[1] = vertices[2] - vertices[0];
+}
+
+Tuple SmoothTriangle::objectNormal([[maybe_unused]] const Tuple& p, const Intersection& i) const noexcept
+{
+    Tuple interpolatedNormal = normals[0] * (1 - i.u - i.v) + normals[1] * i.u + normals[2] * i.v;
+    return interpolatedNormal;
+}
+
+std::vector<Intersection> SmoothTriangle::objectIntersect(const Ray& r) const noexcept
+{
+    const Tuple directionCrossE1 = r.direction.cross(edges[1]);
+    const float determinant = edges[0].dot(directionCrossE1);
+    if (std::abs(determinant) < TUPLE_EPSILON)
+    {
+        return {};
+    }
+
+    const float determinantInverse = 1.0F / determinant;
+    const Tuple v0ToOrigin = r.origin - vertices[0];
+    const float u = determinantInverse * v0ToOrigin.dot(directionCrossE1);
+    if (u < 0.0F || u > 1.0F)
+    {
+        return {};
+    }
+
+    const Tuple originCrossE0 = v0ToOrigin.cross(edges[0]);
+    const float v = determinantInverse * r.direction.dot(originCrossE0);
+    if (v < 0.0F || (u + v) > 1.0F)
+    {
+        return {};
+    }
+
+    const float t = determinantInverse * edges[1].dot(originCrossE0);
+    return {Intersection(t, this, u, v)};
+}
+
 std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
 {
     std::vector<std::reference_wrapper<const Shape>> objects;
@@ -318,6 +398,14 @@ std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
     for (const Shape& cone : cones)
     {
         objects.emplace_back(std::ref(cone));
+    }
+    for (const Shape& triangle : triangles)
+    {
+        objects.emplace_back(std::ref(triangle));
+    }
+    for (const Shape& smoothTriangle : smoothTriangles)
+    {
+        objects.emplace_back(std::ref(smoothTriangle));
     }
 
     return objects;
@@ -363,7 +451,21 @@ Cone& Group::addChild(const Cone& c) noexcept
     return cones.back();
 }
 
-Tuple Group::objectNormal([[maybe_unused]] const Tuple& p) const noexcept
+Triangle& Group::addChild(const Triangle& t) noexcept
+{
+    triangles.push_back(t);
+    triangles.back().parent = this;
+    return triangles.back();
+}
+
+SmoothTriangle& Group::addChild(const SmoothTriangle& st) noexcept
+{
+    smoothTriangles.push_back(st);
+    smoothTriangles.back().parent = this;
+    return smoothTriangles.back();
+}
+
+Tuple Group::objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     return Vector(0, 0, 0); // this should never be called, so return a clearly invalid vector
 }

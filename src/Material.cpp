@@ -50,18 +50,18 @@ Color Pattern::colorAt(const Tuple& p) const noexcept
 Pattern Pattern::Test() noexcept
 {
     std::function<Color(const Color&, const Color&, const Tuple&)> f = []([[maybe_unused]] const Color& aP, [[maybe_unused]] const Color& bP, const Tuple& p) -> Color {
-        return Color(p.x, p.y, p.z);
+        return {p.x, p.y, p.z};
     };
-    return Pattern(Color::Black, Color::Black, IdentityMatrix(), f);
+    return {Color::Black, Color::Black, IdentityMatrix(), f};
 }
 
 Pattern Pattern::Stripe(const Color& aIn, const Color& bIn) noexcept
 {
     std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& aP, const Color& bP, const Tuple& p) -> Color {
-        return std::fmod(p.x, 2.0f) >= 1.0f || (std::fmod(p.x, 2.0f) < 0.0f && std::fmod(p.x, 2.0f) >= -1.0f) ? bP : aP;
+        return std::fmod(p.x, 2.0F) >= 1.0F || (std::fmod(p.x, 2.0F) < 0.0F && std::fmod(p.x, 2.0F) >= -1.0F) ? bP : aP;
     };
 
-    return Pattern(aIn, bIn, IdentityMatrix(), f);
+    return {aIn, bIn, IdentityMatrix(), f};
 }
 
 Pattern Pattern::Gradient(const Color& aIn, const Color& bIn) noexcept
@@ -70,7 +70,7 @@ Pattern Pattern::Gradient(const Color& aIn, const Color& bIn) noexcept
         return aP + (bP - aP) * (p.x - std::floor(p.x));
     };
 
-    return Pattern(aIn, bIn, IdentityMatrix(), f);
+    return {aIn, bIn, IdentityMatrix(), f};
 }
 
 Pattern Pattern::Ring(const Color& aIn, const Color& bIn) noexcept
@@ -79,14 +79,14 @@ Pattern Pattern::Ring(const Color& aIn, const Color& bIn) noexcept
         return std::fmod(std::floor(sqrtf(p.x * p.x + p.z + p.z)), 2) == 0 ? aP : bP;
     };
 
-    return Pattern(aIn, bIn, IdentityMatrix(), f);
+    return {aIn, bIn, IdentityMatrix(), f};
 }
 
 Pattern Pattern::Checker(const Color& aIn, const Color& bIn) noexcept
 {
     std::function<Color(const Color&, const Color&, const Tuple&)> f = [](const Color& aP, const Color& bP, const Tuple& p) -> Color {
-        return std::floor(std::fmod(std::floor(p.x) + std::floor(p.y) + std::floor(p.z), 2.0f)) == 0 ? aP : bP;
+        return std::floor(std::fmod(std::floor(p.x) + std::floor(p.y) + std::floor(p.z), 2.0F)) == 0 ? aP : bP;
     };
 
-    return Pattern(aIn, bIn, IdentityMatrix(), f);
+    return {aIn, bIn, IdentityMatrix(), f};
 }

@@ -19,3 +19,6 @@ Interfacing CMake projects with Eclipse seems to be a bit touchy. First, clone t
 
 ## Testing Framework
 GTest is used for unit tests in this project. Ensure you have gtest installed or tests won't compile and run.
+
+## Notes
+ClangTidy is currently failing in CI. GitHub Actions isn't able to install the proper version of clang (clang-13) for some reason

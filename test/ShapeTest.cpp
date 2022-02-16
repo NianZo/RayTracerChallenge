@@ -6,6 +6,7 @@
  */
 
 #include "Shape.hpp"
+#include "ObjParser.hpp"
 #include "gtest/gtest.h"
 #include "Tuple.hpp"
 #include "Ray.hpp"
@@ -707,6 +708,12 @@ TEST(GroupTest, AddChildToGroup)
 	Cone co;
 	co.transform = translation(6, 0, 0);
 	g.addChild(co);
+	Triangle t(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
+	t.transform = translation(7, 0, 0);
+	g.addChild(t);
+	SmoothTriangle st(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
+	st.transform = translation(8, 0, 0);
+	g.addChild(st);
 
 	std::vector<std::reference_wrapper<const Shape>> shapeRefs = g.objects();
 	EXPECT_FALSE(shapeRefs.empty());
@@ -716,12 +723,16 @@ TEST(GroupTest, AddChildToGroup)
 	EXPECT_EQ(shapeRefs[3].get().transform, cu.transform);
 	EXPECT_EQ(shapeRefs[4].get().transform, cy.transform);
 	EXPECT_EQ(shapeRefs[5].get().transform, co.transform);
+	EXPECT_EQ(shapeRefs[6].get().transform, t.transform);
+	EXPECT_EQ(shapeRefs[7].get().transform, st.transform);
 	EXPECT_EQ(shapeRefs[0].get().parent, &g);
 	EXPECT_EQ(shapeRefs[1].get().parent, &g);
 	EXPECT_EQ(shapeRefs[2].get().parent, &g);
 	EXPECT_EQ(shapeRefs[3].get().parent, &g);
 	EXPECT_EQ(shapeRefs[4].get().parent, &g);
 	EXPECT_EQ(shapeRefs[5].get().parent, &g);
+	EXPECT_EQ(shapeRefs[6].get().parent, &g);
+	EXPECT_EQ(shapeRefs[7].get().parent, &g);
 }
 
 TEST(GroupTest, IntersectRayWithEmptyGroup)
@@ -817,6 +828,14 @@ TEST(GroupTest, GroupCopyConstructor)
 	co.transform = translation(7, 0, 0);
 	g.addChild(co);
 
+	Triangle t(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
+	t.transform = translation(8, 0, 0);
+	g.addChild(t);
+
+	SmoothTriangle st(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
+	st.transform = translation(9, 0, 0);
+	g.addChild(st);
+
 	// Exercise copy constructor
 	Group g2(g);
 
@@ -854,6 +873,14 @@ TEST(GroupTest, GroupCopyAssignment)
 	co.transform = translation(7, 0, 0);
 	g.addChild(co);
 
+	Triangle t(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
+	t.transform = translation(8, 0, 0);
+	g.addChild(t);
+
+	SmoothTriangle st(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
+	st.transform = translation(9, 0, 0);
+	g.addChild(st);
+
 	// Exercise copy assignment
 	Group g2;
 	g2.transform = translation(10, 0, 0);
@@ -873,12 +900,452 @@ TEST(GroupTest, GroupCopySelfAssignment)
 	EXPECT_EQ(g.transform, translation(1, 0, 0));
 }
 
+TEST(GroupTest, MoveConstruction)
+{
+	Group g;
+	g.transform = translation(1, 0, 0);
+
+	Group g2 = std::move(g);
+	EXPECT_EQ(g2.transform, translation(1, 0, 0));
+}
+
 TEST(GroupTest, GroupNormalInvalid)
 {
 	Group g;
 
 	EXPECT_EQ(g.normal(Point(1, 1, 1)), Vector(0, 0, 0));
 }
+
+TEST(TriangleTest, ConstructTriangle)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+
+	EXPECT_EQ(t.vertices[0], p1);
+	EXPECT_EQ(t.vertices[1], p2);
+	EXPECT_EQ(t.vertices[2], p3);
+}
+
+TEST(TriangleTest, NormalVector)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+
+	Tuple expectedNormal = Vector(0, 0, -1);
+
+	EXPECT_EQ(t.normal(Point(0, 0.5, 0)), expectedNormal);
+	EXPECT_EQ(t.normal(Point(-0.5, 0.75, 0)), expectedNormal);
+	EXPECT_EQ(t.normal(Point(0.5, 0.25, 0)), expectedNormal);
+}
+
+TEST(TriangleTest, NoIntersectionWithParallelRay)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(0, -1, -2), Vector(0, 1, 0));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(TriangleTest, RayMissesV0V2Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(1, 1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(TriangleTest, RayMissesV0V1Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(-1, 1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(TriangleTest, RayMissesV1V2Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(0, -1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(TriangleTest, RayIntersectionSucceeds)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle t(p1, p2, p3);
+	Ray r(Point(0, 0.5, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_FALSE(intersections.empty());
+	EXPECT_FLOAT_EQ(intersections[0].t, 2.0);
+}
+
+TEST(SmoothTriangleTest, NoIntersectionWithParallelRay)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	SmoothTriangle t(p1, p2, p3, Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
+	Ray r(Point(0, -1, -2), Vector(0, 1, 0));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(SmoothTriangleTest, RayMissesV0V2Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	SmoothTriangle t(p1, p2, p3, Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
+	Ray r(Point(1, 1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(SmoothTriangleTest, RayMissesV0V1Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	SmoothTriangle t(p1, p2, p3, Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
+	Ray r(Point(-1, 1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(SmoothTriangleTest, RayMissesV1V2Edge)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	SmoothTriangle t(p1, p2, p3, Vector(0, 0, 0), Vector(0, 0, 0), Vector(0, 0, 0));
+	Ray r(Point(0, -1, -2), Vector(0, 0, 1));
+
+	auto intersections = t.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(SmoothTriangleTest, Construction)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle st(p1, p2, p3, n1, n2, n3);
+
+	EXPECT_EQ(st.vertices[0], p1);
+	EXPECT_EQ(st.vertices[1], p2);
+	EXPECT_EQ(st.vertices[2], p3);
+	EXPECT_EQ(st.normals[0], n1);
+	EXPECT_EQ(st.normals[1], n2);
+	EXPECT_EQ(st.normals[2], n3);
+}
+
+TEST(SmoothTriangleTest, IntersectionStoresUV)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle st(p1, p2, p3, n1, n2, n3);
+
+	Ray r(Point(-0.2, 0.3, -2), Vector(0, 0, 1));
+	auto intersections = st.intersect(r);
+
+	EXPECT_FALSE(intersections.empty());
+	EXPECT_EQ(intersections.size(), 1);
+	EXPECT_FLOAT_EQ(intersections[0].u, 0.45);
+	EXPECT_FLOAT_EQ(intersections[0].v, 0.25);
+}
+
+TEST(SmoothTriangleTest, NormalInterpolation)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle st(p1, p2, p3, n1, n2, n3);
+	Ray r(Point(-0.2, 0.3, -2), Vector(0, 0, 1));
+	auto intersections = st.intersect(r);
+
+	EXPECT_EQ(intersections.size(), 1);
+	EXPECT_EQ(st.normal(Point(0, 0, 0), intersections[0]), Vector(-0.5547, 0.83205, 0));
+}
+
+TEST(SmoothTriangleTest, NormalFromPrecomputeDetails)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle st(p1, p2, p3, n1, n2, n3);
+	Ray r(Point(-0.2, 0.3, -2), Vector(0, 0, 1));
+	auto intersections = st.intersect(r);
+	auto id = r.precomputeDetails(*r.hit(intersections), intersections);
+
+	EXPECT_EQ(id.normalVector, Vector(-0.5547, 0.83205, 0));
+}
+
+TEST(ObjParserTest, IgnoreLineCountForEmptyString)
+{
+	std::string empty = "";
+	ObjParser parser(empty);
+
+	EXPECT_EQ(parser.ignoredLines, 0);
+}
+
+TEST(ObjParserTest, IgnoreUnrecognizedLines)
+{
+	std::string gibberish = "There was a young lady named Bright\nwho traveled much faster than light.\nShe set out one day\nin a relative way,\nand came back the previous night.\nvirgo";
+	ObjParser parser(gibberish);
+
+	EXPECT_EQ(parser.ignoredLines, 6);
+}
+
+TEST(ObjParserTest, ParseVertexData)
+{
+	std::string vertexData = "v -1 1 0\nv -1.0000 0.5000 0.0000\nv 1 0 0\nv 1 1 0";
+	ObjParser parser(vertexData);
+
+	EXPECT_EQ(parser.vertices.size(), 4);
+	EXPECT_EQ(parser.vertices[0], Point(-1, 1, 0));
+	EXPECT_EQ(parser.vertices[1], Point(-1, 0.5, 0));
+	EXPECT_EQ(parser.vertices[2], Point(1, 0, 0));
+	EXPECT_EQ(parser.vertices[3], Point(1, 1, 0));
+}
+
+TEST(ObjParserTest, ParseTriangleData)
+{
+	std::string data =
+			"v -1 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"v 1 1 0\n"
+			"f 1 2 3\n"
+			"f 1 3 4\n";
+	ObjParser parser(data);
+
+	auto objects = parser.defaultGroup.objects();
+
+	EXPECT_EQ(objects.size(), 2);
+	EXPECT_EQ(parser.vertices.size(), 4);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[1], parser.vertices[1]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[2], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[1], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[2], parser.vertices[3]);
+}
+
+TEST(ObjParserTest, ParsePolygonData)
+{
+	std::string data =
+			"v -1 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"v 1 1 0\n"
+			"v 0 2 0\n"
+			"f 1 2 3 4 5";
+	ObjParser parser(data);
+
+	auto objects = parser.defaultGroup.objects();
+
+	EXPECT_EQ(objects.size(), 3);
+	EXPECT_EQ(parser.vertices.size(), 5);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[1], parser.vertices[1]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[0].get()).vertices[2], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[1], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[1].get()).vertices[2], parser.vertices[3]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[2].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[2].get()).vertices[1], parser.vertices[3]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(objects[2].get()).vertices[2], parser.vertices[4]);
+}
+
+TEST(ObjParserTest, TrianglesInNamedGroups)
+{
+	std::string data =
+			"v -1 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"v 1 1 0\n"
+			"g FirstGroup\n"
+			"f 1 2 3\n"
+			"g SecondGroup\n"
+			"f 1 3 4\n";
+	ObjParser parser(data);
+
+	auto firstGroupObjects = parser.namedGroups["FirstGroup"].objects();
+	auto secondGroupObjects = parser.namedGroups["SecondGroup"].objects();
+
+	EXPECT_EQ(firstGroupObjects.size(), 1);
+	EXPECT_EQ(secondGroupObjects.size(), 1);
+	EXPECT_EQ(parser.vertices.size(), 4);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(firstGroupObjects[0].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(firstGroupObjects[0].get()).vertices[1], parser.vertices[1]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(firstGroupObjects[0].get()).vertices[2], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(secondGroupObjects[0].get()).vertices[0], parser.vertices[0]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(secondGroupObjects[0].get()).vertices[1], parser.vertices[2]);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(secondGroupObjects[0].get()).vertices[2], parser.vertices[3]);
+}
+
+TEST(ObjParserTest, AllGroupsInDefaultGroup)
+{
+	std::string data =
+			"v -1 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"v 1 1 0\n"
+			"g FirstGroup\n"
+			"f 1 2 3\n"
+			"g SecondGroup\n"
+			"f 1 3 4\n";
+	ObjParser parser(data);
+
+	Group fullGroup = parser.getGroup();
+	auto groupChildren = fullGroup.objects();
+
+	EXPECT_EQ(dynamic_cast<const Triangle&>(dynamic_cast<const Group&>(groupChildren[1].get()).objects()[0].get()).vertices, dynamic_cast<const Triangle&>(parser.namedGroups["FirstGroup"].objects()[0].get()).vertices);
+	EXPECT_EQ(dynamic_cast<const Triangle&>(dynamic_cast<const Group&>(groupChildren[0].get()).objects()[0].get()).vertices, dynamic_cast<const Triangle&>(parser.namedGroups["SecondGroup"].objects()[0].get()).vertices);
+}
+
+TEST(ObjParserTest, VertexNormalParsing)
+{
+	std::string data =
+			"vn 0 0 1\n"
+			"vn 0.707 0 -0.707\n"
+			"vn 1 2 3";
+	ObjParser parser(data);
+
+	EXPECT_EQ(parser.normals.size(), 3);
+	EXPECT_EQ(parser.normals[0], Vector(0, 0, 1));
+	EXPECT_EQ(parser.normals[1], Vector(0.707, 0, -0.707));
+	EXPECT_EQ(parser.normals[2], Vector(1, 2, 3));
+}
+
+TEST(ObjParserTest, FaceWithNormals)
+{
+	std::string data =
+			"v 0 1 0\n"
+			"v -1 0 0\n"
+			"v 1 0 0\n"
+			"vn -1 0 0\n"
+			"vn 1 0 0\n"
+			"vn 0 1 0\n"
+			"f 1//3 2//1 3//2\n"
+			"f 1/0/3 2/102/1 3/14/2";
+	ObjParser parser(data);
+
+	const SmoothTriangle& t1 = dynamic_cast<const SmoothTriangle&>(parser.defaultGroup.objects()[0].get());
+	const SmoothTriangle& t2 = dynamic_cast<const SmoothTriangle&>(parser.defaultGroup.objects()[1].get());
+
+	EXPECT_EQ(t1.vertices[0], parser.vertices[0]);
+	EXPECT_EQ(t1.vertices[1], parser.vertices[1]);
+	EXPECT_EQ(t1.vertices[2], parser.vertices[2]);
+	EXPECT_EQ(t1.normals[0], parser.normals[2]);
+	EXPECT_EQ(t1.normals[1], parser.normals[0]);
+	EXPECT_EQ(t1.normals[2], parser.normals[1]);
+
+	EXPECT_EQ(t2.vertices[0], parser.vertices[0]);
+	EXPECT_EQ(t2.vertices[1], parser.vertices[1]);
+	EXPECT_EQ(t2.vertices[2], parser.vertices[2]);
+	EXPECT_EQ(t2.normals[0], parser.normals[2]);
+	EXPECT_EQ(t2.normals[1], parser.normals[0]);
+	EXPECT_EQ(t2.normals[2], parser.normals[1]);
+}
+
+TEST(ObjParserTest, VertexParsingError)
+{
+	std::string data = "v 0 0";
+	try
+	{
+		ObjParser parser(data);
+	} catch(std::runtime_error& e)
+	{
+		EXPECT_EQ(std::string(e.what()), "ObjParser: Unable to parse vertex");
+	}
+}
+
+TEST(ObjParserTest, VertexNormalParsingError)
+{
+	std::string data = "vn 0 0";
+	try
+	{
+		ObjParser parser(data);
+	} catch(std::runtime_error& e)
+	{
+		EXPECT_EQ(std::string(e.what()), "ObjParser: Unable to parse vertex normal");
+	}
+}
+
+TEST(ObjParserTest, FaceParsingError)
+{
+	std::string data = "f 0 0";
+	try
+	{
+		ObjParser parser(data);
+	} catch(std::runtime_error& e)
+	{
+		EXPECT_EQ(std::string(e.what()), "ObjParser: Unable to parse face");
+	}
+}
+
+TEST(ObjParserTest, GroupParsingError)
+{
+	std::string data = "g";
+	try
+	{
+		ObjParser parser(data);
+	} catch(std::runtime_error& e)
+	{
+		EXPECT_EQ(std::string(e.what()), "ObjParser: Unable to parse group name");
+	}
+}
+
 
 
 

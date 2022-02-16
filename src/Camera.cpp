@@ -20,7 +20,7 @@ Ray Camera::rayForPixel(const uint32_t px, const uint32_t py) const noexcept
     const Tuple origin = transform.inverse() * Point(0, 0, 0);
     const Tuple direction = (pixel - origin).normalize();
 
-    return Ray(origin, direction);
+    return {origin, direction};
 }
 
 Canvas Camera::Render(const World& w) const noexcept

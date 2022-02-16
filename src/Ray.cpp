@@ -33,14 +33,14 @@ std::optional<Intersection> Ray::hit(const std::vector<Intersection>& intersecti
 
 Ray Ray::transform(const Matrix<4>& m) const noexcept
 {
-    return Ray(m * this->origin, m * this->direction);
+    return {m * this->origin, m * this->direction};
 }
 
 IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vector<Intersection>& intersections) const noexcept
 {
     const Tuple position = cast(i.t);
     const Tuple eyeVector = -direction;
-    Tuple normalVector = i.object->normal(position);
+    Tuple normalVector = i.object->normal(position, i);
     const bool inside = normalVector.dot(eyeVector) < 0;
     if (inside)
     {
@@ -90,7 +90,7 @@ IntersectionDetails Ray::precomputeDetails(const Intersection& i, const std::vec
 
     // Schlick reflectance - Algorithm from "Reflections and Refractions in Ray Tracing" by Bram de Greve
     float cos = eyeVector.dot(normalVector);
-    //float reflectance = 0.0f;
+    // float reflectance = 0.0f;
     float sin2T = 0.0F;
     if (n1 > n2)
     {

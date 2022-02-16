@@ -24,22 +24,22 @@ bool Color::operator!=(const Color& other) const noexcept
 
 Color Color::operator+(const Color& other) const noexcept
 {
-    return Color(this->r + other.r, this->g + other.g, this->b + other.b);
+    return {this->r + other.r, this->g + other.g, this->b + other.b};
 }
 
 Color Color::operator-(const Color& other) const noexcept
 {
-    return Color(this->r - other.r, this->g - other.g, this->b - other.b);
+    return {this->r - other.r, this->g - other.g, this->b - other.b};
 }
 
 Color Color::operator*(const float scalar) const noexcept
 {
-    return Color(this->r * scalar, this->g * scalar, this->b * scalar);
+    return {this->r * scalar, this->g * scalar, this->b * scalar};
 }
 
 Color Color::operator*(const Color& other) const noexcept
 {
-    return Color(this->r * other.r, this->g * other.g, this->b * other.b);
+    return {this->r * other.r, this->g * other.g, this->b * other.b};
 }
 
 const Color Color::Black = Color(0.0F, 0.0F, 0.0F);
