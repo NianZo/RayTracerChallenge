@@ -483,6 +483,8 @@ std::vector<Intersection> Group::objectIntersect(const Ray& r) const noexcept
 }
 
 const std::string CSG::Union = "Union";
+const std::string CSG::Intersect  = "Intersection";
+const std::string CSG::Difference = "Difference";
 
 Tuple CSG::objectNormal(const Tuple&, [[maybe_unused]] const Intersection& i) const noexcept
 {
@@ -492,6 +494,23 @@ Tuple CSG::objectNormal(const Tuple&, [[maybe_unused]] const Intersection& i) co
 std::vector<Intersection> CSG::objectIntersect(const Ray&) const noexcept
 {
     return {};
+}
+
+bool CSG::intersectionAllowed(const std::string& operation, bool lhit, bool inl, bool inr)
+{
+	if (operation == CSG::Union)
+	{
+		return (lhit && !inr) || (!lhit && !inl);
+	} else if (operation == CSG::Intersect)
+	{
+		return (lhit && inr) || (!lhit && inl);
+	} else if (operation == CSG::Difference)
+	{
+		return (lhit && !inr) || (!lhit && inl);
+	}
+
+	// Default answer
+	return false;
 }
 
 Sphere GlassSphere() noexcept

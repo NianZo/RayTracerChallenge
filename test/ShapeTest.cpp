@@ -1362,6 +1362,42 @@ TEST(ConstructiveSolidGeometry, Creation)
 	EXPECT_EQ(csg.right->parent, &csg);
 }
 
+TEST(ConstructiveSolidGeometry, IntersectionAllowedUnion)
+{
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Union, true, true, true));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Union, true, true, false));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Union, true, false, true));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Union, true, false, false));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Union, false, true, true));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Union, false, true, false));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Union, false, false, true));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Union, false, false, false));
+}
+
+TEST(ConstructiveSolidGeometry, IntersectionAllowedIntersection)
+{
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Intersect, true, true, true));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Intersect, true, true, false));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Intersect, true, false, true));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Intersect, true, false, false));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Intersect, false, true, true));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Intersect, false, true, false));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Intersect, false, false, true));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Intersect, false, false, false));
+}
+
+TEST(ConstructiveSolidGeometry, IntersectionAllowedDifference)
+{
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Difference, true, true, true));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Difference, true, true, false));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Difference, true, false, true));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Difference, true, false, false));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Difference, false, true, true));
+	EXPECT_TRUE(CSG::intersectionAllowed(CSG::Difference, false, true, false));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Difference, false, false, true));
+	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Difference, false, false, false));
+}
+
 
 
 

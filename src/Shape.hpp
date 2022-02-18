@@ -282,8 +282,11 @@ class CSG : public Shape
         right->parent = this;
     };
     ~CSG() noexcept override = default;
+    static bool intersectionAllowed(const std::string& operation, bool lhit, bool inl, bool inr);
 
     const static std::string Union;
+    const static std::string Intersect;
+    const static std::string Difference;
 
   private:
     [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
