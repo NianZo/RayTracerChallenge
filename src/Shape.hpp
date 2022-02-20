@@ -194,7 +194,8 @@ class CSG : public Shape
     CSG(const CSG& other)
     noexcept : Shape(other), operation(other.operation), left(other.left->clone()), right(other.right->clone()){};
     ~CSG() noexcept override = default;
-    CSG(CSG&& other) noexcept : operation(other.operation), left(std::move(other.left)), right(std::move(other.right)){};
+    CSG(CSG&& other)
+    noexcept : operation(other.operation), left(std::move(other.left)), right(std::move(other.right)){};
     CSG& operator=(const CSG& other) noexcept
     {
         if (this == &other)
@@ -208,16 +209,15 @@ class CSG : public Shape
     }
     CSG& operator=(CSG&& other) noexcept
     {
-    	if (this == &other)
-    	{
-    		return *this;
-    	}
-    	operation = other.operation;
-    	left = std::move(other.left);
-    	right = std::move(other.right);
-    	return *this;
+        if (this == &other)
+        {
+            return *this;
+        }
+        operation = other.operation;
+        left = std::move(other.left);
+        right = std::move(other.right);
+        return *this;
     }
-
 
     static bool intersectionAllowed(int operation, bool lhit, bool inl, bool inr);
     [[nodiscard]] std::vector<Intersection> filterIntersections(const std::vector<Intersection>& intersections) const noexcept;
@@ -255,7 +255,7 @@ class Group : public Shape
                                          cones(other.cones),
                                          triangles(other.triangles),
                                          smoothTriangles(other.smoothTriangles),
-    									 csgs(other.csgs)
+                                         csgs(other.csgs)
     {
         for (auto& group : groups)
         {
