@@ -1446,6 +1446,29 @@ TEST(ConstructiveSolidGeometry, FilteringIntersectionListDifference)
 	EXPECT_EQ(result[1], intersections[1]);
 }
 
+TEST(ConstructiveSolidGeometry, RayMissesCSG)
+{
+	CSG csg(CSG::Union, std::make_unique<Sphere>(), std::make_unique<Cube>());
+	Ray r(Point(0, 2, -5), Vector(0, 0, 1));
+	auto intersections = csg.intersect(r);
+
+	EXPECT_TRUE(intersections.empty());
+}
+
+TEST(ConstructiveSolidGeometry, RayHitsCSG)
+{
+	CSG csg(CSG::Union, std::make_unique<Sphere>(), std::make_unique<Cube>());
+	csg.right->transform = translation(0, 0, 0.5);
+	Ray r(Point(0, 0, -5), Vector(0, 0, 1));
+	auto intersections = csg.intersect(r);
+
+	EXPECT_EQ(intersections.size(), 2);
+	EXPECT_FLOAT_EQ(intersections[0].t, 4);
+	EXPECT_EQ(intersections[0].object, csg.left.get());
+	EXPECT_FLOAT_EQ(intersections[1].t, 6.5);
+	EXPECT_EQ(intersections[1].object, csg.right.get());
+}
+
 
 
 

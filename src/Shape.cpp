@@ -548,9 +548,13 @@ Tuple CSG::objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const 
     return {0, 0, 0, 0};
 }
 
-std::vector<Intersection> CSG::objectIntersect([[maybe_unused]] const Ray& r) const noexcept
+std::vector<Intersection> CSG::objectIntersect(const Ray& r) const noexcept
 {
-    return {};
+    auto leftIntersections = left->intersect(r);
+    auto rightIntersections = right->intersect(r);
+    leftIntersections.insert(leftIntersections.end(), rightIntersections.begin(), rightIntersections.end());
+    std::sort(leftIntersections.begin(), leftIntersections.end());
+    return filterIntersections(leftIntersections);
 }
 
 bool CSG::intersectionAllowed(int operation, bool lhit, bool inl, bool inr)
@@ -578,15 +582,6 @@ std::vector<Intersection> CSG::filterIntersections(const std::vector<Intersectio
 
     for (const auto& intersection : intersections)
     {
-        //		bool lhit = false;
-        //		for (std::reference_wrapper<const Shape> subObject : left->allSubObjects())
-        //		{
-        //			if (subObject.get() == *intersection.object)
-        //			{
-        //				lhit = true;
-        //				//break;
-        //			}
-        //		}
         auto leftSubObjects = left->allSubObjects();
         const bool lhit = any_of(leftSubObjects.cbegin(), leftSubObjects.cend(), [&](std::reference_wrapper<const Shape> s) { return s.get() == *intersection.object; });
 
