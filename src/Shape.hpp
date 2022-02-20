@@ -54,7 +54,7 @@ class Shape
     [[nodiscard]] Tuple normal(const Tuple& p, const Intersection& i = Intersection(0.0F, nullptr)) const noexcept;
     [[nodiscard]] std::vector<Intersection> intersect(const Ray& r) const noexcept;
     [[nodiscard]] Color shade(const Light& light, const Tuple& position, const Tuple& eyeVector, bool inShadow) const noexcept;
-    [[nodiscard]] virtual std::vector<std::reference_wrapper<const Shape>> allSubObjects() const noexcept {return {std::ref(*this)};};
+    [[nodiscard]] virtual std::vector<std::reference_wrapper<const Shape>> allSubObjects() const noexcept { return {std::ref(*this)}; };
     [[nodiscard]] virtual std::unique_ptr<Shape> clone() const noexcept = 0;
 
   private:
@@ -65,11 +65,12 @@ class Shape
 
 class Sphere : public Shape
 {
-public:
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		return std::make_unique<Sphere>(*this);
-	}
+  public:
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        return std::make_unique<Sphere>(*this);
+    }
+
   private:
     [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
@@ -77,11 +78,12 @@ public:
 
 class Plane : public Shape
 {
-public:
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		return std::make_unique<Plane>(*this);
-	}
+  public:
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        return std::make_unique<Plane>(*this);
+    }
+
   private:
     [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
@@ -89,11 +91,12 @@ public:
 
 class Cube : public Shape
 {
-public:
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		return std::make_unique<Cube>(*this);
-	}
+  public:
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        return std::make_unique<Cube>(*this);
+    }
+
   private:
     [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
     [[nodiscard]] std::vector<Intersection> objectIntersect(const Ray& r) const noexcept override;
@@ -101,11 +104,11 @@ public:
 
 class Cylinder : public Shape
 {
-public:
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		return std::make_unique<Cylinder>(*this);
-	}
+  public:
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        return std::make_unique<Cylinder>(*this);
+    }
 
     float minimum;
     float maximum;
@@ -120,11 +123,11 @@ public:
 
 class Cone : public Shape
 {
-public:
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		return std::make_unique<Cone>(*this);
-	}
+  public:
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        return std::make_unique<Cone>(*this);
+    }
 
     float minimum;
     float maximum;
@@ -143,10 +146,10 @@ class Triangle : public Shape
     std::array<Tuple, 3> vertices;
 
     Triangle(const Tuple& v1, const Tuple& v2, const Tuple& v3) noexcept;
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		return std::make_unique<Triangle>(*this);
-	}
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        return std::make_unique<Triangle>(*this);
+    }
 
   private:
     std::array<Tuple, 2> edges;
@@ -163,10 +166,10 @@ class SmoothTriangle : public Shape
     std::array<Tuple, 3> normals;
 
     SmoothTriangle(const Tuple& v1, const Tuple& v2, const Tuple& v3, const Tuple& n1, const Tuple& n2, const Tuple& n3) noexcept;
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		return std::make_unique<SmoothTriangle>(*this);
-	}
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        return std::make_unique<SmoothTriangle>(*this);
+    }
 
   private:
     std::array<Tuple, 2> edges;
@@ -188,7 +191,8 @@ class CSG : public Shape
         left->parent = this;
         right->parent = this;
     };
-    CSG(const CSG& other) noexcept : Shape(other), operation(other.operation), left(other.left->clone()), right(other.right->clone()) {};
+    CSG(const CSG& other)
+    noexcept : Shape(other), operation(other.operation), left(other.left->clone()), right(other.right->clone()){};
     ~CSG() noexcept override = default;
     CSG& operator=(const CSG& other) noexcept
     {
@@ -205,15 +209,20 @@ class CSG : public Shape
     static bool intersectionAllowed(int operation, bool lhit, bool inl, bool inr);
     [[nodiscard]] std::vector<Intersection> filterIntersections(const std::vector<Intersection>& intersections) const noexcept;
     [[nodiscard]] std::vector<std::reference_wrapper<const Shape>> allSubObjects() const noexcept override;
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		std::unique_ptr<CSG> newShape = std::make_unique<CSG>(*this);
-		newShape->left = left->clone();
-		newShape->right = right->clone();
-		return newShape;
-	}
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        std::unique_ptr<CSG> newShape = std::make_unique<CSG>(*this);
+        newShape->left = left->clone();
+        newShape->right = right->clone();
+        return newShape;
+    }
 
-	enum Operation {Union, Intersect, Difference};
+    enum Operation
+    {
+        Union,
+        Intersect,
+        Difference
+    };
 
   private:
     [[nodiscard]] Tuple objectNormal(const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept override;
@@ -233,7 +242,7 @@ class Group : public Shape
                                          cones(other.cones),
                                          triangles(other.triangles),
                                          smoothTriangles(other.smoothTriangles)
-										 //csgs(other.csgs)
+    // csgs(other.csgs)
     {
         for (auto& group : groups)
         {
@@ -269,7 +278,7 @@ class Group : public Shape
         }
         for (auto& csg : csgs)
         {
-        	csg.parent = this;
+            csg.parent = this;
         }
     };
     Group(Group&&) noexcept = default;
@@ -290,7 +299,7 @@ class Group : public Shape
         cones = other.cones;
         triangles = other.triangles;
         smoothTriangles = other.smoothTriangles;
-        //csgs = other.csgs;
+        // csgs = other.csgs;
 
         for (auto& group : groups)
         {
@@ -330,10 +339,10 @@ class Group : public Shape
     ~Group() noexcept override = default;
     [[nodiscard]] std::vector<std::reference_wrapper<const Shape>> objects() const noexcept;
     [[nodiscard]] std::vector<std::reference_wrapper<const Shape>> allSubObjects() const noexcept override;
-	[[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
-	{
-		return std::make_unique<Group>(*this);
-	}
+    [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
+    {
+        return std::make_unique<Group>(*this);
+    }
     // TODO(nic) can I make this a template? Each pushes elements to a different vector
     // TODO(nic) it is dangerous for these to return a reference to the object added...
     Group& addChild(const Group& c) noexcept;
