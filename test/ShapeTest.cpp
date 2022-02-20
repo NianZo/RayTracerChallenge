@@ -1398,6 +1398,56 @@ TEST(ConstructiveSolidGeometry, IntersectionAllowedDifference)
 	EXPECT_FALSE(CSG::intersectionAllowed(CSG::Difference, false, false, false));
 }
 
+TEST(ConstructiveSolidGeometry, FilteringIntersectionListUnion)
+{
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+
+	CSG csgUnion(CSG::Union, std::move(s1), std::move(s2));
+	std::vector<Intersection> intersections = {Intersection(1, csgUnion.left.get()), Intersection(2, csgUnion.right.get()), Intersection(3, csgUnion.left.get()), Intersection(4, csgUnion.right.get())};
+	auto result = csgUnion.filterIntersections(intersections);
+
+	EXPECT_EQ(result.size(), 2);
+	EXPECT_EQ(result[0], intersections[0]);
+	EXPECT_EQ(result[1], intersections[3]);
+}
+
+TEST(ConstructiveSolidGeometry, FilteringIntersectionListIntersection)
+{
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+
+	CSG csg(CSG::Intersect, std::move(s1), std::move(s2));
+	std::vector<Intersection> intersections = {Intersection(1, csg.left.get()), Intersection(2, csg.right.get()), Intersection(3, csg.left.get()), Intersection(4, csg.right.get())};
+	auto result = csg.filterIntersections(intersections);
+
+	EXPECT_EQ(result.size(), 2);
+	EXPECT_EQ(result[0], intersections[1]);
+	EXPECT_EQ(result[1], intersections[2]);
+}
+
+TEST(ConstructiveSolidGeometry, FilteringIntersectionListDifference)
+{
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+
+	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+	std::vector<Intersection> intersections = {Intersection(1, csg.left.get()), Intersection(2, csg.right.get()), Intersection(3, csg.left.get()), Intersection(4, csg.right.get())};
+	auto result = csg.filterIntersections(intersections);
+
+	EXPECT_EQ(result.size(), 2);
+	EXPECT_EQ(result[0], intersections[0]);
+	EXPECT_EQ(result[1], intersections[1]);
+}
+
+
+
 
 
 

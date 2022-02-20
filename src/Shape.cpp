@@ -411,6 +411,52 @@ std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
     return objects;
 }
 
+std::vector<std::reference_wrapper<const Shape>> Group::allSubObjects() const noexcept
+{
+	std::vector<std::reference_wrapper<const Shape>> objects;
+
+    for (const Shape& sphere : spheres)
+    {
+        objects.emplace_back(std::ref(sphere));
+    }
+    for (const Shape& plane : planes)
+    {
+        objects.emplace_back(std::ref(plane));
+    }
+    for (const Shape& cube : cubes)
+    {
+        objects.emplace_back(std::ref(cube));
+    }
+    for (const Shape& cylinder : cylinders)
+    {
+        objects.emplace_back(std::ref(cylinder));
+    }
+    for (const Shape& cone : cones)
+    {
+        objects.emplace_back(std::ref(cone));
+    }
+    for (const Shape& triangle : triangles)
+    {
+        objects.emplace_back(std::ref(triangle));
+    }
+    for (const Shape& smoothTriangle : smoothTriangles)
+    {
+        objects.emplace_back(std::ref(smoothTriangle));
+    }
+    for (const Shape& group : groups)
+    {
+    	const std::vector<std::reference_wrapper<const Shape>> shapeIntersections = group.allSubObjects();
+    	objects.insert(objects.end(), shapeIntersections.begin(), shapeIntersections.end());
+    }
+    for (const Shape& csg : csgs)
+    {
+    	const std::vector<std::reference_wrapper<const Shape>> shapeIntersections = csg.allSubObjects();
+    	objects.insert(objects.end(), shapeIntersections.begin(), shapeIntersections.end());
+    }
+
+    return objects;
+}
+
 Group& Group::addChild(const Group& c) noexcept
 {
     groups.push_back(c);
@@ -465,6 +511,13 @@ SmoothTriangle& Group::addChild(const SmoothTriangle& st) noexcept
     return smoothTriangles.back();
 }
 
+CSG& Group::addChild(const CSG& csg) noexcept
+{
+	csgs.push_back(csg);
+	csgs.back().parent = this;
+	return csgs.back();
+}
+
 Tuple Group::objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     return Vector(0, 0, 0); // this should never be called, so return a clearly invalid vector
@@ -482,35 +535,57 @@ std::vector<Intersection> Group::objectIntersect(const Ray& r) const noexcept
     return intersections;
 }
 
-const std::string CSG::Union = "Union";
-const std::string CSG::Intersect = "Intersection";
-const std::string CSG::Difference = "Difference";
-
-Tuple CSG::objectNormal(const Tuple&, [[maybe_unused]] const Intersection& i) const noexcept
+Tuple CSG::objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     return {0, 0, 0, 0};
 }
 
-std::vector<Intersection> CSG::objectIntersect(const Ray&) const noexcept
+std::vector<Intersection> CSG::objectIntersect([[maybe_unused]] const Ray& r) const noexcept
 {
     return {};
 }
 
-bool CSG::intersectionAllowed(const std::string& operation, bool lhit, bool inl, bool inr)
+bool CSG::intersectionAllowed(int operation, bool lhit, bool inl, bool inr)
 {
-    if (operation == CSG::Union)
+	bool allowed = false;
+    if (operation == CSG::Operation::Union)
     {
-        return (lhit && !inr) || (!lhit && !inl);
-    } else if (operation == CSG::Intersect)
+        allowed = (lhit && !inr) || (!lhit && !inl);
+    } else if (operation == CSG::Operation::Intersect)
     {
-        return (lhit && inr) || (!lhit && inl);
-    } else if (operation == CSG::Difference)
+        allowed = (lhit && inr) || (!lhit && inl);
+    } else if (operation == CSG::Operation::Difference)
     {
-        return (lhit && !inr) || (!lhit && inl);
+        allowed = (lhit && !inr) || (!lhit && inl);
     }
 
-    // Default answer
-    return false;
+    return allowed;
+}
+
+std::vector<Intersection> CSG::filterIntersections(const std::vector<Intersection>& intersections) const noexcept
+{
+	bool inl = false;
+	bool inr = false;
+	std::vector<Intersection> filteredIntersections;
+
+	for (const auto& intersection : intersections)
+	{
+		const bool lhit = any_of(left->allSubObjects().begin(), left->allSubObjects().end(), [intersection](std::reference_wrapper<const Shape> s){return &s.get() == intersection.object;});
+
+		if (intersectionAllowed(operation, lhit, inl, inr))
+		{
+			filteredIntersections.push_back(intersection);
+		}
+
+		if (lhit)
+		{
+			inl = !inl;
+		} else
+		{
+			inr = !inr;
+		}
+	}
+	return filteredIntersections;
 }
 
 Sphere GlassSphere() noexcept
