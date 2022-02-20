@@ -1469,6 +1469,79 @@ TEST(ConstructiveSolidGeometry, RayHitsCSG)
 	EXPECT_EQ(intersections[1].object, csg.right.get());
 }
 
+TEST(ConstructiveSolidGeometry, NormalIsPhony)
+{
+	CSG csg(CSG::Union, std::make_unique<Sphere>(), std::make_unique<Cube>());
+
+	EXPECT_EQ(csg.normal(Point(1, 2, 3)), Vector(0, 0, 0));
+}
+
+TEST(ConstructiveSolidGeometry, AllSubObjects)
+{
+	Group g;
+
+	Sphere sgc;
+	sgc.transform = translation(1, 0, 0);
+	Group gc;
+	gc.transform = translation(2, 0, 0);
+	gc.addChild(sgc);
+	g.addChild(gc);
+
+	Sphere s;
+	s.transform = translation(3, 0, 0);
+	g.addChild(s);
+
+	Plane p;
+	p.transform = translation(4, 0, 0);
+	g.addChild(p);
+
+	Cube cu;
+	cu.transform = translation(5, 0, 0);
+	g.addChild(cu);
+
+	Cylinder cy;
+	cy.transform = translation(6, 0, 0);
+	g.addChild(cy);
+
+	Cone co;
+	co.transform = translation(7, 0, 0);
+	g.addChild(co);
+
+	Triangle t(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1));
+	t.transform = translation(8, 0, 0);
+	g.addChild(t);
+
+	SmoothTriangle st(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
+	st.transform = translation(9, 0, 0);
+	g.addChild(st);
+
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(10, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(11, 0, 0);
+
+	Sphere s1m = Sphere();
+	s1m.transform = translation(10, 0, 0);
+	Cube s2m = Cube();
+	s2m.transform = translation(11, 0, 0);
+
+	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+	g.addChild(csg);
+	auto subObjects = g.allSubObjects();
+
+	EXPECT_EQ(subObjects.size(), 10);
+	EXPECT_EQ(subObjects[0].get().transform, s.transform);
+	EXPECT_EQ(subObjects[1].get().transform, p.transform);
+	EXPECT_EQ(subObjects[2].get().transform, cu.transform);
+	EXPECT_EQ(subObjects[3].get().transform, cy.transform);
+	EXPECT_EQ(subObjects[4].get().transform, co.transform);
+	EXPECT_EQ(subObjects[5].get().transform, t.transform);
+	EXPECT_EQ(subObjects[6].get().transform, st.transform);
+	EXPECT_EQ(subObjects[7].get().transform, sgc.transform);
+	EXPECT_EQ(subObjects[8].get().transform, s1m.transform);
+	EXPECT_EQ(subObjects[9].get().transform, s2m.transform);
+}
+
 
 
 
