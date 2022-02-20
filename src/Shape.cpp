@@ -535,6 +535,14 @@ std::vector<Intersection> Group::objectIntersect(const Ray& r) const noexcept
     return intersections;
 }
 
+std::vector<std::reference_wrapper<const Shape>> CSG::allSubObjects() const noexcept
+{
+	auto leftObjects = left->allSubObjects();
+	auto rightObjects = right->allSubObjects();
+	leftObjects.insert(leftObjects.end(), rightObjects.begin(), rightObjects.end());
+	return leftObjects;
+}
+
 Tuple CSG::objectNormal([[maybe_unused]] const Tuple& p, [[maybe_unused]] const Intersection& i) const noexcept
 {
     return {0, 0, 0, 0};
@@ -570,7 +578,17 @@ std::vector<Intersection> CSG::filterIntersections(const std::vector<Intersectio
 
 	for (const auto& intersection : intersections)
 	{
-		const bool lhit = any_of(left->allSubObjects().begin(), left->allSubObjects().end(), [intersection](std::reference_wrapper<const Shape> s){return &s.get() == intersection.object;});
+//		bool lhit = false;
+//		for (std::reference_wrapper<const Shape> subObject : left->allSubObjects())
+//		{
+//			if (subObject.get() == *intersection.object)
+//			{
+//				lhit = true;
+//				//break;
+//			}
+//		}
+		auto leftSubObjects = left->allSubObjects();
+		const bool lhit = any_of(leftSubObjects.cbegin(), leftSubObjects.cend(), [&](std::reference_wrapper<const Shape> s){return s.get() == *intersection.object;});
 
 		if (intersectionAllowed(operation, lhit, inl, inr))
 		{

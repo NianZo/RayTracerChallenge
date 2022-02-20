@@ -232,8 +232,8 @@ class Group : public Shape
                                          cylinders(other.cylinders),
                                          cones(other.cones),
                                          triangles(other.triangles),
-                                         smoothTriangles(other.smoothTriangles),
-										 csgs(other.csgs)
+                                         smoothTriangles(other.smoothTriangles)
+										 //csgs(other.csgs)
     {
         for (auto& group : groups)
         {
@@ -290,7 +290,7 @@ class Group : public Shape
         cones = other.cones;
         triangles = other.triangles;
         smoothTriangles = other.smoothTriangles;
-        csgs = other.csgs;
+        //csgs = other.csgs;
 
         for (auto& group : groups)
         {
