@@ -1643,11 +1643,14 @@ TEST(ConstructiveSolidGeometry, CopySelfAssignment)
 	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
 	s2->transform = translation(2, 0, 0);
 	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+	CSG& csgRef = csg;
+	csgRef.transform = translation(5, 0, 0);
 
-	CSG csg2 = csg;
+	csg = csgRef;
 
-	EXPECT_EQ(csg2.left->transform, translation(1, 0, 0));
-	EXPECT_EQ(csg2.right->transform, translation(2, 0, 0));
+
+	EXPECT_EQ(csg.left->transform, translation(1, 0, 0));
+	EXPECT_EQ(csg.right->transform, translation(2, 0, 0));
 }
 
 TEST(ConstructiveSolidGeometry, Clone)
