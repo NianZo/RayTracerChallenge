@@ -225,8 +225,6 @@ class CSG : public Shape
     [[nodiscard]] std::unique_ptr<Shape> clone() const noexcept override
     {
         std::unique_ptr<CSG> newShape = std::make_unique<CSG>(*this);
-        newShape->left = left->clone();
-        newShape->right = right->clone();
         return newShape;
     }
 

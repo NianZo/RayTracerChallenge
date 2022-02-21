@@ -181,6 +181,16 @@ TEST(SphereTest, NormalOfTransformedSphere)
 
 	EXPECT_EQ(n, Vector(0, 0.97014, -0.24254));
 }
+
+TEST(SphereTest, Clone)
+{
+	Sphere s;
+	s.transform = translation(5, 0, 0);
+
+	auto sClone = s.clone();
+
+	EXPECT_EQ(sClone->transform, translation(5, 0, 0));
+}
 /*
 TEST(SphereTest, DefaultMaterial)
 {
@@ -306,6 +316,16 @@ TEST(PlaneTest, IntersectWithRayFromBelow)
 	EXPECT_EQ(*xs[0].object, p);
 }
 
+TEST(PlaneTest, Clone)
+{
+	Plane s;
+	s.transform = translation(5, 0, 0);
+
+	auto sClone = s.clone();
+
+	EXPECT_EQ(sClone->transform, translation(5, 0, 0));
+}
+
 TEST(SphereTest, GlassSphereFactory)
 {
 	Sphere s = GlassSphere();
@@ -426,6 +446,16 @@ TEST(CubeTest, CubeNormal)
 	Tuple p8 = Point(-1, -1, -1);
 	Tuple normal8 = c.normal(p8);
 	EXPECT_EQ(normal8, Vector(-1, 0, 0));
+}
+
+TEST(CubeTest, Clone)
+{
+	Cube s;
+	s.transform = translation(5, 0, 0);
+
+	auto sClone = s.clone();
+
+	EXPECT_EQ(sClone->transform, translation(5, 0, 0));
 }
 
 TEST(CylinderTest, RayMissesCylinder)
@@ -585,6 +615,16 @@ TEST(CylinderTest, NormalVectorOnCylinderEndCaps)
 	EXPECT_EQ(n6, Vector(0, 1, 0));
 }
 
+TEST(CylinderTest, Clone)
+{
+	Cylinder s;
+	s.transform = translation(5, 0, 0);
+
+	auto sClone = s.clone();
+
+	EXPECT_EQ(sClone->transform, translation(5, 0, 0));
+}
+
 TEST(ConeTest, ConeExtentDefault)
 {
 	Cone c;
@@ -676,6 +716,16 @@ TEST(ConeTest, NormalsOfCone)
 
 	Tuple n5 = c2.normal(Point(1.9, -2, 0));
 	EXPECT_EQ(n5, Vector(0, -1, 0));
+}
+
+TEST(ConeTest, Clone)
+{
+	Cone s;
+	s.transform = translation(5, 0, 0);
+
+	auto sClone = s.clone();
+
+	EXPECT_EQ(sClone->transform, translation(5, 0, 0));
 }
 
 TEST(GroupTest, CreateNewGroup)
@@ -914,6 +964,16 @@ TEST(GroupTest, GroupNormalInvalid)
 	Group g;
 
 	EXPECT_EQ(g.normal(Point(1, 1, 1)), Vector(0, 0, 0));
+}
+
+TEST(GroupTest, Clone)
+{
+	Group s;
+	s.transform = translation(5, 0, 0);
+
+	auto sClone = s.clone();
+
+	EXPECT_EQ(sClone->transform, translation(5, 0, 0));
 }
 
 TEST(TriangleTest, ConstructTriangle)
@@ -1588,6 +1648,20 @@ TEST(ConstructiveSolidGeometry, CopySelfAssignment)
 
 	EXPECT_EQ(csg2.left->transform, translation(1, 0, 0));
 	EXPECT_EQ(csg2.right->transform, translation(2, 0, 0));
+}
+
+TEST(ConstructiveSolidGeometry, Clone)
+{
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+
+	auto sClone = csg.clone();
+
+	EXPECT_EQ(dynamic_cast<CSG*>(sClone.get())->left->transform, translation(1, 0, 0));
+	EXPECT_EQ(dynamic_cast<CSG*>(sClone.get())->right->transform, translation(2, 0, 0));
 }
 
 
