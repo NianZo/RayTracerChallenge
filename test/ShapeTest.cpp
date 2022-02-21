@@ -886,6 +886,13 @@ TEST(GroupTest, GroupCopyConstructor)
 	st.transform = translation(9, 0, 0);
 	g.addChild(st);
 
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+	g.addChild(csg);
+
 	// Exercise copy constructor
 	Group g2(g);
 
@@ -930,6 +937,13 @@ TEST(GroupTest, GroupCopyAssignment)
 	SmoothTriangle st(Point(1, 0, 0), Point(0, 1, 0), Point(0, 0, 1), Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
 	st.transform = translation(9, 0, 0);
 	g.addChild(st);
+
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+	g.addChild(csg);
 
 	// Exercise copy assignment
 	Group g2;
@@ -1068,6 +1082,19 @@ TEST(TriangleTest, RayIntersectionSucceeds)
 	EXPECT_FLOAT_EQ(intersections[0].t, 2.0);
 }
 
+TEST(TriangleTest, Clone)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Triangle s(p1, p2, p3);
+	s.transform = translation(5, 0, 0);
+
+	auto sClone = s.clone();
+
+	EXPECT_EQ(sClone->transform, translation(5, 0, 0));
+}
+
 TEST(SmoothTriangleTest, NoIntersectionWithParallelRay)
 {
 	Tuple p1 = Point(0, 1, 0);
@@ -1187,6 +1214,22 @@ TEST(SmoothTriangleTest, NormalFromPrecomputeDetails)
 	auto id = r.precomputeDetails(*r.hit(intersections), intersections);
 
 	EXPECT_EQ(id.normalVector, Vector(-0.5547, 0.83205, 0));
+}
+
+TEST(SmoothTriangleTest, Clone)
+{
+	Tuple p1 = Point(0, 1, 0);
+	Tuple p2 = Point(-1, 0, 0);
+	Tuple p3 = Point(1, 0, 0);
+	Tuple n1 = Vector(0, 1, 0);
+	Tuple n2 = Vector(-1, 0, 0);
+	Tuple n3 = Vector(1, 0, 0);
+	SmoothTriangle s(p1, p2, p3, n1, n2, n3);
+	s.transform = translation(5, 0, 0);
+
+	auto sClone = s.clone();
+
+	EXPECT_EQ(sClone->transform, translation(5, 0, 0));
 }
 
 TEST(ObjParserTest, IgnoreLineCountForEmptyString)
