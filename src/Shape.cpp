@@ -409,7 +409,7 @@ std::vector<std::reference_wrapper<const Shape>> Group::objects() const noexcept
     }
     for (const Shape& csg : csgs)
     {
-    	objects.emplace_back(std::ref(csg));
+        objects.emplace_back(std::ref(csg));
     }
 
     return objects;
