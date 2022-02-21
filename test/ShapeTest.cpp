@@ -1542,6 +1542,54 @@ TEST(ConstructiveSolidGeometry, AllSubObjects)
 	EXPECT_EQ(subObjects[9].get().transform, s2m.transform);
 }
 
+TEST(ConstructiveSolidGeometry, MoveConstructor)
+{
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+
+	CSG csg2(std::move(csg));
+
+	EXPECT_EQ(csg2.left->transform, translation(1, 0, 0));
+	EXPECT_EQ(csg2.right->transform, translation(2, 0, 0));
+}
+
+TEST(ConstructiveSolidGeometry, CopyAssignment)
+{
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+
+	std::unique_ptr<Shape> s3 = std::make_unique<Sphere>();
+	s3->transform = translation(3, 0, 0);
+	std::unique_ptr<Shape> s4 = std::make_unique<Cube>();
+	s4->transform = translation(4, 0, 0);
+	CSG csg2(CSG::Union, std::move(s3), std::move(s4));
+
+	csg2 = csg;
+
+	EXPECT_EQ(csg2.left->transform, translation(1, 0, 0));
+	EXPECT_EQ(csg2.right->transform, translation(2, 0, 0));
+}
+
+TEST(ConstructiveSolidGeometry, CopySelfAssignment)
+{
+	std::unique_ptr<Shape> s1 = std::make_unique<Sphere>();
+	s1->transform = translation(1, 0, 0);
+	std::unique_ptr<Shape> s2 = std::make_unique<Cube>();
+	s2->transform = translation(2, 0, 0);
+	CSG csg(CSG::Difference, std::move(s1), std::move(s2));
+
+	CSG csg2 = csg;
+
+	EXPECT_EQ(csg2.left->transform, translation(1, 0, 0));
+	EXPECT_EQ(csg2.right->transform, translation(2, 0, 0));
+}
+
 
 
 
