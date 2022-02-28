@@ -19,6 +19,8 @@ public:
 	Camera camera;
 
 	explicit YamlParser(const std::string& inputData);
+
+
 };
 
 

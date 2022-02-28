@@ -54,20 +54,11 @@ std::vector<std::string_view> tokenizeString(std::string_view textLine, char del
 
 void ParseTokens(std::vector<std::string_view>& tokens)
 {
-    if (tokens[0] == "v")
+    if (tokens[0] == "-" && tokens[1] == "add:")
     {
-        ParseVertexData(tokens, vertices);
-    } else if (tokens[0] == "vn")
-    {
-        ParseNormalData(tokens, normals);
-    } else if (tokens[0] == "f")
-    {
-        ParseFaceData(tokens, vertices, normals, currentGroup);
-    } else if (tokens[0] == "g")
-    {
-        ParseGroupData(tokens, namedGroups, currentGroup);
-    } else
-    {
-        ignoredLines++;
+    	if (tokens[2].ends_with("camera"))
+    	{
+
+    	}
     }
 }
