@@ -10,7 +10,8 @@ set(SOURCES
 	Tuple.cpp
 	Color.cpp
 	Canvas.cpp
-	ObjParser.cpp)
+	ObjParser.cpp
+	YamlParser.cpp)
 
 add_library(${BINARY}_lib STATIC ${SOURCES})
 

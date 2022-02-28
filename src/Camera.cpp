@@ -8,6 +8,17 @@
 #include "Camera.hpp"
 #include <omp.h>
 
+bool Camera::operator==(const Camera& other) const noexcept
+{
+	return hSize == other.hSize &&
+			vSize == other.vSize &&
+			fov == other.fov &&
+			transform == other.transform &&
+			pixelSize == other.pixelSize &&
+			halfWidth == other.halfWidth &&
+			halfHeight == other.halfHeight;
+}
+
 Ray Camera::rayForPixel(const uint32_t px, const uint32_t py) const noexcept
 {
     const float xOffset = (static_cast<float>(px) + 0.5F) * pixelSize;

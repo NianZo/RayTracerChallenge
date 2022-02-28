@@ -12,7 +12,8 @@ set(TEST_SOURCES
 	MaterialTest.cpp
 	WorldTest.cpp
 	CameraTest.cpp
-	PatternTest.cpp)
+	PatternTest.cpp
+	YamlParserTest.cpp)
 
 add_executable(${TEST_BINARY} ${TEST_SOURCES})
 target_include_directories(${TEST_BINARY} PUBLIC ${CMAKE_SOURCE_DIR}/src)
