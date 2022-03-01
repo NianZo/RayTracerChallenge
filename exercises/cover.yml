@@ -50,7 +50,7 @@
     - [ translate, 1, -1, 1 ]
     - [ scale, 0.5, 0.5, 0.5 ]
 
-- define: large-object
+- define: large-object-transform
   value:
     - standard-transform
     - [ scale, 3.5, 3.5, 3.5 ]
@@ -94,7 +94,7 @@
     transparency: 0.7
     refractive-index: 1.5
   transform:
-    - large-object
+    - large-object-transform
 
 - add: cube
   material: white-material
@@ -105,13 +105,13 @@
 - add: cube
   material: blue-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, 8.5, 1.5, -0.5 ]
 
 - add: cube
   material: red-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, 0, 0, 4 ]
 
 - add: cube
@@ -135,7 +135,7 @@
 - add: cube
   material: blue-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, 4, 1, 7.5 ]
 
 - add: cube
@@ -159,41 +159,41 @@
 - add: cube
   material: blue-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, -0.5, -5, 0.25 ]
 
 - add: cube
   material: red-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, 4, -4, 0 ]
 
 - add: cube
   material: white-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, 8.5, -4, 0 ]
 
 - add: cube
   material: white-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, 0, -4, 4 ]
 
 - add: cube
   material: purple-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, -0.5, -4.5, 8 ]
 
 - add: cube
   material: white-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, 0, -8, 4 ]
 
 - add: cube
   material: white-material
   transform:
-    - large-object
+    - large-object-transform
     - [ translate, -0.5, -8.5, 8 ]

@@ -8,6 +8,8 @@
 #ifndef SRC_COLOR_HPP_
 #define SRC_COLOR_HPP_
 
+#include "Tuple.hpp"
+
 constexpr float COLOR_EPSILON = 0.001F;
 
 class Color
@@ -19,6 +21,7 @@ class Color
 
     Color() noexcept = default;
     Color(float red, float green, float blue) noexcept : r(red), g(green), b(blue){};
+    Color(const Tuple& value) noexcept : r(value.x), g(value.y), b(value.z){};
 
     // Operator overloads
     bool operator==(const Color& other) const noexcept;

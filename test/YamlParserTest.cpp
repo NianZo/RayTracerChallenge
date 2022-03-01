@@ -41,5 +41,16 @@ TEST(YamlParser, AddCamera)
 			"  up: [ -0.45, 1, 0 ]\n";
 	YamlParser parser(cameraString);
 
-	EXPECT_EQ(parser.camera, Camera(100, 200, 0.875, ViewTransform(Vector(-6, 6, -10), Vector(6, 0, 6), Vector(-0.45, 1, 0))));
+	EXPECT_EQ(parser.worldCamera, Camera(100, 200, 0.875, ViewTransform(Point(-6, 6, -10), Point(6, 0, 6), Vector(-0.45, 1, 0))));
+}
+
+TEST(YamlParser, AddLight)
+{
+	std::string lightString =
+			"- add: light\n"
+			"  at: [ 1, 2, 3 ]\n"
+			"  intensity: [ 0.25, 0.5, 0.75 ]\n";
+	YamlParser parser(lightString);
+
+	EXPECT_EQ(parser.world.light, Light(Point(1, 2, 3), Color(0.25, 0.5, 0.75)));
 }

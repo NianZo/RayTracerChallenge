@@ -51,3 +51,13 @@ Canvas Camera::Render(const World& w) const noexcept
     }
     return image;
 }
+
+void Camera::RecalculateProperties() noexcept
+{
+    const float halfView = std::tan(fov / 2);
+    const float aspectRatio = static_cast<float>(hSize) / static_cast<float>(vSize);
+    halfWidth = hSize >= vSize ? halfView : halfView * aspectRatio;
+    halfHeight = hSize < vSize ? halfView : halfView / aspectRatio;
+
+    pixelSize = halfWidth * 2.0F / static_cast<float>(hSize);
+}

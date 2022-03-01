@@ -16,11 +16,40 @@ class YamlParser
 {
 public:
 	World world;
-	Camera camera;
+	Camera worldCamera;
 
 	explicit YamlParser(const std::string& inputData);
 
+private:
+	enum CommandType
+	{
+		camera,
+		light
+	};
 
+	enum SubCommandType
+	{
+		width,
+		height,
+		fov,
+		from,
+		to,
+		up,
+		at,
+		intensity
+	};
+
+	CommandType activeCommand;
+	std::string activeItemName;
+
+	Tuple cameraFrom;
+	Tuple cameraTo;
+	Tuple cameraUp;
+
+	void ParseTokens(std::vector<std::string_view>& tokens);
+	void SetVectorProperty(SubCommandType subCommandType, const Tuple& value);
+	void SetFloatProperty(SubCommandType subCommandType, float value);
+	void SetIntProperty(SubCommandType subCommandType, uint32_t value);
 };
 
 
