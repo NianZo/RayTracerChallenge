@@ -25,9 +25,9 @@ class Camera
     float halfWidth;
     float halfHeight;
 
-    Camera(uint32_t horizontalSize, uint32_t verticalSize, float fieldOfView, const Matrix<4>& viewTransform=IdentityMatrix()) noexcept : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(viewTransform)
+    Camera(uint32_t horizontalSize, uint32_t verticalSize, float fieldOfView, const Matrix<4>& viewTransform = IdentityMatrix()) noexcept : hSize(horizontalSize), vSize(verticalSize), fov(fieldOfView), transform(viewTransform)
     {
-    	RecalculateProperties();
+        RecalculateProperties();
     };
     [[nodiscard]] bool operator==(const Camera& other) const noexcept;
 

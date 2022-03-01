@@ -10,13 +10,13 @@
 
 bool Camera::operator==(const Camera& other) const noexcept
 {
-	return hSize == other.hSize &&
-			vSize == other.vSize &&
-			fov == other.fov &&
-			transform == other.transform &&
-			pixelSize == other.pixelSize &&
-			halfWidth == other.halfWidth &&
-			halfHeight == other.halfHeight;
+    return hSize == other.hSize &&
+           vSize == other.vSize &&
+           fov == other.fov &&
+           transform == other.transform &&
+           pixelSize == other.pixelSize &&
+           halfWidth == other.halfWidth &&
+           halfHeight == other.halfHeight;
 }
 
 Ray Camera::rayForPixel(const uint32_t px, const uint32_t py) const noexcept

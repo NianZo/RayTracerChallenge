@@ -12,7 +12,7 @@
 #include <limits>
 #include <stdexcept>
 
-std::vector<std::string_view> tokenizeString(std::string_view textLine, char delimiter, bool allowEmptyTokens=true);
+std::vector<std::string_view> tokenizeString(std::string_view textLine, char delimiter, bool allowEmptyTokens = true);
 void ParseVertexData(std::vector<std::string_view>& tokens, std::vector<Tuple>& vertices);
 void ParseNormalData(std::vector<std::string_view>& tokens, std::vector<Tuple>& normals);
 void ParseFaceData(std::vector<std::string_view>& tokens, std::vector<Tuple>& vertices, std::vector<Tuple>& normals, Group*& currentGroup);
@@ -90,7 +90,7 @@ std::vector<std::string_view> tokenizeString(std::string_view textLine, char del
         delimiterPos = delimiterPos == std::string::npos ? textLine.size() : delimiterPos;
         if (allowEmptyTokens || delimiterPos != 0)
         {
-        	tokens.emplace_back(textLine.substr(0, delimiterPos));
+            tokens.emplace_back(textLine.substr(0, delimiterPos));
         }
         textLine.remove_prefix(delimiterPos == textLine.size() ? delimiterPos : delimiterPos + 1);
     }
