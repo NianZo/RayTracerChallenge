@@ -23,6 +23,7 @@ class YamlParser
   private:
     enum CommandType
     {
+    	none,
         camera,
         light
     };
@@ -39,7 +40,7 @@ class YamlParser
         intensity
     };
 
-    CommandType activeCommand;
+    CommandType activeCommand = none;
     std::string activeItemName;
 
     Tuple cameraFrom;

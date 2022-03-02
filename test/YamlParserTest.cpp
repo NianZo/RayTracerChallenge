@@ -9,6 +9,21 @@
 #include "YamlParser.hpp"
 #include "Transformation.hpp"
 
+TEST(YamlParser, EmptyStringGivesDefaultWorld)
+{
+	std::string empty = "";
+	YamlParser parser(empty);
+
+	EXPECT_EQ(parser.world.light, Light());
+	EXPECT_TRUE(parser.world.spheres.empty());
+	EXPECT_TRUE(parser.world.planes.empty());
+	EXPECT_TRUE(parser.world.cubes.empty());
+	EXPECT_TRUE(parser.world.cylinders.empty());
+	EXPECT_TRUE(parser.world.cones.empty());
+	EXPECT_TRUE(parser.world.groups.empty());
+	EXPECT_EQ(parser.worldCamera, Camera(100, 100, 0.5, IdentityMatrix()));
+}
+
 TEST(YamlParser, IgnoresGibberish)
 {
 	std::string gibberish =
@@ -27,6 +42,7 @@ TEST(YamlParser, IgnoresGibberish)
 	EXPECT_TRUE(parser.world.cylinders.empty());
 	EXPECT_TRUE(parser.world.cones.empty());
 	EXPECT_TRUE(parser.world.groups.empty());
+	EXPECT_EQ(parser.worldCamera, Camera(100, 100, 0.5, IdentityMatrix()));
 }
 
 TEST(YamlParser, AddCamera)
@@ -54,3 +70,248 @@ TEST(YamlParser, AddLight)
 
 	EXPECT_EQ(parser.world.light, Light(Point(1, 2, 3), Color(0.25, 0.5, 0.75)));
 }
+
+TEST(YamlParser, ImproperAtCommand)
+{
+	std::string s =
+			"  at: [1, 2, 3]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'at:' command in invalid format. Expected: 'at: [ x, y, z ]'");
+}
+
+TEST(YamlParser, ImproperIntensityCommand)
+{
+	std::string s =
+			"  intensity: [1, 2, 3]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'intensity:' command in invalid format. Expected: 'intensity: [ x, y, z ]'");
+}
+
+TEST(YamlParser, ImproperWidthCommand)
+{
+	std::string s =
+			"  width: 100, 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'width:' command in invalid format. Expected: 'width: i'");
+}
+
+TEST(YamlParser, ImproperHeightCommand)
+{
+	std::string s =
+			"  height: 100, 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'height:' command in invalid format. Expected: 'height: i'");
+}
+
+TEST(YamlParser, ImproperFOVCommand)
+{
+	std::string s =
+			"  field-of-view: 0.5 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'field-of-view:' command in invalid format. Expected: 'field-of-view: f'");
+}
+
+TEST(YamlParser, ImproperFromCommand)
+{
+	std::string s =
+			"  from: 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'from:' command in invalid format. Expected: 'from: [ x, y, z ]'");
+}
+
+TEST(YamlParser, ImproperToCommand)
+{
+	std::string s =
+			"  to: 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'to:' command in invalid format. Expected: 'to: [ x, y, z ]'");
+}
+
+TEST(YamlParser, ImproperUpCommand)
+{
+	std::string s =
+			"  up: 4\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'up:' command in invalid format. Expected: 'up: [ x, y, z ]'");
+}
+
+TEST(YamlParser, ImproperUseOfAtCommand)
+{
+	std::string s =
+			"  at: [ 1, 2, 3 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'at:' specifier for '- add: light' command.");
+}
+
+TEST(YamlParser, ImproperUseOfIntensityCommand)
+{
+	std::string s =
+			"  intensity: [ 1, 2, 3 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'intensity:' specifier for '- add: light' command.");
+}
+
+TEST(YamlParser, ImproperUseOfFromCommand)
+{
+	std::string s =
+			"  from: [ 1, 2, 3 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'from:' specifier for '- add: camera' command.");
+}
+
+TEST(YamlParser, ImproperUseOfToCommand)
+{
+	std::string s =
+			"  to: [ 1, 2, 3 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'to:' specifier for '- add: camera' command.");
+}
+
+TEST(YamlParser, ImproperUseOfUpCommand)
+{
+	std::string s =
+			"  up: [ 1, 2, 3 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'up:' specifier for '- add: camera' command.");
+}
+
+TEST(YamlParser, ImproperUseOfFOVCommand)
+{
+	std::string s =
+			"  field-of-view: 0.5\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'field-of-view:' specifier for '- add: camera' command.");
+}
+
+TEST(YamlParser, ImproperUseOfWidthCommand)
+{
+	std::string s =
+			"  width: 500\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'width:' specifier for '- add: camera' command.");
+}
+
+TEST(YamlParser, ImproperUseOfHeightCommand)
+{
+	std::string s =
+			"  height: 500\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'height:' specifier for '- add: camera' command.");
+}
+
+
+
+
+

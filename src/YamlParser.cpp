@@ -212,7 +212,7 @@ void YamlParser::SetFloatProperty(SubCommandType subCommandType, float value)
     case fov:
         if (activeCommand != camera)
         {
-            throw std::runtime_error("Invalid 'fov:' specifier for '- add: camera' command.");
+            throw std::runtime_error("Invalid 'field-of-view:' specifier for '- add: camera' command.");
         }
         worldCamera.fov = value;
         worldCamera.RecalculateProperties();
