@@ -78,116 +78,135 @@ uint32_t ParseIntValue(std::string_view i)
     return value;
 }
 
-void YamlParser::ParseCommandAt(std::vector<std::string_view> &tokens) {
-	if (tokens.size() != 6) {
-		throw std::runtime_error(
-				"'at:' command in invalid format. Expected: 'at: [ x, y, z ]'");
-	}
-	Tuple position = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
-	position.w = 1.0F;
-	SetVectorProperty(SubCommandType::at, position);
+void YamlParser::ParseCommandAt(std::vector<std::string_view>& tokens)
+{
+    if (tokens.size() != 6)
+    {
+        throw std::runtime_error(
+            "'at:' command in invalid format. Expected: 'at: [ x, y, z ]'");
+    }
+    Tuple position = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
+    position.w = 1.0F;
+    SetVectorProperty(SubCommandType::at, position);
 }
 
-void YamlParser::ParseCommandIntensity(std::vector<std::string_view> &tokens) {
-	if (tokens.size() != 6) {
-		throw std::runtime_error(
-				"'intensity:' command in invalid format. Expected: 'intensity: [ x, y, z ]'");
-	}
-	SetVectorProperty(SubCommandType::intensity,
-			ParseVectorValue(tokens[2], tokens[3], tokens[4]));
+void YamlParser::ParseCommandIntensity(std::vector<std::string_view>& tokens)
+{
+    if (tokens.size() != 6)
+    {
+        throw std::runtime_error(
+            "'intensity:' command in invalid format. Expected: 'intensity: [ x, y, z ]'");
+    }
+    SetVectorProperty(SubCommandType::intensity,
+                      ParseVectorValue(tokens[2], tokens[3], tokens[4]));
 }
 
-void YamlParser::ParseCommandWidth(std::vector<std::string_view> &tokens) {
-	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'width:' command in invalid format. Expected: 'width: i'");
-	}
-	SetIntProperty(SubCommandType::width, ParseIntValue(tokens[1]));
+void YamlParser::ParseCommandWidth(std::vector<std::string_view>& tokens)
+{
+    if (tokens.size() != 2)
+    {
+        throw std::runtime_error(
+            "'width:' command in invalid format. Expected: 'width: i'");
+    }
+    SetIntProperty(SubCommandType::width, ParseIntValue(tokens[1]));
 }
 
-void YamlParser::ParseCommandHeight(std::vector<std::string_view> &tokens) {
-	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'height:' command in invalid format. Expected: 'height: i'");
-	}
-	SetIntProperty(SubCommandType::height, ParseIntValue(tokens[1]));
+void YamlParser::ParseCommandHeight(std::vector<std::string_view>& tokens)
+{
+    if (tokens.size() != 2)
+    {
+        throw std::runtime_error(
+            "'height:' command in invalid format. Expected: 'height: i'");
+    }
+    SetIntProperty(SubCommandType::height, ParseIntValue(tokens[1]));
 }
 
-void YamlParser::ParseCommandFOV(std::vector<std::string_view> &tokens) {
-	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'field-of-view:' command in invalid format. Expected: 'field-of-view: f'");
-	}
-	SetFloatProperty(SubCommandType::fov, ParseFloatValue(tokens[1]));
+void YamlParser::ParseCommandFOV(std::vector<std::string_view>& tokens)
+{
+    if (tokens.size() != 2)
+    {
+        throw std::runtime_error(
+            "'field-of-view:' command in invalid format. Expected: 'field-of-view: f'");
+    }
+    SetFloatProperty(SubCommandType::fov, ParseFloatValue(tokens[1]));
 }
 
-void YamlParser::ParseCommandFrom(std::vector<std::string_view> &tokens) {
-	if (tokens.size() != 6) {
-		throw std::runtime_error(
-				"'from:' command in invalid format. Expected: 'from: [ x, y, z ]'");
-	}
-	Tuple fromPosition = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
-	fromPosition.w = 1.0F;
-	SetVectorProperty(SubCommandType::from, fromPosition);
+void YamlParser::ParseCommandFrom(std::vector<std::string_view>& tokens)
+{
+    if (tokens.size() != 6)
+    {
+        throw std::runtime_error(
+            "'from:' command in invalid format. Expected: 'from: [ x, y, z ]'");
+    }
+    Tuple fromPosition = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
+    fromPosition.w = 1.0F;
+    SetVectorProperty(SubCommandType::from, fromPosition);
 }
 
-void YamlParser::ParseCommandTo(std::vector<std::string_view> &tokens) {
-	if (tokens.size() != 6) {
-		throw std::runtime_error(
-				"'to:' command in invalid format. Expected: 'to: [ x, y, z ]'");
-	}
-	Tuple toPosition = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
-	toPosition.w = 1.0F;
-	SetVectorProperty(SubCommandType::to, toPosition);
+void YamlParser::ParseCommandTo(std::vector<std::string_view>& tokens)
+{
+    if (tokens.size() != 6)
+    {
+        throw std::runtime_error(
+            "'to:' command in invalid format. Expected: 'to: [ x, y, z ]'");
+    }
+    Tuple toPosition = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
+    toPosition.w = 1.0F;
+    SetVectorProperty(SubCommandType::to, toPosition);
 }
 
-void YamlParser::ParseCommandUp(std::vector<std::string_view> &tokens) {
-	if (tokens.size() != 6) {
-		throw std::runtime_error(
-				"'up:' command in invalid format. Expected: 'up: [ x, y, z ]'");
-	}
-	SetVectorProperty(SubCommandType::up,
-			ParseVectorValue(tokens[2], tokens[3], tokens[4]));
+void YamlParser::ParseCommandUp(std::vector<std::string_view>& tokens)
+{
+    if (tokens.size() != 6)
+    {
+        throw std::runtime_error(
+            "'up:' command in invalid format. Expected: 'up: [ x, y, z ]'");
+    }
+    SetVectorProperty(SubCommandType::up,
+                      ParseVectorValue(tokens[2], tokens[3], tokens[4]));
 }
 
-void YamlParser::ParseCommandAdd(std::vector<std::string_view> &tokens) {
-	if (tokens[2].ends_with("camera")) {
-		activeCommand = CommandType::camera;
-	} else if (tokens[2].ends_with("light")) {
-		activeCommand = CommandType::light;
-	}
+void YamlParser::ParseCommandAdd(std::vector<std::string_view>& tokens)
+{
+    if (tokens[2].ends_with("camera"))
+    {
+        activeCommand = CommandType::camera;
+    } else if (tokens[2].ends_with("light"))
+    {
+        activeCommand = CommandType::light;
+    }
 }
 
 void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
 {
     if (tokens[0] == "-" && tokens[1] == "add:")
     {
-		ParseCommandAdd(tokens);
+        ParseCommandAdd(tokens);
     }
     if (tokens[0] == "at:")
     {
-		ParseCommandAt(tokens);
+        ParseCommandAt(tokens);
     } else if (tokens[0] == "intensity:")
     {
-		ParseCommandIntensity(tokens);
+        ParseCommandIntensity(tokens);
     } else if (tokens[0] == "width:")
     {
-		ParseCommandWidth(tokens);
+        ParseCommandWidth(tokens);
     } else if (tokens[0] == "height:")
     {
-		ParseCommandHeight(tokens);
+        ParseCommandHeight(tokens);
     } else if (tokens[0] == "field-of-view:")
     {
-		ParseCommandFOV(tokens);
+        ParseCommandFOV(tokens);
     } else if (tokens[0] == "from:")
     {
-		ParseCommandFrom(tokens);
+        ParseCommandFrom(tokens);
     } else if (tokens[0] == "to:")
     {
-		ParseCommandTo(tokens);
+        ParseCommandTo(tokens);
     } else if (tokens[0] == "up:")
     {
-		ParseCommandUp(tokens);
+        ParseCommandUp(tokens);
     }
 }
 

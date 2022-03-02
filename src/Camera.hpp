@@ -25,14 +25,13 @@ class Camera
     float halfWidth;
     float halfHeight;
 
-    Camera(uint32_t horizontalSize, uint32_t verticalSize, float fieldOfView, const Matrix<4>& viewTransform = IdentityMatrix()) noexcept :
-    		hSize(horizontalSize),
-			vSize(verticalSize),
-			fov(fieldOfView),
-			transform(viewTransform),
-			pixelSize(0.0F),
-			halfWidth(0.0F),
-			halfHeight(0.0F)
+    Camera(uint32_t horizontalSize, uint32_t verticalSize, float fieldOfView, const Matrix<4>& viewTransform = IdentityMatrix()) noexcept : hSize(horizontalSize),
+                                                                                                                                            vSize(verticalSize),
+                                                                                                                                            fov(fieldOfView),
+                                                                                                                                            transform(viewTransform),
+                                                                                                                                            pixelSize(0.0F),
+                                                                                                                                            halfWidth(0.0F),
+                                                                                                                                            halfHeight(0.0F)
     {
         RecalculateProperties();
     };

@@ -23,7 +23,7 @@ class Light
 
     bool operator==(const Light& other) const noexcept
     {
-    	return position == other.position && intensity == other.intensity;
+        return position == other.position && intensity == other.intensity;
     };
 };
 

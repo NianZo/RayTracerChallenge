@@ -32,10 +32,10 @@ class Color
     Color operator*(const Color& other) const noexcept;
     Color& operator=(const Tuple& other) noexcept
     {
-    	r = other.x;
-    	g = other.y;
-    	b = other.z;
-    	return *this;
+        r = other.x;
+        g = other.y;
+        b = other.z;
+        return *this;
     }
 
     const static Color Black;
