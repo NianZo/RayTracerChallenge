@@ -51,6 +51,15 @@ class YamlParser
     void SetVectorProperty(SubCommandType subCommandType, const Tuple& value);
     void SetFloatProperty(SubCommandType subCommandType, float value);
     void SetIntProperty(SubCommandType subCommandType, uint32_t value);
+	void ParseCommandAt(std::vector<std::string_view> &tokens);
+	void ParseCommandIntensity(std::vector<std::string_view> &tokens);
+	void ParseCommandWidth(std::vector<std::string_view> &tokens);
+	void ParseCommandHeight(std::vector<std::string_view> &tokens);
+	void ParseCommandFOV(std::vector<std::string_view> &tokens);
+	void ParseCommandFrom(std::vector<std::string_view> &tokens);
+	void ParseCommandTo(std::vector<std::string_view> &tokens);
+	void ParseCommandUp(std::vector<std::string_view> &tokens);
+	void ParseCommandAdd(std::vector<std::string_view> &tokens);
 };
 
 #endif /* SRC_YAMLPARSER_HPP_ */

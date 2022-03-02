@@ -21,7 +21,7 @@ class Color
 
     Color() noexcept = default;
     Color(float red, float green, float blue) noexcept : r(red), g(green), b(blue){};
-    Color(const Tuple& value) noexcept : r(value.x), g(value.y), b(value.z){};
+    explicit Color(const Tuple& value) noexcept : r(value.x), g(value.y), b(value.z){};
 
     // Operator overloads
     bool operator==(const Color& other) const noexcept;
@@ -30,6 +30,13 @@ class Color
     Color operator-(const Color& other) const noexcept;
     Color operator*(float scalar) const noexcept;
     Color operator*(const Color& other) const noexcept;
+    Color& operator=(const Tuple& other) noexcept
+    {
+    	r = other.x;
+    	g = other.y;
+    	b = other.z;
+    	return *this;
+    }
 
     const static Color Black;
     const static Color White;
