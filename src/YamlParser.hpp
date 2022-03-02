@@ -27,7 +27,7 @@ class YamlParser
         none,
         camera,
         light,
-		material
+        material
     };
 
     enum SubCommandType
@@ -40,14 +40,14 @@ class YamlParser
         up,
         at,
         intensity,
-		color,
-		ambient,
-		diffuse,
-		specular,
-		shininess,
-		reflective,
-		transparency,
-		refractiveIndex
+        color,
+        ambient,
+        diffuse,
+        specular,
+        shininess,
+        reflective,
+        transparency,
+        refractiveIndex
     };
 
     CommandType activeCommand = none;

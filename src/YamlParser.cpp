@@ -159,12 +159,12 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
         ParseCommandAdd(tokens);
     } else if (tokens[0] == "-" && tokens[1] == "define:")
     {
-    	if (tokens[2].ends_with("material"))
-    	{
-    		activeCommand = CommandType::material;
-    		activeItemName = tokens[2];
-    		materials.emplace(activeItemName, Material());
-    	}
+        if (tokens[2].ends_with("material"))
+        {
+            activeCommand = CommandType::material;
+            activeItemName = tokens[2];
+            materials.emplace(activeItemName, Material());
+        }
     } else if (tokens[0] == "at:")
     {
         ParseCommandAt(tokens);
@@ -191,74 +191,74 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
         ParseCommandUp(tokens);
     } else if (tokens[0] == "color:")
     {
-    	if (tokens.size() != 6)
-    	{
-    		throw std::runtime_error("'color:' command in invalid format. Expected: 'color: [ x, y, z ]'");
-    	}
-    	SetVectorProperty(SubCommandType::color, ParseVectorValue(tokens[2], tokens[3], tokens[4]));
+        if (tokens.size() != 6)
+        {
+            throw std::runtime_error("'color:' command in invalid format. Expected: 'color: [ x, y, z ]'");
+        }
+        SetVectorProperty(SubCommandType::color, ParseVectorValue(tokens[2], tokens[3], tokens[4]));
     } else if (tokens[0] == "ambient:")
     {
-    	if (tokens.size() != 2)
-    	{
-    		throw std::runtime_error("'ambient:' command in invalid format. Expected: 'ambient: f'");
-    	}
-    	SetFloatProperty(SubCommandType::ambient, ParseFloatValue(tokens[1]));
+        if (tokens.size() != 2)
+        {
+            throw std::runtime_error("'ambient:' command in invalid format. Expected: 'ambient: f'");
+        }
+        SetFloatProperty(SubCommandType::ambient, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "diffuse:")
     {
-    	if (tokens.size() != 2)
-    	{
-    		throw std::runtime_error("'diffuse:' command in invalid format. Expected: 'diffuse: f'");
-    	}
-    	SetFloatProperty(SubCommandType::diffuse, ParseFloatValue(tokens[1]));
+        if (tokens.size() != 2)
+        {
+            throw std::runtime_error("'diffuse:' command in invalid format. Expected: 'diffuse: f'");
+        }
+        SetFloatProperty(SubCommandType::diffuse, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "specular:")
     {
-    	if (tokens.size() != 2)
-    	{
-    		throw std::runtime_error("'specular:' command in invalid format. Expected: 'diffuse: f'");
-    	}
-    	SetFloatProperty(SubCommandType::specular, ParseFloatValue(tokens[1]));
+        if (tokens.size() != 2)
+        {
+            throw std::runtime_error("'specular:' command in invalid format. Expected: 'diffuse: f'");
+        }
+        SetFloatProperty(SubCommandType::specular, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "shininess:")
     {
-    	if (tokens.size() != 2)
-    	{
-    		throw std::runtime_error("'shininess:' command in invalid format. Expected: 'diffuse: f'");
-    	}
-    	SetFloatProperty(SubCommandType::shininess, ParseFloatValue(tokens[1]));
+        if (tokens.size() != 2)
+        {
+            throw std::runtime_error("'shininess:' command in invalid format. Expected: 'diffuse: f'");
+        }
+        SetFloatProperty(SubCommandType::shininess, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "reflective:")
     {
-    	if (tokens.size() != 2)
-    	{
-    		throw std::runtime_error("'reflective:' command in invalid format. Expected: 'diffuse: f'");
-    	}
-    	SetFloatProperty(SubCommandType::reflective, ParseFloatValue(tokens[1]));
+        if (tokens.size() != 2)
+        {
+            throw std::runtime_error("'reflective:' command in invalid format. Expected: 'diffuse: f'");
+        }
+        SetFloatProperty(SubCommandType::reflective, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "transparency:")
     {
-    	if (tokens.size() != 2)
-    	{
-    		throw std::runtime_error("'transparency:' command in invalid format. Expected: 'diffuse: f'");
-    	}
-    	SetFloatProperty(SubCommandType::transparency, ParseFloatValue(tokens[1]));
+        if (tokens.size() != 2)
+        {
+            throw std::runtime_error("'transparency:' command in invalid format. Expected: 'diffuse: f'");
+        }
+        SetFloatProperty(SubCommandType::transparency, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "refractive-index:")
     {
-    	if (tokens.size() != 2)
-    	{
-    		throw std::runtime_error("'refractive-index:' command in invalid format. Expected: 'diffuse: f'");
-    	}
-    	SetFloatProperty(SubCommandType::refractiveIndex, ParseFloatValue(tokens[1]));
+        if (tokens.size() != 2)
+        {
+            throw std::runtime_error("'refractive-index:' command in invalid format. Expected: 'diffuse: f'");
+        }
+        SetFloatProperty(SubCommandType::refractiveIndex, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "extend:")
     {
-    	if (tokens.size() != 2)
-    	{
-    		throw std::runtime_error("'extend:' command in invalid format. Expected: 'extend: name'");
-    	}
-    	switch (activeCommand)
-    	{
-    	case material:
-    		materials[activeItemName] = materials[std::string(tokens[1])];
-    		break;
-    	default:
-    		throw std::runtime_error("'extend:' option must be used with: material or transform command.");
-    	}
+        if (tokens.size() != 2)
+        {
+            throw std::runtime_error("'extend:' command in invalid format. Expected: 'extend: name'");
+        }
+        switch (activeCommand)
+        {
+        case material:
+            materials[activeItemName] = materials[std::string(tokens[1])];
+            break;
+        default:
+            throw std::runtime_error("'extend:' option must be used with: material or transform command.");
+        }
     }
 }
 
@@ -308,12 +308,12 @@ void YamlParser::SetVectorProperty(SubCommandType subCommandType, const Tuple& v
         worldCamera.RecalculateProperties();
         break;
     case color:
-    	if (activeCommand != material)
-    	{
-    		throw std::runtime_error("Invalid 'color:' specifier for '- define: material' command.");
-    	}
-    	materials[activeItemName].color = value;
-    	break;
+        if (activeCommand != material)
+        {
+            throw std::runtime_error("Invalid 'color:' specifier for '- define: material' command.");
+        }
+        materials[activeItemName].color = value;
+        break;
     default:
         throw std::runtime_error("Invalid SubCommandType parsed");
     }
@@ -332,54 +332,54 @@ void YamlParser::SetFloatProperty(SubCommandType subCommandType, float value)
         worldCamera.RecalculateProperties();
         break;
     case ambient:
-    	if (activeCommand != material)
-    	{
-    		throw std::runtime_error("Invalid 'ambient:' specifier for '- define: material' command.");
-    	}
-    	materials[activeItemName].ambient = value;
-    	break;
+        if (activeCommand != material)
+        {
+            throw std::runtime_error("Invalid 'ambient:' specifier for '- define: material' command.");
+        }
+        materials[activeItemName].ambient = value;
+        break;
     case diffuse:
-    	if (activeCommand != material)
-    	{
-    		throw std::runtime_error("Invalid 'diffuse:' specifier for '- define: material' command.");
-    	}
-    	materials[activeItemName].diffuse = value;
-    	break;
+        if (activeCommand != material)
+        {
+            throw std::runtime_error("Invalid 'diffuse:' specifier for '- define: material' command.");
+        }
+        materials[activeItemName].diffuse = value;
+        break;
     case specular:
-    	if (activeCommand != material)
-    	{
-    		throw std::runtime_error("Invalid 'specular:' specifier for '- define: material' command.");
-    	}
-    	materials[activeItemName].specular = value;
-    	break;
+        if (activeCommand != material)
+        {
+            throw std::runtime_error("Invalid 'specular:' specifier for '- define: material' command.");
+        }
+        materials[activeItemName].specular = value;
+        break;
     case shininess:
-    	if (activeCommand != material)
-    	{
-    		throw std::runtime_error("Invalid 'shininess:' specifier for '- define: material' command.");
-    	}
-    	materials[activeItemName].shininess = value;
-    	break;
+        if (activeCommand != material)
+        {
+            throw std::runtime_error("Invalid 'shininess:' specifier for '- define: material' command.");
+        }
+        materials[activeItemName].shininess = value;
+        break;
     case reflective:
-    	if (activeCommand != material)
-    	{
-    		throw std::runtime_error("Invalid 'reflective:' specifier for '- define: material' command.");
-    	}
-    	materials[activeItemName].reflectivity = value;
-    	break;
+        if (activeCommand != material)
+        {
+            throw std::runtime_error("Invalid 'reflective:' specifier for '- define: material' command.");
+        }
+        materials[activeItemName].reflectivity = value;
+        break;
     case transparency:
-    	if (activeCommand != material)
-    	{
-    		throw std::runtime_error("Invalid 'transparency:' specifier for '- define: material' command.");
-    	}
-    	materials[activeItemName].transparency = value;
-    	break;
+        if (activeCommand != material)
+        {
+            throw std::runtime_error("Invalid 'transparency:' specifier for '- define: material' command.");
+        }
+        materials[activeItemName].transparency = value;
+        break;
     case refractiveIndex:
-    	if (activeCommand != material)
-    	{
-    		throw std::runtime_error("Invalid 'refractive-index:' specifier for '- define: material' command.");
-    	}
-    	materials[activeItemName].refractiveIndex = value;
-    	break;
+        if (activeCommand != material)
+        {
+            throw std::runtime_error("Invalid 'refractive-index:' specifier for '- define: material' command.");
+        }
+        materials[activeItemName].refractiveIndex = value;
+        break;
     default:
         throw std::runtime_error("Invalid SubCommandType parsed");
     }
