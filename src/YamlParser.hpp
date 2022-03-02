@@ -17,6 +17,7 @@ class YamlParser
   public:
     World world;
     Camera worldCamera;
+    std::unordered_map<std::string, Material> materials;
 
     explicit YamlParser(const std::string& inputData);
 
@@ -25,7 +26,8 @@ class YamlParser
     {
         none,
         camera,
-        light
+        light,
+		material
     };
 
     enum SubCommandType
@@ -37,7 +39,15 @@ class YamlParser
         to,
         up,
         at,
-        intensity
+        intensity,
+		color,
+		ambient,
+		diffuse,
+		specular,
+		shininess,
+		reflective,
+		transparency,
+		refractiveIndex
     };
 
     CommandType activeCommand = none;

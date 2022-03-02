@@ -71,6 +71,46 @@ TEST(YamlParser, AddLight)
 	EXPECT_EQ(parser.world.light, Light(Point(1, 2, 3), Color(0.25, 0.5, 0.75)));
 }
 
+TEST(YamlParser, DefineMaterial)
+{
+	std::string s =
+			"- define: white-material\n"
+			"  value:\n"
+			"    color: [ 0.25, 0.5, 0.75 ]\n"
+			"    diffuse: 0.1\n"
+			"    ambient: 0.2\n"
+			"    specular: 0.3\n"
+			"    shininess: 0.6\n"
+			"    reflective: 0.4\n"
+			"    transparency: 0.7\n"
+			"    refractive-index: 0.5\n";
+	YamlParser parser(s);
+
+	EXPECT_EQ(parser.materials["white-material"], Material(Color(0.25, 0.5, 0.75), 0.2, 0.1, 0.3, 0.6, 0.4, 0.7, 0.5));
+}
+
+TEST(YamlParser, ExtendMaterial)
+{
+	std::string s =
+			"- define: white-material\n"
+			"  value:\n"
+			"    color: [ 0.25, 0.5, 0.75 ]\n"
+			"    diffuse: 0.1\n"
+			"    ambient: 0.2\n"
+			"    specular: 0.3\n"
+			"    shininess: 0.6\n"
+			"    reflective: 0.4\n"
+			"    transparency: 0.7\n"
+			"    refractive-index: 0.5\n"
+			"- define: blue-material\n"
+			"  extend: white-material\n"
+			"  value:\n"
+			"    color: [ 0, 0, 1 ]";
+	YamlParser parser(s);
+
+	EXPECT_EQ(parser.materials["blue-material"], Material(Color(0, 0, 1), 0.2, 0.1, 0.3, 0.6, 0.4, 0.7, 0.5));
+}
+
 TEST(YamlParser, ImproperAtCommand)
 {
 	std::string s =
