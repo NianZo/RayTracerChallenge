@@ -363,6 +363,172 @@ TEST(YamlParser, ImproperUpCommand)
 	EXPECT_EQ(errorCode, "'up:' command in invalid format. Expected: 'up: [ x, y, z ]'");
 }
 
+TEST(YamlParser, ImproperTransformParameter)
+{
+	std::string s =
+			"    - [ scale, 2, 3, 4]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
+}
+
+TEST(YamlParser, ImproperTransformOperation)
+{
+	std::string s =
+			"- define: bad-transform\n"
+			"    - [ wrong, 2, 3, 4 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid transform operation. Expected: 'scale', 'rotate', or 'translate'");
+}
+
+TEST(YamlParser, ImproperColorCommand)
+{
+	std::string s =
+			"color: [0.25, 0.5, 0.75 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'color:' command in invalid format. Expected: 'color: [ x, y, z ]'");
+}
+
+TEST(YamlParser, ImproperAmbientCommand)
+{
+	std::string s =
+			"ambient: 2, 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'ambient:' command in invalid format. Expected: 'ambient: f'");
+}
+
+TEST(YamlParser, ImproperDiffuseCommand)
+{
+	std::string s =
+			"diffuse: 2, 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'diffuse:' command in invalid format. Expected: 'diffuse: f'");
+}
+
+TEST(YamlParser, ImproperSpecularCommand)
+{
+	std::string s =
+			"specular: 2, 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'specular:' command in invalid format. Expected: 'specular: f'");
+}
+
+TEST(YamlParser, ImproperShininessCommand)
+{
+	std::string s =
+			"shininess: 2, 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'shininess:' command in invalid format. Expected: 'shininess: f'");
+}
+
+TEST(YamlParser, ImproperReflectiveCommand)
+{
+	std::string s =
+			"reflective: 2, 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'reflective:' command in invalid format. Expected: 'reflective: f'");
+}
+
+TEST(YamlParser, ImproperTransparencyCommand)
+{
+	std::string s =
+			"transparency: 2, 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'transparency:' command in invalid format. Expected: 'transparency: f'");
+}
+
+TEST(YamlParser, ImproperRefractiveIndexCommand)
+{
+	std::string s =
+			"refractive-index: 2, 3\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'refractive-index:' command in invalid format. Expected: 'refractive-index: f'");
+}
+
+TEST(YamlParser, ImproperExtendCommand)
+{
+	std::string s =
+			"extend: blob glorp\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'extend:' command in invalid format. Expected: 'extend: name'");
+}
+
 TEST(YamlParser, ImproperUseOfAtCommand)
 {
 	std::string s =
@@ -483,7 +649,140 @@ TEST(YamlParser, ImproperUseOfHeightCommand)
 	EXPECT_EQ(errorCode, "Invalid 'height:' specifier for '- add: camera' command.");
 }
 
+TEST(YamlParser, ImproperUseOfTransformOperation)
+{
+	std::string s =
+			"    - [ scale, 2, 3, 4 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Transform parameter only valid for transform definition.");
+}
 
+TEST(YamlParser, ImproperUseOfColorCommand)
+{
+	std::string s =
+			"color: [ 0.25, 0.5, 0.75 ]\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'color:' specifier for '- define: material' command.");
+}
+
+TEST(YamlParser, ImproperUseOfAmbientCommand)
+{
+	std::string s =
+			"ambient: 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'ambient:' specifier for '- define: material' command.");
+}
+
+TEST(YamlParser, ImproperUseOfDiffuseCommand)
+{
+	std::string s =
+			"diffuse: 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'diffuse:' specifier for '- define: material' command.");
+}
+
+TEST(YamlParser, ImproperUseOfSpecularCommand)
+{
+	std::string s =
+			"specular: 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'specular:' specifier for '- define: material' command.");
+}
+
+TEST(YamlParser, ImproperUseOfShininessCommand)
+{
+	std::string s =
+			"shininess: 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'shininess:' specifier for '- define: material' command.");
+}
+
+TEST(YamlParser, ImproperUseOfReflectiveCommand)
+{
+	std::string s =
+			"reflective: 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'reflective:' specifier for '- define: material' command.");
+}
+
+TEST(YamlParser, ImproperUseOfTransparencyCommand)
+{
+	std::string s =
+			"transparency: 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'transparency:' specifier for '- define: material' command.");
+}
+
+TEST(YamlParser, ImproperUseOfRefractiveIndexCommand)
+{
+	std::string s =
+			"refractive-index: 2\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "Invalid 'refractive-index:' specifier for '- define: material' command.");
+}
 
 
 

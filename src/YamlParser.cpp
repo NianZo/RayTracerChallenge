@@ -189,8 +189,6 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
             activeItemName = tokens[2];
             transforms.emplace(activeItemName, IdentityMatrix());
             activeTransform = &transforms[activeItemName];
-        } else if (tokens[2].ends_with("plane"))
-        {
         }
     } else if (tokens.size() > 1 && tokens[0] == "-" && tokens[1] == "[")
     {
@@ -211,6 +209,9 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
         } else if (tokens[2] == "rotate,")
         {
             *activeTransform = rotationZ(ParseFloatValue(tokens[5])) * rotationY(ParseFloatValue(tokens[4])) * rotationX(ParseFloatValue(tokens[3])) * *activeTransform;
+        } else
+        {
+        	throw std::runtime_error("Invalid transform operation. Expected: 'scale', 'rotate', or 'translate'");
         }
     } else if (tokens[0] == "at:")
     {
@@ -261,35 +262,35 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
     {
         if (tokens.size() != 2)
         {
-            throw std::runtime_error("'specular:' command in invalid format. Expected: 'diffuse: f'");
+            throw std::runtime_error("'specular:' command in invalid format. Expected: 'specular: f'");
         }
         SetFloatProperty(SubCommandType::specular, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "shininess:")
     {
         if (tokens.size() != 2)
         {
-            throw std::runtime_error("'shininess:' command in invalid format. Expected: 'diffuse: f'");
+            throw std::runtime_error("'shininess:' command in invalid format. Expected: 'shininess: f'");
         }
         SetFloatProperty(SubCommandType::shininess, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "reflective:")
     {
         if (tokens.size() != 2)
         {
-            throw std::runtime_error("'reflective:' command in invalid format. Expected: 'diffuse: f'");
+            throw std::runtime_error("'reflective:' command in invalid format. Expected: 'reflective: f'");
         }
         SetFloatProperty(SubCommandType::reflective, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "transparency:")
     {
         if (tokens.size() != 2)
         {
-            throw std::runtime_error("'transparency:' command in invalid format. Expected: 'diffuse: f'");
+            throw std::runtime_error("'transparency:' command in invalid format. Expected: 'transparency: f'");
         }
         SetFloatProperty(SubCommandType::transparency, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "refractive-index:")
     {
         if (tokens.size() != 2)
         {
-            throw std::runtime_error("'refractive-index:' command in invalid format. Expected: 'diffuse: f'");
+            throw std::runtime_error("'refractive-index:' command in invalid format. Expected: 'refractive-index: f'");
         }
         SetFloatProperty(SubCommandType::refractiveIndex, ParseFloatValue(tokens[1]));
     } else if (tokens[0] == "extend:")
