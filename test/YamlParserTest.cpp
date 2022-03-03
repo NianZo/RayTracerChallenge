@@ -121,7 +121,7 @@ TEST(YamlParser, DefineTransform)
 			"    - [ rotate, 3, 2, 1 ]\n";
 	YamlParser parser(s);
 
-	EXPECT_EQ(parser.transforms["standard-transform"], translation(1, -1, 2) * scaling(0.1, 0.2, 0.3) * rotationX(3) * rotationY(2) * rotationZ(1));
+	EXPECT_EQ(parser.transforms["standard-transform"], rotationZ(1) * rotationY(2) * rotationX(3) * scaling(0.1, 0.2, 0.3) * translation(1, -1, 2));
 }
 
 TEST(YamlParser, ExtendTransform)
@@ -138,7 +138,7 @@ TEST(YamlParser, ExtendTransform)
 			"    - [ translate, 0, 0, 1 ]\n";
 	YamlParser parser(s);
 
-	EXPECT_EQ(parser.transforms["other-transform"], translation(1, -1, 2) * scaling(0.1, 0.2, 0.3) * rotationX(3) * rotationY(2) * rotationZ(1) * translation(0, 0, 1));
+	EXPECT_EQ(parser.transforms["other-transform"], translation(0, 0, 1) * rotationZ(1) * rotationY(2) * rotationX(3) * scaling(0.1, 0.2, 0.3) * translation(1, -1, 2));
 }
 
 TEST(YamlParser, AddPlane)
@@ -157,7 +157,7 @@ TEST(YamlParser, AddPlane)
 
 	Plane testPlane;
 	testPlane.material = Material(Color(0.25, 0.5, 0.75), 0.1, 0.2, 0.3, 200.0, 0.0, 0.0, 1.0);
-	testPlane.transform = scaling(2, 3, 4) * translation(1, 2, 3);
+	testPlane.transform = translation(1, 2, 3) * scaling(2, 3, 4);
 
 	EXPECT_EQ(parser.world.planes.size(), 1);
 	EXPECT_EQ(parser.world.planes[0], testPlane);
@@ -197,10 +197,10 @@ TEST(YamlParser, AddCube)
 
 	Cube testCube;
 	testCube.material = Material(Color(0, 0, 1), 0.2, 0.1, 0.3, 0.6, 0.4, 0.7, 0.5);
-	testCube.transform = translation(1, -1, 2) * scaling(0.1, 0.2, 0.3) * rotationX(3) * rotationY(2) * rotationZ(1) * translation(0, 0, 1) * translation(1, 2, 3);
+	testCube.transform = translation(1, 2, 3) * translation(0, 0, 1) * rotationZ(1) * rotationY(2) * rotationX(3) * scaling(0.1, 0.2, 0.3) * translation(1, -1, 2);
 
 	EXPECT_EQ(parser.world.cubes.size(), 1);
-	EXPECT_EQ(parser.world.cubes[0].transform, testCube.transform);
+	EXPECT_EQ(parser.world.cubes[0], testCube);
 }
 
 TEST(YamlParser, AddSphere)
@@ -237,10 +237,10 @@ TEST(YamlParser, AddSphere)
 
 	Sphere testSphere;
 	testSphere.material = Material(Color(0, 0, 1), 0.2, 0.1, 0.3, 0.6, 0.4, 0.7, 0.5);
-	testSphere.transform = translation(1, -1, 2) * scaling(0.1, 0.2, 0.3) * rotationX(3) * rotationY(2) * rotationZ(1) * translation(0, 0, 1) * translation(1, 2, 3);
+	testSphere.transform = translation(1, 2, 3) * translation(0, 0, 1) * rotationZ(1) * rotationY(2) * rotationX(3) * scaling(0.1, 0.2, 0.3) * translation(1, -1, 2);
 
 	EXPECT_EQ(parser.world.spheres.size(), 1);
-	EXPECT_EQ(parser.world.spheres[0].transform, testSphere.transform);
+	EXPECT_EQ(parser.world.spheres[0], testSphere);
 }
 
 TEST(YamlParser, ImproperAtCommand)
