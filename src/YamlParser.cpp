@@ -164,7 +164,35 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
             activeCommand = CommandType::material;
             activeItemName = tokens[2];
             materials.emplace(activeItemName, Material());
+        } else if (tokens[2].ends_with("transform"))
+        {
+        	activeCommand = CommandType::transform;
+        	activeItemName = tokens[2];
+        	transforms.emplace(activeItemName, IdentityMatrix());
+        } else if (tokens[2].ends_with("plane"))
+        {
+
         }
+    } else if (tokens[0] == "-" && tokens[1] == "[")
+    {
+    	if (tokens.size() != 7)
+    	{
+    		throw std::runtime_error("Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
+    	}
+    	if (activeCommand != transform)
+    	{
+    		throw std::runtime_error("Transform parameter only valid for transform definition.");
+    	}
+    	if (tokens[2] == "translate,")
+    	{
+    		transforms[activeItemName] = transforms[activeItemName] * translation(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
+    	} else if (tokens[2] == "scale,")
+    	{
+    		transforms[activeItemName] = transforms[activeItemName] * scaling(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
+    	} else if (tokens[2] == "rotate,")
+    	{
+    		transforms[activeItemName] = transforms[activeItemName] * rotationX(ParseFloatValue(tokens[3])) * rotationY(ParseFloatValue(tokens[4])) * rotationZ(ParseFloatValue(tokens[5]));
+    	}
     } else if (tokens[0] == "at:")
     {
         ParseCommandAt(tokens);
@@ -256,6 +284,9 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
         case material:
             materials[activeItemName] = materials[std::string(tokens[1])];
             break;
+        case transform:
+        	transforms[activeItemName] = transforms[std::string(tokens[1])];
+        	break;
         default:
             throw std::runtime_error("'extend:' option must be used with: material or transform command.");
         }

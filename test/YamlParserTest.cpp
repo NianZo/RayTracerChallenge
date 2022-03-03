@@ -111,6 +111,58 @@ TEST(YamlParser, ExtendMaterial)
 	EXPECT_EQ(parser.materials["blue-material"], Material(Color(0, 0, 1), 0.2, 0.1, 0.3, 0.6, 0.4, 0.7, 0.5));
 }
 
+TEST(YamlParser, DefineTransform)
+{
+	std::string s =
+			"- define: standard-transform\n"
+			"  value:\n"
+			"    - [ translate, 1, -1, 2 ]\n"
+			"    - [ scale, 0.1, 0.2, 0.3 ]\n"
+			"    - [ rotate, 3, 2, 1 ]\n";
+	YamlParser parser(s);
+
+	EXPECT_EQ(parser.transforms["standard-transform"], translation(1, -1, 2) * scaling(0.1, 0.2, 0.3) * rotationX(3) * rotationY(2) * rotationZ(1));
+}
+
+TEST(YamlParser, ExtendTransform)
+{
+	std::string s =
+			"- define: standard-transform\n"
+			"  value:\n"
+			"    - [ translate, 1, -1, 2 ]\n"
+			"    - [ scale, 0.1, 0.2, 0.3 ]\n"
+			"    - [ rotate, 3, 2, 1 ]\n"
+			"- define: other-transform\n"
+			"  extend: standard-transform\n"
+			"  value:\n"
+			"    - [ translate, 0, 0, 1 ]\n";
+	YamlParser parser(s);
+
+	EXPECT_EQ(parser.transforms["other-transform"], translation(1, -1, 2) * scaling(0.1, 0.2, 0.3) * rotationX(3) * rotationY(2) * rotationZ(1) * translation(0, 0, 1));
+}
+
+TEST(YamlParser, AddPlane)
+{
+	std::string s =
+			"- add: plane\n"
+			"  material:\n"
+			"    color: [ 0.25, 0.5, 0.75 ]\n"
+			"    ambient: 0.1\n"
+			"    diffuse: 0.2\n"
+			"    specular: 0.3\n"
+			"  transform:\n"
+			"    - [ scale, 2, 3, 4 ]\n"
+			"    - [ translate, 1, 2, 3 ]\n";
+	YamlParser parser(s);
+
+	Plane testPlane;
+	testPlane.material = Material(Color(0.25, 0.5, 0.75), 0.1, 0.2, 0.3, 200.0, 0.0, 0.0, 1.0);
+	testPlane.transform = scaling(2, 3, 4) * translation(1, 2, 3);
+
+	EXPECT_EQ(parser.world.planes.size(), 1);
+	EXPECT_EQ(parser.world.planes[0], testPlane);
+}
+
 TEST(YamlParser, ImproperAtCommand)
 {
 	std::string s =

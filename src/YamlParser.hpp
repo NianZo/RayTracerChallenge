@@ -18,6 +18,7 @@ class YamlParser
     World world;
     Camera worldCamera;
     std::unordered_map<std::string, Material> materials;
+    std::unordered_map<std::string, Matrix<4>> transforms;
 
     explicit YamlParser(const std::string& inputData);
 
@@ -27,7 +28,8 @@ class YamlParser
         none,
         camera,
         light,
-        material
+        material,
+		transform
     };
 
     enum SubCommandType
@@ -52,6 +54,8 @@ class YamlParser
 
     CommandType activeCommand = none;
     std::string activeItemName;
+    Material* currentMaterial = nullptr;
+    Matrix<4>* currentTransform = nullptr;
 
     Tuple cameraFrom;
     Tuple cameraTo;
