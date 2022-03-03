@@ -23,9 +23,7 @@ int main(int argc, char** argv)
     			sceneDescription += line + "\n";
     		}
     		yamlFile.close();
-    		std::cout << sceneDescription << std::endl;
     		YamlParser parser(sceneDescription);
-    		std::cout << "Cubes: " << parser.world.cubes.size() << std::endl;
 
     	    auto startRenderTime = std::chrono::steady_clock::now();
     	    Canvas canvas = parser.worldCamera.Render(parser.world);
