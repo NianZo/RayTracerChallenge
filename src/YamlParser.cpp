@@ -149,49 +149,69 @@ void YamlParser::ParseCommandAdd(std::vector<std::string_view>& tokens)
     } else if (tokens[2].ends_with("light"))
     {
         activeCommand = CommandType::light;
+    } else if (tokens[2] == "plane")
+    {
+    	activeCommand = CommandType::plane;
+    	world.planes.emplace_back(Plane());
+    	activeMaterial = &world.planes.back().material;
+    	activeTransform = &world.planes.back().transform;
+    } else if (tokens[2] == "cube")
+    {
+    	activeCommand = CommandType::cube;
+    	world.cubes.emplace_back(Cube());
+    	activeMaterial = &world.cubes.back().material;
+    	activeTransform = &world.cubes.back().transform;
+    } else if (tokens[2] == "sphere")
+    {
+    	activeCommand = CommandType::sphere;
+    	world.spheres.emplace_back(Sphere());
+    	activeMaterial = &world.spheres.back().material;
+    	activeTransform = &world.spheres.back().transform;
     }
 }
 
 void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
 {
-    if (tokens[0] == "-" && tokens[1] == "add:")
+    if (tokens.size() == 3 && tokens[0] == "-" && tokens[1] == "add:")
     {
         ParseCommandAdd(tokens);
-    } else if (tokens[0] == "-" && tokens[1] == "define:")
+    } else if (tokens.size() == 3 && tokens[0] == "-" && tokens[1] == "define:")
     {
         if (tokens[2].ends_with("material"))
         {
             activeCommand = CommandType::material;
             activeItemName = tokens[2];
             materials.emplace(activeItemName, Material());
+            activeMaterial = &materials[activeItemName];
         } else if (tokens[2].ends_with("transform"))
         {
         	activeCommand = CommandType::transform;
         	activeItemName = tokens[2];
         	transforms.emplace(activeItemName, IdentityMatrix());
+        	activeTransform = &transforms[activeItemName];
         } else if (tokens[2].ends_with("plane"))
         {
 
         }
-    } else if (tokens[0] == "-" && tokens[1] == "[")
+    } else if (tokens.size() > 1 && tokens[0] == "-" && tokens[1] == "[")
     {
     	if (tokens.size() != 7)
     	{
     		throw std::runtime_error("Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
     	}
-    	if (activeCommand != transform)
+    	if (activeCommand != transform && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
     	{
     		throw std::runtime_error("Transform parameter only valid for transform definition.");
     	}
     	if (tokens[2] == "translate,")
     	{
-    		transforms[activeItemName] = transforms[activeItemName] * translation(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
+    		*activeTransform = *activeTransform * translation(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
     	} else if (tokens[2] == "scale,")
     	{
-    		transforms[activeItemName] = transforms[activeItemName] * scaling(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
+    		*activeTransform = *activeTransform * scaling(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
     	} else if (tokens[2] == "rotate,")
     	{
-    		transforms[activeItemName] = transforms[activeItemName] * rotationX(ParseFloatValue(tokens[3])) * rotationY(ParseFloatValue(tokens[4])) * rotationZ(ParseFloatValue(tokens[5]));
+    		*activeTransform = *activeTransform * rotationX(ParseFloatValue(tokens[3])) * rotationY(ParseFloatValue(tokens[4])) * rotationZ(ParseFloatValue(tokens[5]));
     	}
     } else if (tokens[0] == "at:")
     {
@@ -282,14 +302,20 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
         switch (activeCommand)
         {
         case material:
-            materials[activeItemName] = materials[std::string(tokens[1])];
+            *activeMaterial = materials[std::string(tokens[1])];
             break;
         case transform:
-        	transforms[activeItemName] = transforms[std::string(tokens[1])];
+        	*activeTransform = transforms[std::string(tokens[1])];
         	break;
         default:
             throw std::runtime_error("'extend:' option must be used with: material or transform command.");
         }
+    } else if (tokens[0] == "material:" && tokens.size() == 2)
+    {
+    	*activeMaterial = materials[std::string(tokens[1])];
+    } else if (tokens[0] == "transform:" && tokens.size() == 2)
+    {
+    	*activeTransform = transforms[std::string(tokens[1])];
     }
 }
 
@@ -339,11 +365,11 @@ void YamlParser::SetVectorProperty(SubCommandType subCommandType, const Tuple& v
         worldCamera.RecalculateProperties();
         break;
     case color:
-        if (activeCommand != material)
+        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
         {
             throw std::runtime_error("Invalid 'color:' specifier for '- define: material' command.");
         }
-        materials[activeItemName].color = value;
+        activeMaterial->color = value;
         break;
     default:
         throw std::runtime_error("Invalid SubCommandType parsed");
@@ -363,53 +389,53 @@ void YamlParser::SetFloatProperty(SubCommandType subCommandType, float value)
         worldCamera.RecalculateProperties();
         break;
     case ambient:
-        if (activeCommand != material)
+        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
         {
             throw std::runtime_error("Invalid 'ambient:' specifier for '- define: material' command.");
         }
-        materials[activeItemName].ambient = value;
+        activeMaterial->ambient = value;
         break;
     case diffuse:
-        if (activeCommand != material)
+        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
         {
             throw std::runtime_error("Invalid 'diffuse:' specifier for '- define: material' command.");
         }
-        materials[activeItemName].diffuse = value;
+        activeMaterial->diffuse = value;
         break;
     case specular:
-        if (activeCommand != material)
+        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
         {
             throw std::runtime_error("Invalid 'specular:' specifier for '- define: material' command.");
         }
-        materials[activeItemName].specular = value;
+        activeMaterial->specular = value;
         break;
     case shininess:
-        if (activeCommand != material)
+        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
         {
             throw std::runtime_error("Invalid 'shininess:' specifier for '- define: material' command.");
         }
-        materials[activeItemName].shininess = value;
+        activeMaterial->shininess = value;
         break;
     case reflective:
-        if (activeCommand != material)
+        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
         {
             throw std::runtime_error("Invalid 'reflective:' specifier for '- define: material' command.");
         }
-        materials[activeItemName].reflectivity = value;
+        activeMaterial->reflectivity = value;
         break;
     case transparency:
-        if (activeCommand != material)
+        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
         {
             throw std::runtime_error("Invalid 'transparency:' specifier for '- define: material' command.");
         }
-        materials[activeItemName].transparency = value;
+        activeMaterial->transparency = value;
         break;
     case refractiveIndex:
-        if (activeCommand != material)
+        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
         {
             throw std::runtime_error("Invalid 'refractive-index:' specifier for '- define: material' command.");
         }
-        materials[activeItemName].refractiveIndex = value;
+        activeMaterial->refractiveIndex = value;
         break;
     default:
         throw std::runtime_error("Invalid SubCommandType parsed");

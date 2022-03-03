@@ -163,6 +163,86 @@ TEST(YamlParser, AddPlane)
 	EXPECT_EQ(parser.world.planes[0], testPlane);
 }
 
+TEST(YamlParser, AddCube)
+{
+	std::string s =
+			"- define: white-material\n"
+			"  value:\n"
+			"    color: [ 0.25, 0.5, 0.75 ]\n"
+			"    diffuse: 0.1\n"
+			"    ambient: 0.2\n"
+			"    specular: 0.3\n"
+			"    shininess: 0.6\n"
+			"    reflective: 0.4\n"
+			"    transparency: 0.7\n"
+			"    refractive-index: 0.5\n"
+			"- define: blue-material\n"
+			"  extend: white-material\n"
+			"  value:\n"
+			"    color: [ 0, 0, 1 ]\n"
+			"- define: standard-transform\n"
+			"  value:\n"
+			"    - [ translate, 1, -1, 2 ]\n"
+			"    - [ scale, 0.1, 0.2, 0.3 ]\n"
+			"    - [ rotate, 3, 2, 1 ]\n"
+			"- define: other-transform\n"
+			"  extend: standard-transform\n"
+			"  value:\n"
+			"    - [ translate, 0, 0, 1 ]\n"
+			"- add: cube\n"
+			"  material: blue-material\n"
+			"  transform: other-transform\n"
+			"    - [ translate, 1, 2, 3 ]\n";
+	YamlParser parser(s);
+
+	Cube testCube;
+	testCube.material = Material(Color(0, 0, 1), 0.2, 0.1, 0.3, 0.6, 0.4, 0.7, 0.5);
+	testCube.transform = translation(1, -1, 2) * scaling(0.1, 0.2, 0.3) * rotationX(3) * rotationY(2) * rotationZ(1) * translation(0, 0, 1) * translation(1, 2, 3);
+
+	EXPECT_EQ(parser.world.cubes.size(), 1);
+	EXPECT_EQ(parser.world.cubes[0].transform, testCube.transform);
+}
+
+TEST(YamlParser, AddSphere)
+{
+	std::string s =
+			"- define: white-material\n"
+			"  value:\n"
+			"    color: [ 0.25, 0.5, 0.75 ]\n"
+			"    diffuse: 0.1\n"
+			"    ambient: 0.2\n"
+			"    specular: 0.3\n"
+			"    shininess: 0.6\n"
+			"    reflective: 0.4\n"
+			"    transparency: 0.7\n"
+			"    refractive-index: 0.5\n"
+			"- define: blue-material\n"
+			"  extend: white-material\n"
+			"  value:\n"
+			"    color: [ 0, 0, 1 ]\n"
+			"- define: standard-transform\n"
+			"  value:\n"
+			"    - [ translate, 1, -1, 2 ]\n"
+			"    - [ scale, 0.1, 0.2, 0.3 ]\n"
+			"    - [ rotate, 3, 2, 1 ]\n"
+			"- define: other-transform\n"
+			"  extend: standard-transform\n"
+			"  value:\n"
+			"    - [ translate, 0, 0, 1 ]\n"
+			"- add: sphere\n"
+			"  material: blue-material\n"
+			"  transform: other-transform\n"
+			"    - [ translate, 1, 2, 3 ]\n";
+	YamlParser parser(s);
+
+	Sphere testSphere;
+	testSphere.material = Material(Color(0, 0, 1), 0.2, 0.1, 0.3, 0.6, 0.4, 0.7, 0.5);
+	testSphere.transform = translation(1, -1, 2) * scaling(0.1, 0.2, 0.3) * rotationX(3) * rotationY(2) * rotationZ(1) * translation(0, 0, 1) * translation(1, 2, 3);
+
+	EXPECT_EQ(parser.world.spheres.size(), 1);
+	EXPECT_EQ(parser.world.spheres[0].transform, testSphere.transform);
+}
+
 TEST(YamlParser, ImproperAtCommand)
 {
 	std::string s =

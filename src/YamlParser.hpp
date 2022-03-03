@@ -29,7 +29,10 @@ class YamlParser
         camera,
         light,
         material,
-		transform
+		transform,
+		plane,
+		cube,
+		sphere
     };
 
     enum SubCommandType
@@ -54,8 +57,8 @@ class YamlParser
 
     CommandType activeCommand = none;
     std::string activeItemName;
-    Material* currentMaterial = nullptr;
-    Matrix<4>* currentTransform = nullptr;
+    Material* activeMaterial = nullptr;
+    Matrix<4>* activeTransform = nullptr;
 
     Tuple cameraFrom;
     Tuple cameraTo;
