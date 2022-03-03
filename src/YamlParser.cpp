@@ -211,7 +211,7 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
             *activeTransform = rotationZ(ParseFloatValue(tokens[5])) * rotationY(ParseFloatValue(tokens[4])) * rotationX(ParseFloatValue(tokens[3])) * *activeTransform;
         } else
         {
-        	throw std::runtime_error("Invalid transform operation. Expected: 'scale', 'rotate', or 'translate'");
+            throw std::runtime_error("Invalid transform operation. Expected: 'scale', 'rotate', or 'translate'");
         }
     } else if (tokens[0] == "at:")
     {
