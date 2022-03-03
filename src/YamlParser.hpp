@@ -29,10 +29,10 @@ class YamlParser
         camera,
         light,
         material,
-		transform,
-		plane,
-		cube,
-		sphere
+        transform,
+        plane,
+        cube,
+        sphere
     };
 
     enum SubCommandType

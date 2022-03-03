@@ -151,22 +151,22 @@ void YamlParser::ParseCommandAdd(std::vector<std::string_view>& tokens)
         activeCommand = CommandType::light;
     } else if (tokens[2] == "plane")
     {
-    	activeCommand = CommandType::plane;
-    	world.planes.emplace_back(Plane());
-    	activeMaterial = &world.planes.back().material;
-    	activeTransform = &world.planes.back().transform;
+        activeCommand = CommandType::plane;
+        world.planes.emplace_back(Plane());
+        activeMaterial = &world.planes.back().material;
+        activeTransform = &world.planes.back().transform;
     } else if (tokens[2] == "cube")
     {
-    	activeCommand = CommandType::cube;
-    	world.cubes.emplace_back(Cube());
-    	activeMaterial = &world.cubes.back().material;
-    	activeTransform = &world.cubes.back().transform;
+        activeCommand = CommandType::cube;
+        world.cubes.emplace_back(Cube());
+        activeMaterial = &world.cubes.back().material;
+        activeTransform = &world.cubes.back().transform;
     } else if (tokens[2] == "sphere")
     {
-    	activeCommand = CommandType::sphere;
-    	world.spheres.emplace_back(Sphere());
-    	activeMaterial = &world.spheres.back().material;
-    	activeTransform = &world.spheres.back().transform;
+        activeCommand = CommandType::sphere;
+        world.spheres.emplace_back(Sphere());
+        activeMaterial = &world.spheres.back().material;
+        activeTransform = &world.spheres.back().transform;
     }
 }
 
@@ -185,34 +185,33 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
             activeMaterial = &materials[activeItemName];
         } else if (tokens[2].ends_with("transform"))
         {
-        	activeCommand = CommandType::transform;
-        	activeItemName = tokens[2];
-        	transforms.emplace(activeItemName, IdentityMatrix());
-        	activeTransform = &transforms[activeItemName];
+            activeCommand = CommandType::transform;
+            activeItemName = tokens[2];
+            transforms.emplace(activeItemName, IdentityMatrix());
+            activeTransform = &transforms[activeItemName];
         } else if (tokens[2].ends_with("plane"))
         {
-
         }
     } else if (tokens.size() > 1 && tokens[0] == "-" && tokens[1] == "[")
     {
-    	if (tokens.size() != 7)
-    	{
-    		throw std::runtime_error("Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
-    	}
-    	if (activeCommand != transform && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-    	{
-    		throw std::runtime_error("Transform parameter only valid for transform definition.");
-    	}
-    	if (tokens[2] == "translate,")
-    	{
-    		*activeTransform = *activeTransform * translation(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
-    	} else if (tokens[2] == "scale,")
-    	{
-    		*activeTransform = *activeTransform * scaling(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
-    	} else if (tokens[2] == "rotate,")
-    	{
-    		*activeTransform = *activeTransform * rotationX(ParseFloatValue(tokens[3])) * rotationY(ParseFloatValue(tokens[4])) * rotationZ(ParseFloatValue(tokens[5]));
-    	}
+        if (tokens.size() != 7)
+        {
+            throw std::runtime_error("Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
+        }
+        if (activeCommand != transform && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+        {
+            throw std::runtime_error("Transform parameter only valid for transform definition.");
+        }
+        if (tokens[2] == "translate,")
+        {
+            *activeTransform = *activeTransform * translation(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
+        } else if (tokens[2] == "scale,")
+        {
+            *activeTransform = *activeTransform * scaling(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
+        } else if (tokens[2] == "rotate,")
+        {
+            *activeTransform = *activeTransform * rotationX(ParseFloatValue(tokens[3])) * rotationY(ParseFloatValue(tokens[4])) * rotationZ(ParseFloatValue(tokens[5]));
+        }
     } else if (tokens[0] == "at:")
     {
         ParseCommandAt(tokens);
@@ -305,17 +304,17 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
             *activeMaterial = materials[std::string(tokens[1])];
             break;
         case transform:
-        	*activeTransform = transforms[std::string(tokens[1])];
-        	break;
+            *activeTransform = transforms[std::string(tokens[1])];
+            break;
         default:
             throw std::runtime_error("'extend:' option must be used with: material or transform command.");
         }
     } else if (tokens[0] == "material:" && tokens.size() == 2)
     {
-    	*activeMaterial = materials[std::string(tokens[1])];
+        *activeMaterial = materials[std::string(tokens[1])];
     } else if (tokens[0] == "transform:" && tokens.size() == 2)
     {
-    	*activeTransform = transforms[std::string(tokens[1])];
+        *activeTransform = transforms[std::string(tokens[1])];
     }
 }
 
