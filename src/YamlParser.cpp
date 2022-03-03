@@ -204,13 +204,13 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
         }
         if (tokens[2] == "translate,")
         {
-            *activeTransform = *activeTransform * translation(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
+            *activeTransform = translation(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5])) * *activeTransform;
         } else if (tokens[2] == "scale,")
         {
-            *activeTransform = *activeTransform * scaling(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]));
+            *activeTransform = scaling(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5])) * *activeTransform;
         } else if (tokens[2] == "rotate,")
         {
-            *activeTransform = *activeTransform * rotationX(ParseFloatValue(tokens[3])) * rotationY(ParseFloatValue(tokens[4])) * rotationZ(ParseFloatValue(tokens[5]));
+            *activeTransform = rotationX(ParseFloatValue(tokens[3])) * rotationY(ParseFloatValue(tokens[4])) * rotationZ(ParseFloatValue(tokens[5])) * *activeTransform;
         }
     } else if (tokens[0] == "at:")
     {
