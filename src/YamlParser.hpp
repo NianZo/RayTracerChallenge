@@ -56,17 +56,17 @@ class YamlParser
     void ParseCommandTo(const std::vector<std::string_view>& tokens);
     void ParseCommandUp(const std::vector<std::string_view>& tokens);
     void ParseCommandAdd(const std::vector<std::string_view>& tokens);
-	void ParseCommandDefine(const std::vector<std::string_view> &tokens);
-	void ParseCommandTransformParameter(const std::vector<std::string_view> &tokens);
-	void ParseCommandColor(const std::vector<std::string_view> &tokens);
-	void ParseCommandAmbient(const std::vector<std::string_view> &tokens);
-	void ParseCommandDiffuse(const std::vector<std::string_view> &tokens);
-	void ParseCommandSpecular(const std::vector<std::string_view> &tokens);
-	void ParseCommandShininess(const std::vector<std::string_view> &tokens);
-	void ParseCommandReflective(const std::vector<std::string_view> &tokens);
-	void ParseCommandTransparency(const std::vector<std::string_view> &tokens);
-	void ParseCommandRefractiveIndex(const std::vector<std::string_view> &tokens);
-	void ParseCommandExtend(const std::vector<std::string_view> &tokens);
+    void ParseCommandDefine(const std::vector<std::string_view>& tokens);
+    void ParseCommandTransformParameter(const std::vector<std::string_view>& tokens);
+    void ParseCommandColor(const std::vector<std::string_view>& tokens);
+    void ParseCommandAmbient(const std::vector<std::string_view>& tokens);
+    void ParseCommandDiffuse(const std::vector<std::string_view>& tokens);
+    void ParseCommandSpecular(const std::vector<std::string_view>& tokens);
+    void ParseCommandShininess(const std::vector<std::string_view>& tokens);
+    void ParseCommandReflective(const std::vector<std::string_view>& tokens);
+    void ParseCommandTransparency(const std::vector<std::string_view>& tokens);
+    void ParseCommandRefractiveIndex(const std::vector<std::string_view>& tokens);
+    void ParseCommandExtend(const std::vector<std::string_view>& tokens);
 };
 
 #endif /* SRC_YAMLPARSER_HPP_ */
