@@ -77,6 +77,17 @@ class YamlParser
     void ParseCommandTo(std::vector<std::string_view>& tokens);
     void ParseCommandUp(std::vector<std::string_view>& tokens);
     void ParseCommandAdd(std::vector<std::string_view>& tokens);
+	void ParseCommandDefine(std::vector<std::string_view> &tokens);
+	void ParseCommandTransformParameter(std::vector<std::string_view> &tokens);
+	void ParseCommandColor(std::vector<std::string_view> &tokens);
+	void ParseCommandAmbient(std::vector<std::string_view> &tokens);
+	void ParseCommandDiffuse(std::vector<std::string_view> &tokens);
+	void ParseCommandSpecular(std::vector<std::string_view> &tokens);
+	void ParseCommandShininess(std::vector<std::string_view> &tokens);
+	void ParseCommandReflective(std::vector<std::string_view> &tokens);
+	void ParseCommandTransparency(std::vector<std::string_view> &tokens);
+	void ParseCommandRefractiveIndex(std::vector<std::string_view> &tokens);
+	void ParseCommandExtend(std::vector<std::string_view> &tokens);
 };
 
 #endif /* SRC_YAMLPARSER_HPP_ */

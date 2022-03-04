@@ -170,6 +170,135 @@ void YamlParser::ParseCommandAdd(std::vector<std::string_view>& tokens)
     }
 }
 
+void YamlParser::ParseCommandDefine(std::vector<std::string_view> &tokens) {
+	if (tokens[2].ends_with("material")) {
+		activeCommand = CommandType::material;
+		activeItemName = tokens[2];
+		materials.emplace(activeItemName, Material());
+		activeMaterial = &materials[activeItemName];
+	} else if (tokens[2].ends_with("transform")) {
+		activeCommand = CommandType::transform;
+		activeItemName = tokens[2];
+		transforms.emplace(activeItemName, IdentityMatrix());
+		activeTransform = &transforms[activeItemName];
+	}
+}
+
+void YamlParser::ParseCommandTransformParameter(
+		std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 7) {
+		throw std::runtime_error(
+				"Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
+	}
+	if (activeCommand != transform && activeCommand != plane
+			&& activeCommand != cube && activeCommand != sphere) {
+		throw std::runtime_error(
+				"Transform parameter only valid for transform definition.");
+	}
+	if (tokens[2] == "translate,") {
+		*activeTransform = translation(ParseFloatValue(tokens[3]),
+				ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]))
+				* *activeTransform;
+	} else if (tokens[2] == "scale,") {
+		*activeTransform = scaling(ParseFloatValue(tokens[3]),
+				ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5]))
+				* *activeTransform;
+	} else if (tokens[2] == "rotate,") {
+		*activeTransform = rotationZ(ParseFloatValue(tokens[5]))
+				* rotationY(ParseFloatValue(tokens[4]))
+				* rotationX(ParseFloatValue(tokens[3])) * *activeTransform;
+	} else {
+		throw std::runtime_error(
+				"Invalid transform operation. Expected: 'scale', 'rotate', or 'translate'");
+	}
+}
+
+void YamlParser::ParseCommandColor(std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 6) {
+		throw std::runtime_error(
+				"'color:' command in invalid format. Expected: 'color: [ x, y, z ]'");
+	}
+	SetVectorProperty(SubCommandType::color,
+			ParseVectorValue(tokens[2], tokens[3], tokens[4]));
+}
+
+void YamlParser::ParseCommandAmbient(std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 2) {
+		throw std::runtime_error(
+				"'ambient:' command in invalid format. Expected: 'ambient: f'");
+	}
+	SetFloatProperty(SubCommandType::ambient, ParseFloatValue(tokens[1]));
+}
+
+void YamlParser::ParseCommandDiffuse(std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 2) {
+		throw std::runtime_error(
+				"'diffuse:' command in invalid format. Expected: 'diffuse: f'");
+	}
+	SetFloatProperty(SubCommandType::diffuse, ParseFloatValue(tokens[1]));
+}
+
+void YamlParser::ParseCommandSpecular(std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 2) {
+		throw std::runtime_error(
+				"'specular:' command in invalid format. Expected: 'specular: f'");
+	}
+	SetFloatProperty(SubCommandType::specular, ParseFloatValue(tokens[1]));
+}
+
+void YamlParser::ParseCommandShininess(std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 2) {
+		throw std::runtime_error(
+				"'shininess:' command in invalid format. Expected: 'shininess: f'");
+	}
+	SetFloatProperty(SubCommandType::shininess, ParseFloatValue(tokens[1]));
+}
+
+void YamlParser::ParseCommandReflective(std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 2) {
+		throw std::runtime_error(
+				"'reflective:' command in invalid format. Expected: 'reflective: f'");
+	}
+	SetFloatProperty(SubCommandType::reflective, ParseFloatValue(tokens[1]));
+}
+
+void YamlParser::ParseCommandTransparency(
+		std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 2) {
+		throw std::runtime_error(
+				"'transparency:' command in invalid format. Expected: 'transparency: f'");
+	}
+	SetFloatProperty(SubCommandType::transparency, ParseFloatValue(tokens[1]));
+}
+
+void YamlParser::ParseCommandRefractiveIndex(
+		std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 2) {
+		throw std::runtime_error(
+				"'refractive-index:' command in invalid format. Expected: 'refractive-index: f'");
+	}
+	SetFloatProperty(SubCommandType::refractiveIndex,
+			ParseFloatValue(tokens[1]));
+}
+
+void YamlParser::ParseCommandExtend(std::vector<std::string_view> &tokens) {
+	if (tokens.size() != 2) {
+		throw std::runtime_error(
+				"'extend:' command in invalid format. Expected: 'extend: name'");
+	}
+	switch (activeCommand) {
+	case material:
+		*activeMaterial = materials[std::string(tokens[1])];
+		break;
+	case transform:
+		*activeTransform = transforms[std::string(tokens[1])];
+		break;
+	default:
+		throw std::runtime_error(
+				"'extend:' option must be used with: material or transform command.");
+	}
+}
+
 void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
 {
     if (tokens.size() == 3 && tokens[0] == "-" && tokens[1] == "add:")
@@ -177,42 +306,10 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
         ParseCommandAdd(tokens);
     } else if (tokens.size() == 3 && tokens[0] == "-" && tokens[1] == "define:")
     {
-        if (tokens[2].ends_with("material"))
-        {
-            activeCommand = CommandType::material;
-            activeItemName = tokens[2];
-            materials.emplace(activeItemName, Material());
-            activeMaterial = &materials[activeItemName];
-        } else if (tokens[2].ends_with("transform"))
-        {
-            activeCommand = CommandType::transform;
-            activeItemName = tokens[2];
-            transforms.emplace(activeItemName, IdentityMatrix());
-            activeTransform = &transforms[activeItemName];
-        }
+		ParseCommandDefine(tokens);
     } else if (tokens.size() > 1 && tokens[0] == "-" && tokens[1] == "[")
     {
-        if (tokens.size() != 7)
-        {
-            throw std::runtime_error("Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
-        }
-        if (activeCommand != transform && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Transform parameter only valid for transform definition.");
-        }
-        if (tokens[2] == "translate,")
-        {
-            *activeTransform = translation(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5])) * *activeTransform;
-        } else if (tokens[2] == "scale,")
-        {
-            *activeTransform = scaling(ParseFloatValue(tokens[3]), ParseFloatValue(tokens[4]), ParseFloatValue(tokens[5])) * *activeTransform;
-        } else if (tokens[2] == "rotate,")
-        {
-            *activeTransform = rotationZ(ParseFloatValue(tokens[5])) * rotationY(ParseFloatValue(tokens[4])) * rotationX(ParseFloatValue(tokens[3])) * *activeTransform;
-        } else
-        {
-            throw std::runtime_error("Invalid transform operation. Expected: 'scale', 'rotate', or 'translate'");
-        }
+		ParseCommandTransformParameter(tokens);
     } else if (tokens[0] == "at:")
     {
         ParseCommandAt(tokens);
@@ -239,77 +336,31 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
         ParseCommandUp(tokens);
     } else if (tokens[0] == "color:")
     {
-        if (tokens.size() != 6)
-        {
-            throw std::runtime_error("'color:' command in invalid format. Expected: 'color: [ x, y, z ]'");
-        }
-        SetVectorProperty(SubCommandType::color, ParseVectorValue(tokens[2], tokens[3], tokens[4]));
+		ParseCommandColor(tokens);
     } else if (tokens[0] == "ambient:")
     {
-        if (tokens.size() != 2)
-        {
-            throw std::runtime_error("'ambient:' command in invalid format. Expected: 'ambient: f'");
-        }
-        SetFloatProperty(SubCommandType::ambient, ParseFloatValue(tokens[1]));
+		ParseCommandAmbient(tokens);
     } else if (tokens[0] == "diffuse:")
     {
-        if (tokens.size() != 2)
-        {
-            throw std::runtime_error("'diffuse:' command in invalid format. Expected: 'diffuse: f'");
-        }
-        SetFloatProperty(SubCommandType::diffuse, ParseFloatValue(tokens[1]));
+		ParseCommandDiffuse(tokens);
     } else if (tokens[0] == "specular:")
     {
-        if (tokens.size() != 2)
-        {
-            throw std::runtime_error("'specular:' command in invalid format. Expected: 'specular: f'");
-        }
-        SetFloatProperty(SubCommandType::specular, ParseFloatValue(tokens[1]));
+		ParseCommandSpecular(tokens);
     } else if (tokens[0] == "shininess:")
     {
-        if (tokens.size() != 2)
-        {
-            throw std::runtime_error("'shininess:' command in invalid format. Expected: 'shininess: f'");
-        }
-        SetFloatProperty(SubCommandType::shininess, ParseFloatValue(tokens[1]));
+		ParseCommandShininess(tokens);
     } else if (tokens[0] == "reflective:")
     {
-        if (tokens.size() != 2)
-        {
-            throw std::runtime_error("'reflective:' command in invalid format. Expected: 'reflective: f'");
-        }
-        SetFloatProperty(SubCommandType::reflective, ParseFloatValue(tokens[1]));
+		ParseCommandReflective(tokens);
     } else if (tokens[0] == "transparency:")
     {
-        if (tokens.size() != 2)
-        {
-            throw std::runtime_error("'transparency:' command in invalid format. Expected: 'transparency: f'");
-        }
-        SetFloatProperty(SubCommandType::transparency, ParseFloatValue(tokens[1]));
+		ParseCommandTransparency(tokens);
     } else if (tokens[0] == "refractive-index:")
     {
-        if (tokens.size() != 2)
-        {
-            throw std::runtime_error("'refractive-index:' command in invalid format. Expected: 'refractive-index: f'");
-        }
-        SetFloatProperty(SubCommandType::refractiveIndex, ParseFloatValue(tokens[1]));
+		ParseCommandRefractiveIndex(tokens);
     } else if (tokens[0] == "extend:")
     {
-        if (tokens.size() != 2)
-        {
-            throw std::runtime_error("'extend:' command in invalid format. Expected: 'extend: name'");
-        }
-        switch (activeCommand)
-        {
-        case material:
-            *activeMaterial = materials[std::string(tokens[1])];
-            break;
-        case transform:
-            *activeTransform = transforms[std::string(tokens[1])];
-            break;
-        default:
-            throw std::runtime_error("'extend:' option must be used with: material or transform command.");
-        }
+		ParseCommandExtend(tokens);
     } else if (tokens[0] == "material:" && tokens.size() == 2)
     {
         *activeMaterial = materials[std::string(tokens[1])];
