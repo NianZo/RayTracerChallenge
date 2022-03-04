@@ -35,7 +35,7 @@ class YamlParser
         sphere
     };
 
-    std::unordered_map<std::string, std::function<void(std::vector<std::string_view>&)>> subCommandMap;
+    std::unordered_map<std::string, std::function<void(const std::vector<std::string_view>&)>> subCommandMap;
 
     CommandType activeCommand = none;
     std::string activeItemName;
@@ -46,27 +46,27 @@ class YamlParser
     Tuple cameraTo;
     Tuple cameraUp;
 
-    void ParseTokens(std::vector<std::string_view>& tokens);
-    void ParseCommandAt(std::vector<std::string_view>& tokens);
-    void ParseCommandIntensity(std::vector<std::string_view>& tokens);
-    void ParseCommandWidth(std::vector<std::string_view>& tokens);
-    void ParseCommandHeight(std::vector<std::string_view>& tokens);
-    void ParseCommandFOV(std::vector<std::string_view>& tokens);
-    void ParseCommandFrom(std::vector<std::string_view>& tokens);
-    void ParseCommandTo(std::vector<std::string_view>& tokens);
-    void ParseCommandUp(std::vector<std::string_view>& tokens);
-    void ParseCommandAdd(std::vector<std::string_view>& tokens);
-	void ParseCommandDefine(std::vector<std::string_view> &tokens);
-	void ParseCommandTransformParameter(std::vector<std::string_view> &tokens);
-	void ParseCommandColor(std::vector<std::string_view> &tokens);
-	void ParseCommandAmbient(std::vector<std::string_view> &tokens);
-	void ParseCommandDiffuse(std::vector<std::string_view> &tokens);
-	void ParseCommandSpecular(std::vector<std::string_view> &tokens);
-	void ParseCommandShininess(std::vector<std::string_view> &tokens);
-	void ParseCommandReflective(std::vector<std::string_view> &tokens);
-	void ParseCommandTransparency(std::vector<std::string_view> &tokens);
-	void ParseCommandRefractiveIndex(std::vector<std::string_view> &tokens);
-	void ParseCommandExtend(std::vector<std::string_view> &tokens);
+    void ParseTokens(const std::vector<std::string_view>& tokens);
+    void ParseCommandAt(const std::vector<std::string_view>& tokens);
+    void ParseCommandIntensity(const std::vector<std::string_view>& tokens);
+    void ParseCommandWidth(const std::vector<std::string_view>& tokens);
+    void ParseCommandHeight(const std::vector<std::string_view>& tokens);
+    void ParseCommandFOV(const std::vector<std::string_view>& tokens);
+    void ParseCommandFrom(const std::vector<std::string_view>& tokens);
+    void ParseCommandTo(const std::vector<std::string_view>& tokens);
+    void ParseCommandUp(const std::vector<std::string_view>& tokens);
+    void ParseCommandAdd(const std::vector<std::string_view>& tokens);
+	void ParseCommandDefine(const std::vector<std::string_view> &tokens);
+	void ParseCommandTransformParameter(const std::vector<std::string_view> &tokens);
+	void ParseCommandColor(const std::vector<std::string_view> &tokens);
+	void ParseCommandAmbient(const std::vector<std::string_view> &tokens);
+	void ParseCommandDiffuse(const std::vector<std::string_view> &tokens);
+	void ParseCommandSpecular(const std::vector<std::string_view> &tokens);
+	void ParseCommandShininess(const std::vector<std::string_view> &tokens);
+	void ParseCommandReflective(const std::vector<std::string_view> &tokens);
+	void ParseCommandTransparency(const std::vector<std::string_view> &tokens);
+	void ParseCommandRefractiveIndex(const std::vector<std::string_view> &tokens);
+	void ParseCommandExtend(const std::vector<std::string_view> &tokens);
 };
 
 #endif /* SRC_YAMLPARSER_HPP_ */

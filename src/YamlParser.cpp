@@ -59,7 +59,7 @@ YamlParser::YamlParser([[maybe_unused]] const std::string& inputData) : worldCam
     }
 }
 
-Tuple ParseVectorValue(std::string_view x, std::string_view y, std::string_view z)
+Tuple ParseVectorValue(const std::string_view x, const std::string_view y, const std::string_view z)
 {
     Tuple value = Vector(0, 0, 0);
     std::from_chars(x.begin(), x.end(), value.x);
@@ -69,21 +69,21 @@ Tuple ParseVectorValue(std::string_view x, std::string_view y, std::string_view 
     return value;
 }
 
-float ParseFloatValue(std::string_view f)
+float ParseFloatValue(const std::string_view f)
 {
     float value = NAN;
     std::from_chars(f.begin(), f.end(), value);
     return value;
 }
 
-uint32_t ParseIntValue(std::string_view i)
+uint32_t ParseIntValue(const std::string_view i)
 {
     uint32_t value = 0;
     std::from_chars(i.begin(), i.end(), value);
     return value;
 }
 
-void YamlParser::ParseCommandAt(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandAt(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() != 6)
     {
@@ -98,7 +98,7 @@ void YamlParser::ParseCommandAt(std::vector<std::string_view>& tokens)
     world.light.position = position;
 }
 
-void YamlParser::ParseCommandIntensity(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandIntensity(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() != 6)
     {
@@ -111,7 +111,7 @@ void YamlParser::ParseCommandIntensity(std::vector<std::string_view>& tokens)
     world.light.intensity = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
 }
 
-void YamlParser::ParseCommandWidth(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandWidth(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() != 2)
     {
@@ -125,7 +125,7 @@ void YamlParser::ParseCommandWidth(std::vector<std::string_view>& tokens)
     worldCamera.RecalculateProperties();
 }
 
-void YamlParser::ParseCommandHeight(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandHeight(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() != 2)
     {
@@ -139,7 +139,7 @@ void YamlParser::ParseCommandHeight(std::vector<std::string_view>& tokens)
     worldCamera.RecalculateProperties();
 }
 
-void YamlParser::ParseCommandFOV(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandFOV(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() != 2)
     {
@@ -153,7 +153,7 @@ void YamlParser::ParseCommandFOV(std::vector<std::string_view>& tokens)
     worldCamera.RecalculateProperties();
 }
 
-void YamlParser::ParseCommandFrom(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandFrom(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() != 6)
     {
@@ -170,7 +170,7 @@ void YamlParser::ParseCommandFrom(std::vector<std::string_view>& tokens)
     worldCamera.RecalculateProperties();
 }
 
-void YamlParser::ParseCommandTo(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandTo(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() != 6)
     {
@@ -187,7 +187,7 @@ void YamlParser::ParseCommandTo(std::vector<std::string_view>& tokens)
     worldCamera.RecalculateProperties();
 }
 
-void YamlParser::ParseCommandUp(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandUp(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() != 6)
     {
@@ -202,7 +202,7 @@ void YamlParser::ParseCommandUp(std::vector<std::string_view>& tokens)
     worldCamera.RecalculateProperties();
 }
 
-void YamlParser::ParseCommandAdd(std::vector<std::string_view>& tokens)
+void YamlParser::ParseCommandAdd(const std::vector<std::string_view>& tokens)
 {
     if (tokens[2].ends_with("camera"))
     {
@@ -231,7 +231,7 @@ void YamlParser::ParseCommandAdd(std::vector<std::string_view>& tokens)
     }
 }
 
-void YamlParser::ParseCommandDefine(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandDefine(const std::vector<std::string_view> &tokens) {
 	if (tokens[2].ends_with("material")) {
 		activeCommand = CommandType::material;
 		activeItemName = tokens[2];
@@ -245,7 +245,7 @@ void YamlParser::ParseCommandDefine(std::vector<std::string_view> &tokens) {
 	}
 }
 
-void YamlParser::ParseCommandTransformParameter(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandTransformParameter(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 7) {
 		throw std::runtime_error("Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
 	}
@@ -269,7 +269,7 @@ void YamlParser::ParseCommandTransformParameter(std::vector<std::string_view> &t
 	}
 }
 
-void YamlParser::ParseCommandColor(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandColor(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 6) {
 		throw std::runtime_error("'color:' command in invalid format. Expected: 'color: [ x, y, z ]'");
 	}
@@ -280,7 +280,7 @@ void YamlParser::ParseCommandColor(std::vector<std::string_view> &tokens) {
     activeMaterial->color = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
 }
 
-void YamlParser::ParseCommandAmbient(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandAmbient(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
 		throw std::runtime_error("'ambient:' command in invalid format. Expected: 'ambient: f'");
 	}
@@ -291,7 +291,7 @@ void YamlParser::ParseCommandAmbient(std::vector<std::string_view> &tokens) {
     activeMaterial->ambient = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandDiffuse(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandDiffuse(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
 		throw std::runtime_error("'diffuse:' command in invalid format. Expected: 'diffuse: f'");
 	}
@@ -302,7 +302,7 @@ void YamlParser::ParseCommandDiffuse(std::vector<std::string_view> &tokens) {
     activeMaterial->diffuse = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandSpecular(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandSpecular(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
 		throw std::runtime_error("'specular:' command in invalid format. Expected: 'specular: f'");
 	}
@@ -313,7 +313,7 @@ void YamlParser::ParseCommandSpecular(std::vector<std::string_view> &tokens) {
     activeMaterial->specular = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandShininess(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandShininess(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
 		throw std::runtime_error("'shininess:' command in invalid format. Expected: 'shininess: f'");
 	}
@@ -324,7 +324,7 @@ void YamlParser::ParseCommandShininess(std::vector<std::string_view> &tokens) {
     activeMaterial->shininess = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandReflective(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandReflective(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
 		throw std::runtime_error("'reflective:' command in invalid format. Expected: 'reflective: f'");
 	}
@@ -335,7 +335,7 @@ void YamlParser::ParseCommandReflective(std::vector<std::string_view> &tokens) {
     activeMaterial->reflectivity = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandTransparency(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandTransparency(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
 		throw std::runtime_error("'transparency:' command in invalid format. Expected: 'transparency: f'");
 	}
@@ -346,7 +346,7 @@ void YamlParser::ParseCommandTransparency(std::vector<std::string_view> &tokens)
     activeMaterial->transparency = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandRefractiveIndex(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandRefractiveIndex(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
 		throw std::runtime_error("'refractive-index:' command in invalid format. Expected: 'refractive-index: f'");
 	}
@@ -357,7 +357,7 @@ void YamlParser::ParseCommandRefractiveIndex(std::vector<std::string_view> &toke
     activeMaterial->refractiveIndex = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandExtend(std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandExtend(const std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
 		throw std::runtime_error("'extend:' command in invalid format. Expected: 'extend: name'");
 	}
@@ -373,7 +373,7 @@ void YamlParser::ParseCommandExtend(std::vector<std::string_view> &tokens) {
 	}
 }
 
-void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
+void YamlParser::ParseTokens(const std::vector<std::string_view>& tokens)
 {
     if (tokens.size() == 3 && tokens[0] == "-" && tokens[1] == "add:")
     {
