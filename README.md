@@ -4,6 +4,7 @@
 [![codecov](https://codecov.io/gh/NianZo/RayTracerChallenge/branch/main/graph/badge.svg?token=PC1EF3KWN5)](https://codecov.io/gh/NianZo/RayTracerChallenge)
 # RayTracerChallenge
 Test driven code following along with 'The Ray Tracer Challenge' book by Jamis Buck
+![Rendered in 6760.78 seconds](https://user-images.githubusercontent.com/24691990/156849784-da2575d8-1062-4c8a-8ccf-cdbdf6286908.png)
 
 ## Building this project
 This project utilizes CMake. After cloning the repository run the following commands from the project root directory to build and then run the unit tests:
