@@ -9,6 +9,7 @@
 #include "Transformation.hpp"
 #include <charconv>
 #include <stdexcept>
+#include <functional>
 
 std::vector<std::string_view> tokenizeString(std::string_view textLine, char delimiter, bool allowEmptyTokens);
 
@@ -18,6 +19,9 @@ YamlParser::YamlParser([[maybe_unused]] const std::string& inputData) : worldCam
     {
         return;
     }
+
+    using std::placeholders::_1;
+    subCommandMap.emplace("at:", std::bind(&YamlParser::ParseCommandAt, this, _1));
 
     uint64_t oldLinePos = 0;
     uint64_t newLinePos = inputData.find('\n');
@@ -71,7 +75,11 @@ void YamlParser::ParseCommandAt(std::vector<std::string_view>& tokens)
     }
     Tuple position = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
     position.w = 1.0F;
-    SetVectorProperty(SubCommandType::at, position);
+    if (activeCommand != light)
+    {
+        throw std::runtime_error("Invalid 'at:' specifier for '- add: light' command.");
+    }
+    world.light.position = position;
 }
 
 void YamlParser::ParseCommandIntensity(std::vector<std::string_view>& tokens)
@@ -80,7 +88,11 @@ void YamlParser::ParseCommandIntensity(std::vector<std::string_view>& tokens)
     {
         throw std::runtime_error("'intensity:' command in invalid format. Expected: 'intensity: [ x, y, z ]'");
     }
-    SetVectorProperty(SubCommandType::intensity, ParseVectorValue(tokens[2], tokens[3], tokens[4]));
+    if (activeCommand != light)
+    {
+        throw std::runtime_error("Invalid 'intensity:' specifier for '- add: light' command.");
+    }
+    world.light.intensity = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
 }
 
 void YamlParser::ParseCommandWidth(std::vector<std::string_view>& tokens)
@@ -89,7 +101,12 @@ void YamlParser::ParseCommandWidth(std::vector<std::string_view>& tokens)
     {
         throw std::runtime_error("'width:' command in invalid format. Expected: 'width: i'");
     }
-    SetIntProperty(SubCommandType::width, ParseIntValue(tokens[1]));
+    if (activeCommand != camera)
+    {
+        throw std::runtime_error("Invalid 'width:' specifier for '- add: camera' command.");
+    }
+    worldCamera.hSize = ParseIntValue(tokens[1]);
+    worldCamera.RecalculateProperties();
 }
 
 void YamlParser::ParseCommandHeight(std::vector<std::string_view>& tokens)
@@ -98,7 +115,12 @@ void YamlParser::ParseCommandHeight(std::vector<std::string_view>& tokens)
     {
         throw std::runtime_error("'height:' command in invalid format. Expected: 'height: i'");
     }
-    SetIntProperty(SubCommandType::height, ParseIntValue(tokens[1]));
+    if (activeCommand != camera)
+    {
+        throw std::runtime_error("Invalid 'height:' specifier for '- add: camera' command.");
+    }
+    worldCamera.vSize = ParseIntValue(tokens[1]);
+    worldCamera.RecalculateProperties();
 }
 
 void YamlParser::ParseCommandFOV(std::vector<std::string_view>& tokens)
@@ -107,7 +129,12 @@ void YamlParser::ParseCommandFOV(std::vector<std::string_view>& tokens)
     {
         throw std::runtime_error("'field-of-view:' command in invalid format. Expected: 'field-of-view: f'");
     }
-    SetFloatProperty(SubCommandType::fov, ParseFloatValue(tokens[1]));
+    if (activeCommand != camera)
+    {
+        throw std::runtime_error("Invalid 'field-of-view:' specifier for '- add: camera' command.");
+    }
+    worldCamera.fov = ParseFloatValue(tokens[1]);
+    worldCamera.RecalculateProperties();
 }
 
 void YamlParser::ParseCommandFrom(std::vector<std::string_view>& tokens)
@@ -118,7 +145,13 @@ void YamlParser::ParseCommandFrom(std::vector<std::string_view>& tokens)
     }
     Tuple fromPosition = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
     fromPosition.w = 1.0F;
-    SetVectorProperty(SubCommandType::from, fromPosition);
+    if (activeCommand != camera)
+    {
+        throw std::runtime_error("Invalid 'from:' specifier for '- add: camera' command.");
+    }
+    cameraFrom = fromPosition;
+    worldCamera.transform = ViewTransform(cameraFrom, cameraTo, cameraUp);
+    worldCamera.RecalculateProperties();
 }
 
 void YamlParser::ParseCommandTo(std::vector<std::string_view>& tokens)
@@ -129,7 +162,13 @@ void YamlParser::ParseCommandTo(std::vector<std::string_view>& tokens)
     }
     Tuple toPosition = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
     toPosition.w = 1.0F;
-    SetVectorProperty(SubCommandType::to, toPosition);
+    if (activeCommand != camera)
+    {
+        throw std::runtime_error("Invalid 'to:' specifier for '- add: camera' command.");
+    }
+    cameraTo = toPosition;
+    worldCamera.transform = ViewTransform(cameraFrom, cameraTo, cameraUp);
+    worldCamera.RecalculateProperties();
 }
 
 void YamlParser::ParseCommandUp(std::vector<std::string_view>& tokens)
@@ -138,7 +177,13 @@ void YamlParser::ParseCommandUp(std::vector<std::string_view>& tokens)
     {
         throw std::runtime_error("'up:' command in invalid format. Expected: 'up: [ x, y, z ]'");
     }
-    SetVectorProperty(SubCommandType::up, ParseVectorValue(tokens[2], tokens[3], tokens[4]));
+    if (activeCommand != camera)
+    {
+        throw std::runtime_error("Invalid 'up:' specifier for '- add: camera' command.");
+    }
+    cameraUp = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
+    worldCamera.transform = ViewTransform(cameraFrom, cameraTo, cameraUp);
+    worldCamera.RecalculateProperties();
 }
 
 void YamlParser::ParseCommandAdd(std::vector<std::string_view>& tokens)
@@ -184,16 +229,12 @@ void YamlParser::ParseCommandDefine(std::vector<std::string_view> &tokens) {
 	}
 }
 
-void YamlParser::ParseCommandTransformParameter(
-		std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandTransformParameter(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 7) {
-		throw std::runtime_error(
-				"Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
+		throw std::runtime_error("Transform parameter command in invalid format. Expected: '- [ op, x, y, z ]'");
 	}
-	if (activeCommand != transform && activeCommand != plane
-			&& activeCommand != cube && activeCommand != sphere) {
-		throw std::runtime_error(
-				"Transform parameter only valid for transform definition.");
+	if (activeCommand != transform && activeCommand != plane && activeCommand != cube && activeCommand != sphere) {
+		throw std::runtime_error("Transform parameter only valid for transform definition.");
 	}
 	if (tokens[2] == "translate,") {
 		*activeTransform = translation(ParseFloatValue(tokens[3]),
@@ -208,83 +249,101 @@ void YamlParser::ParseCommandTransformParameter(
 				* rotationY(ParseFloatValue(tokens[4]))
 				* rotationX(ParseFloatValue(tokens[3])) * *activeTransform;
 	} else {
-		throw std::runtime_error(
-				"Invalid transform operation. Expected: 'scale', 'rotate', or 'translate'");
+		throw std::runtime_error("Invalid transform operation. Expected: 'scale', 'rotate', or 'translate'");
 	}
 }
 
 void YamlParser::ParseCommandColor(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 6) {
-		throw std::runtime_error(
-				"'color:' command in invalid format. Expected: 'color: [ x, y, z ]'");
+		throw std::runtime_error("'color:' command in invalid format. Expected: 'color: [ x, y, z ]'");
 	}
-	SetVectorProperty(SubCommandType::color,
-			ParseVectorValue(tokens[2], tokens[3], tokens[4]));
+    if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+    {
+        throw std::runtime_error("Invalid 'color:' specifier for '- define: material' command.");
+    }
+    activeMaterial->color = ParseVectorValue(tokens[2], tokens[3], tokens[4]);
 }
 
 void YamlParser::ParseCommandAmbient(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'ambient:' command in invalid format. Expected: 'ambient: f'");
+		throw std::runtime_error("'ambient:' command in invalid format. Expected: 'ambient: f'");
 	}
-	SetFloatProperty(SubCommandType::ambient, ParseFloatValue(tokens[1]));
+    if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+    {
+        throw std::runtime_error("Invalid 'ambient:' specifier for '- define: material' command.");
+    }
+    activeMaterial->ambient = ParseFloatValue(tokens[1]);
 }
 
 void YamlParser::ParseCommandDiffuse(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'diffuse:' command in invalid format. Expected: 'diffuse: f'");
+		throw std::runtime_error("'diffuse:' command in invalid format. Expected: 'diffuse: f'");
 	}
-	SetFloatProperty(SubCommandType::diffuse, ParseFloatValue(tokens[1]));
+    if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+    {
+        throw std::runtime_error("Invalid 'diffuse:' specifier for '- define: material' command.");
+    }
+    activeMaterial->diffuse = ParseFloatValue(tokens[1]);
 }
 
 void YamlParser::ParseCommandSpecular(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'specular:' command in invalid format. Expected: 'specular: f'");
+		throw std::runtime_error("'specular:' command in invalid format. Expected: 'specular: f'");
 	}
-	SetFloatProperty(SubCommandType::specular, ParseFloatValue(tokens[1]));
+    if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+    {
+        throw std::runtime_error("Invalid 'specular:' specifier for '- define: material' command.");
+    }
+    activeMaterial->specular = ParseFloatValue(tokens[1]);
 }
 
 void YamlParser::ParseCommandShininess(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'shininess:' command in invalid format. Expected: 'shininess: f'");
+		throw std::runtime_error("'shininess:' command in invalid format. Expected: 'shininess: f'");
 	}
-	SetFloatProperty(SubCommandType::shininess, ParseFloatValue(tokens[1]));
+    if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+    {
+        throw std::runtime_error("Invalid 'shininess:' specifier for '- define: material' command.");
+    }
+    activeMaterial->shininess = ParseFloatValue(tokens[1]);
 }
 
 void YamlParser::ParseCommandReflective(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'reflective:' command in invalid format. Expected: 'reflective: f'");
+		throw std::runtime_error("'reflective:' command in invalid format. Expected: 'reflective: f'");
 	}
-	SetFloatProperty(SubCommandType::reflective, ParseFloatValue(tokens[1]));
+    if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+    {
+        throw std::runtime_error("Invalid 'reflective:' specifier for '- define: material' command.");
+    }
+    activeMaterial->reflectivity = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandTransparency(
-		std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandTransparency(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'transparency:' command in invalid format. Expected: 'transparency: f'");
+		throw std::runtime_error("'transparency:' command in invalid format. Expected: 'transparency: f'");
 	}
-	SetFloatProperty(SubCommandType::transparency, ParseFloatValue(tokens[1]));
+    if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+    {
+        throw std::runtime_error("Invalid 'transparency:' specifier for '- define: material' command.");
+    }
+    activeMaterial->transparency = ParseFloatValue(tokens[1]);
 }
 
-void YamlParser::ParseCommandRefractiveIndex(
-		std::vector<std::string_view> &tokens) {
+void YamlParser::ParseCommandRefractiveIndex(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'refractive-index:' command in invalid format. Expected: 'refractive-index: f'");
+		throw std::runtime_error("'refractive-index:' command in invalid format. Expected: 'refractive-index: f'");
 	}
-	SetFloatProperty(SubCommandType::refractiveIndex,
-			ParseFloatValue(tokens[1]));
+    if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
+    {
+        throw std::runtime_error("Invalid 'refractive-index:' specifier for '- define: material' command.");
+    }
+    activeMaterial->refractiveIndex = ParseFloatValue(tokens[1]);
 }
 
 void YamlParser::ParseCommandExtend(std::vector<std::string_view> &tokens) {
 	if (tokens.size() != 2) {
-		throw std::runtime_error(
-				"'extend:' command in invalid format. Expected: 'extend: name'");
+		throw std::runtime_error("'extend:' command in invalid format. Expected: 'extend: name'");
 	}
 	switch (activeCommand) {
 	case material:
@@ -294,8 +353,7 @@ void YamlParser::ParseCommandExtend(std::vector<std::string_view> &tokens) {
 		*activeTransform = transforms[std::string(tokens[1])];
 		break;
 	default:
-		throw std::runtime_error(
-				"'extend:' option must be used with: material or transform command.");
+		throw std::runtime_error("'extend:' option must be used with: material or transform command.");
 	}
 }
 
@@ -312,7 +370,8 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
 		ParseCommandTransformParameter(tokens);
     } else if (tokens[0] == "at:")
     {
-        ParseCommandAt(tokens);
+        //ParseCommandAt(tokens);
+    	subCommandMap[std::string(tokens[0])](tokens);
     } else if (tokens[0] == "intensity:")
     {
         ParseCommandIntensity(tokens);
@@ -370,150 +429,75 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
     }
 }
 
-void YamlParser::SetVectorProperty(SubCommandType subCommandType, const Tuple& value)
-{
-    switch (subCommandType)
-    {
-    case at:
-        if (activeCommand != light)
-        {
-            throw std::runtime_error("Invalid 'at:' specifier for '- add: light' command.");
-        }
-        world.light.position = value;
-        break;
-    case intensity:
-        if (activeCommand != light)
-        {
-            throw std::runtime_error("Invalid 'intensity:' specifier for '- add: light' command.");
-        }
-        world.light.intensity = value;
-        break;
-    case from:
-        if (activeCommand != camera)
-        {
-            throw std::runtime_error("Invalid 'from:' specifier for '- add: camera' command.");
-        }
-        cameraFrom = value;
-        worldCamera.transform = ViewTransform(cameraFrom, cameraTo, cameraUp);
-        worldCamera.RecalculateProperties();
-        break;
-    case to:
-        if (activeCommand != camera)
-        {
-            throw std::runtime_error("Invalid 'to:' specifier for '- add: camera' command.");
-        }
-        cameraTo = value;
-        worldCamera.transform = ViewTransform(cameraFrom, cameraTo, cameraUp);
-        worldCamera.RecalculateProperties();
-        break;
-    case up:
-        if (activeCommand != camera)
-        {
-            throw std::runtime_error("Invalid 'up:' specifier for '- add: camera' command.");
-        }
-        cameraUp = value;
-        worldCamera.transform = ViewTransform(cameraFrom, cameraTo, cameraUp);
-        worldCamera.RecalculateProperties();
-        break;
-    case color:
-        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Invalid 'color:' specifier for '- define: material' command.");
-        }
-        activeMaterial->color = value;
-        break;
-    default:
-        throw std::runtime_error("Invalid SubCommandType parsed");
-    }
-}
+//void YamlParser::SetVectorProperty(SubCommandType subCommandType, const Tuple& value)
+//{
+//    switch (subCommandType)
+//    {
+//
+//    case intensity:
+//
+//        break;
+//    case from:
+//
+//        break;
+//    case to:
+//
+//        break;
+//    case up:
+//
+//        break;
+//    case color:
+//
+//        break;
+//    default:
+//        throw std::runtime_error("Invalid SubCommandType parsed");
+//    }
+//}
 
-void YamlParser::SetFloatProperty(SubCommandType subCommandType, float value)
-{
-    switch (subCommandType)
-    {
-    case fov:
-        if (activeCommand != camera)
-        {
-            throw std::runtime_error("Invalid 'field-of-view:' specifier for '- add: camera' command.");
-        }
-        worldCamera.fov = value;
-        worldCamera.RecalculateProperties();
-        break;
-    case ambient:
-        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Invalid 'ambient:' specifier for '- define: material' command.");
-        }
-        activeMaterial->ambient = value;
-        break;
-    case diffuse:
-        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Invalid 'diffuse:' specifier for '- define: material' command.");
-        }
-        activeMaterial->diffuse = value;
-        break;
-    case specular:
-        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Invalid 'specular:' specifier for '- define: material' command.");
-        }
-        activeMaterial->specular = value;
-        break;
-    case shininess:
-        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Invalid 'shininess:' specifier for '- define: material' command.");
-        }
-        activeMaterial->shininess = value;
-        break;
-    case reflective:
-        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Invalid 'reflective:' specifier for '- define: material' command.");
-        }
-        activeMaterial->reflectivity = value;
-        break;
-    case transparency:
-        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Invalid 'transparency:' specifier for '- define: material' command.");
-        }
-        activeMaterial->transparency = value;
-        break;
-    case refractiveIndex:
-        if (activeCommand != material && activeCommand != plane && activeCommand != cube && activeCommand != sphere)
-        {
-            throw std::runtime_error("Invalid 'refractive-index:' specifier for '- define: material' command.");
-        }
-        activeMaterial->refractiveIndex = value;
-        break;
-    default:
-        throw std::runtime_error("Invalid SubCommandType parsed");
-    }
-}
+//void YamlParser::SetFloatProperty(SubCommandType subCommandType, float value)
+//{
+//    switch (subCommandType)
+//    {
+//    case fov:
+//
+//        break;
+//    case ambient:
+//
+//        break;
+//    case diffuse:
+//
+//        break;
+//    case specular:
+//
+//        break;
+//    case shininess:
+//
+//        break;
+//    case reflective:
+//
+//        break;
+//    case transparency:
+//
+//        break;
+//    case refractiveIndex:
+//
+//        break;
+//    default:
+//        throw std::runtime_error("Invalid SubCommandType parsed");
+//    }
+//}
 
-void YamlParser::SetIntProperty(SubCommandType subCommandType, uint32_t value)
-{
-    switch (subCommandType)
-    {
-    case width:
-        if (activeCommand != camera)
-        {
-            throw std::runtime_error("Invalid 'width:' specifier for '- add: camera' command.");
-        }
-        worldCamera.hSize = value;
-        worldCamera.RecalculateProperties();
-        break;
-    case height:
-        if (activeCommand != camera)
-        {
-            throw std::runtime_error("Invalid 'height:' specifier for '- add: camera' command.");
-        }
-        worldCamera.vSize = value;
-        worldCamera.RecalculateProperties();
-        break;
-    default:
-        throw std::runtime_error("Invalid SubCommandType parsed");
-    }
-}
+//void YamlParser::SetIntProperty(SubCommandType subCommandType, uint32_t value)
+//{
+//    switch (subCommandType)
+//    {
+//    case width:
+//
+//        break;
+//    case height:
+//
+//        break;
+//    default:
+//        throw std::runtime_error("Invalid SubCommandType parsed");
+//    }
+//}
