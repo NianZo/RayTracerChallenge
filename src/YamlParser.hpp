@@ -35,25 +35,6 @@ class YamlParser
         sphere
     };
 
-//    enum SubCommandType
-//    {
-//        width,
-//        height,
-//        fov,
-//        from,
-//        to,
-//        up,
-//        at,
-//        intensity,
-//        color,
-//        ambient,
-//        diffuse,
-//        specular,
-//        shininess,
-//        reflective,
-//        transparency,
-//        refractiveIndex
-//    };
     std::unordered_map<std::string, std::function<void(std::vector<std::string_view>&)>> subCommandMap;
 
     CommandType activeCommand = none;
@@ -66,9 +47,6 @@ class YamlParser
     Tuple cameraUp;
 
     void ParseTokens(std::vector<std::string_view>& tokens);
-    //void SetVectorProperty(SubCommandType subCommandType, const Tuple& value);
-    //void SetFloatProperty(SubCommandType subCommandType, float value);
-    //void SetIntProperty(SubCommandType subCommandType, uint32_t value);
     void ParseCommandAt(std::vector<std::string_view>& tokens);
     void ParseCommandIntensity(std::vector<std::string_view>& tokens);
     void ParseCommandWidth(std::vector<std::string_view>& tokens);

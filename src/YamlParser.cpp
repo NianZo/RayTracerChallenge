@@ -22,6 +22,22 @@ YamlParser::YamlParser([[maybe_unused]] const std::string& inputData) : worldCam
 
     using std::placeholders::_1;
     subCommandMap.emplace("at:", std::bind(&YamlParser::ParseCommandAt, this, _1));
+    subCommandMap.emplace("intensity:", std::bind(&YamlParser::ParseCommandIntensity, this, _1));
+    subCommandMap.emplace("width:", std::bind(&YamlParser::ParseCommandWidth, this, _1));
+    subCommandMap.emplace("height:", std::bind(&YamlParser::ParseCommandHeight, this, _1));
+    subCommandMap.emplace("field-of-view:", std::bind(&YamlParser::ParseCommandFOV, this, _1));
+    subCommandMap.emplace("from:", std::bind(&YamlParser::ParseCommandFrom, this, _1));
+    subCommandMap.emplace("to:", std::bind(&YamlParser::ParseCommandTo, this, _1));
+    subCommandMap.emplace("up:", std::bind(&YamlParser::ParseCommandUp, this, _1));
+    subCommandMap.emplace("color:", std::bind(&YamlParser::ParseCommandColor, this, _1));
+    subCommandMap.emplace("ambient:", std::bind(&YamlParser::ParseCommandAmbient, this, _1));
+    subCommandMap.emplace("diffuse:", std::bind(&YamlParser::ParseCommandDiffuse, this, _1));
+    subCommandMap.emplace("specular:", std::bind(&YamlParser::ParseCommandSpecular, this, _1));
+    subCommandMap.emplace("shininess:", std::bind(&YamlParser::ParseCommandShininess, this, _1));
+    subCommandMap.emplace("reflective:", std::bind(&YamlParser::ParseCommandReflective, this, _1));
+    subCommandMap.emplace("transparency:", std::bind(&YamlParser::ParseCommandTransparency, this, _1));
+    subCommandMap.emplace("refractive-index:", std::bind(&YamlParser::ParseCommandRefractiveIndex, this, _1));
+    subCommandMap.emplace("extend:", std::bind(&YamlParser::ParseCommandExtend, this, _1));
 
     uint64_t oldLinePos = 0;
     uint64_t newLinePos = inputData.find('\n');
@@ -368,136 +384,16 @@ void YamlParser::ParseTokens(std::vector<std::string_view>& tokens)
     } else if (tokens.size() > 1 && tokens[0] == "-" && tokens[1] == "[")
     {
 		ParseCommandTransformParameter(tokens);
-    } else if (tokens[0] == "at:")
-    {
-        //ParseCommandAt(tokens);
-    	subCommandMap[std::string(tokens[0])](tokens);
-    } else if (tokens[0] == "intensity:")
-    {
-        ParseCommandIntensity(tokens);
-    } else if (tokens[0] == "width:")
-    {
-        ParseCommandWidth(tokens);
-    } else if (tokens[0] == "height:")
-    {
-        ParseCommandHeight(tokens);
-    } else if (tokens[0] == "field-of-view:")
-    {
-        ParseCommandFOV(tokens);
-    } else if (tokens[0] == "from:")
-    {
-        ParseCommandFrom(tokens);
-    } else if (tokens[0] == "to:")
-    {
-        ParseCommandTo(tokens);
-    } else if (tokens[0] == "up:")
-    {
-        ParseCommandUp(tokens);
-    } else if (tokens[0] == "color:")
-    {
-		ParseCommandColor(tokens);
-    } else if (tokens[0] == "ambient:")
-    {
-		ParseCommandAmbient(tokens);
-    } else if (tokens[0] == "diffuse:")
-    {
-		ParseCommandDiffuse(tokens);
-    } else if (tokens[0] == "specular:")
-    {
-		ParseCommandSpecular(tokens);
-    } else if (tokens[0] == "shininess:")
-    {
-		ParseCommandShininess(tokens);
-    } else if (tokens[0] == "reflective:")
-    {
-		ParseCommandReflective(tokens);
-    } else if (tokens[0] == "transparency:")
-    {
-		ParseCommandTransparency(tokens);
-    } else if (tokens[0] == "refractive-index:")
-    {
-		ParseCommandRefractiveIndex(tokens);
-    } else if (tokens[0] == "extend:")
-    {
-		ParseCommandExtend(tokens);
     } else if (tokens[0] == "material:" && tokens.size() == 2)
     {
         *activeMaterial = materials[std::string(tokens[1])];
     } else if (tokens[0] == "transform:" && tokens.size() == 2)
     {
         *activeTransform = transforms[std::string(tokens[1])];
+    } else if (subCommandMap.contains(std::string(tokens[0])))
+    {
+    	subCommandMap[std::string(tokens[0])](tokens);
     }
 }
 
-//void YamlParser::SetVectorProperty(SubCommandType subCommandType, const Tuple& value)
-//{
-//    switch (subCommandType)
-//    {
-//
-//    case intensity:
-//
-//        break;
-//    case from:
-//
-//        break;
-//    case to:
-//
-//        break;
-//    case up:
-//
-//        break;
-//    case color:
-//
-//        break;
-//    default:
-//        throw std::runtime_error("Invalid SubCommandType parsed");
-//    }
-//}
 
-//void YamlParser::SetFloatProperty(SubCommandType subCommandType, float value)
-//{
-//    switch (subCommandType)
-//    {
-//    case fov:
-//
-//        break;
-//    case ambient:
-//
-//        break;
-//    case diffuse:
-//
-//        break;
-//    case specular:
-//
-//        break;
-//    case shininess:
-//
-//        break;
-//    case reflective:
-//
-//        break;
-//    case transparency:
-//
-//        break;
-//    case refractiveIndex:
-//
-//        break;
-//    default:
-//        throw std::runtime_error("Invalid SubCommandType parsed");
-//    }
-//}
-
-//void YamlParser::SetIntProperty(SubCommandType subCommandType, uint32_t value)
-//{
-//    switch (subCommandType)
-//    {
-//    case width:
-//
-//        break;
-//    case height:
-//
-//        break;
-//    default:
-//        throw std::runtime_error("Invalid SubCommandType parsed");
-//    }
-//}
