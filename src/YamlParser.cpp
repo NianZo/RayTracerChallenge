@@ -9,7 +9,6 @@
 #include "Transformation.hpp"
 #include <charconv>
 #include <stdexcept>
-#include <functional>
 
 std::vector<std::string_view> tokenizeString(std::string_view textLine, char delimiter, bool allowEmptyTokens);
 
@@ -20,24 +19,23 @@ YamlParser::YamlParser([[maybe_unused]] const std::string& inputData) : worldCam
         return;
     }
 
-    using std::placeholders::_1;
-    subCommandMap.emplace("at:", std::bind(&YamlParser::ParseCommandAt, this, _1));
-    subCommandMap.emplace("intensity:", std::bind(&YamlParser::ParseCommandIntensity, this, _1));
-    subCommandMap.emplace("width:", std::bind(&YamlParser::ParseCommandWidth, this, _1));
-    subCommandMap.emplace("height:", std::bind(&YamlParser::ParseCommandHeight, this, _1));
-    subCommandMap.emplace("field-of-view:", std::bind(&YamlParser::ParseCommandFOV, this, _1));
-    subCommandMap.emplace("from:", std::bind(&YamlParser::ParseCommandFrom, this, _1));
-    subCommandMap.emplace("to:", std::bind(&YamlParser::ParseCommandTo, this, _1));
-    subCommandMap.emplace("up:", std::bind(&YamlParser::ParseCommandUp, this, _1));
-    subCommandMap.emplace("color:", std::bind(&YamlParser::ParseCommandColor, this, _1));
-    subCommandMap.emplace("ambient:", std::bind(&YamlParser::ParseCommandAmbient, this, _1));
-    subCommandMap.emplace("diffuse:", std::bind(&YamlParser::ParseCommandDiffuse, this, _1));
-    subCommandMap.emplace("specular:", std::bind(&YamlParser::ParseCommandSpecular, this, _1));
-    subCommandMap.emplace("shininess:", std::bind(&YamlParser::ParseCommandShininess, this, _1));
-    subCommandMap.emplace("reflective:", std::bind(&YamlParser::ParseCommandReflective, this, _1));
-    subCommandMap.emplace("transparency:", std::bind(&YamlParser::ParseCommandTransparency, this, _1));
-    subCommandMap.emplace("refractive-index:", std::bind(&YamlParser::ParseCommandRefractiveIndex, this, _1));
-    subCommandMap.emplace("extend:", std::bind(&YamlParser::ParseCommandExtend, this, _1));
+    subCommandMap.emplace("at:", [this](auto& tokens){ParseCommandAt(tokens);});
+    subCommandMap.emplace("intensity:", [this](auto& tokens){ParseCommandIntensity(tokens);});
+    subCommandMap.emplace("width:", [this](auto& tokens){ParseCommandWidth(tokens);});
+    subCommandMap.emplace("height:", [this](auto& tokens){ParseCommandHeight(tokens);});
+    subCommandMap.emplace("field-of-view:", [this](auto& tokens){ParseCommandFOV(tokens);});
+    subCommandMap.emplace("from:", [this](auto& tokens){ParseCommandFrom(tokens);});
+    subCommandMap.emplace("to:", [this](auto& tokens){ParseCommandTo(tokens);});
+    subCommandMap.emplace("up:", [this](auto& tokens){ParseCommandUp(tokens);});
+    subCommandMap.emplace("color:", [this](auto& tokens){ParseCommandColor(tokens);});
+    subCommandMap.emplace("ambient:", [this](auto& tokens){ParseCommandAmbient(tokens);});
+    subCommandMap.emplace("diffuse:", [this](auto& tokens){ParseCommandDiffuse(tokens);});
+    subCommandMap.emplace("specular:", [this](auto& tokens){ParseCommandSpecular(tokens);});
+    subCommandMap.emplace("shininess:", [this](auto& tokens){ParseCommandShininess(tokens);});
+    subCommandMap.emplace("reflective:", [this](auto& tokens){ParseCommandReflective(tokens);});
+    subCommandMap.emplace("transparency:", [this](auto& tokens){ParseCommandTransparency(tokens);});
+    subCommandMap.emplace("refractive-index:", [this](auto& tokens){ParseCommandRefractiveIndex(tokens);});
+    subCommandMap.emplace("extend:", [this](auto& tokens){ParseCommandExtend(tokens);});
 
     uint64_t oldLinePos = 0;
     uint64_t newLinePos = inputData.find('\n');
