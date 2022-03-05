@@ -784,5 +784,20 @@ TEST(YamlParser, ImproperUseOfRefractiveIndexCommand)
 	EXPECT_EQ(errorCode, "Invalid 'refractive-index:' specifier for '- define: material' command.");
 }
 
+TEST(YamlParser, ImproperUseOfExtendCommand)
+{
+	std::string s =
+			"extend: test\n";
+	std::string errorCode = "";
+	try
+	{
+		YamlParser parser(s);
+	} catch (std::runtime_error& e)
+	{
+		errorCode = std::string(e.what());
+	}
+	EXPECT_EQ(errorCode, "'extend:' option must be used with: material or transform command.");
+}
+
 
 
